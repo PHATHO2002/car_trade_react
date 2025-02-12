@@ -1,0 +1,42 @@
+.post-page {
+    padding-top: 50px;
+    .post-form {
+        width: 500px;
+    }
+    h2 {
+        text-align: center;
+        font-size: 30px;
+    }
+    .form-group {
+        p {
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 21px;
+            margin-bottom: 8px;
+            color: rgb(128, 128, 137);
+        }
+        input {
+            width: 100%;
+            height: 40px;
+            box-sizing: border-box;
+            outline: none;
+            border-radius: 4px;
+            margin: 14px 8px;
+            padding: 0 10px;
+            border: 1px solid var(--text-color);
+        }
+        .choose-file {
+            border: none;
+        }
+        .error {
+            color: red; // Màu chữ đỏ để nổi bật
+            font-size: 14px; // Cỡ chữ nhỏ hơn để không chiếm quá nhiều không gian
+            margin-top: 4px; // Giãn cách phía trên để không bị dính vào input
+            font-weight: lighter; // Chữ đậm để dễ nhìn hơn
+        }
+        display: flex;
+        flex-direction: column;
+
+        font-size: 20px;
+    }
+}
