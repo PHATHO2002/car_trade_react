@@ -23,7 +23,6 @@ function App() {
                 setLoading(false);
             }
         };
-
         fetchAccessToken();
     }, []);
 

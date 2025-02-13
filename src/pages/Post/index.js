@@ -1,13 +1,14 @@
 import classNames from 'classnames/bind';
 import styles from './Post.module.scss';
 import Button from '~/components/Button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { faCameraRetro, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '~/api/api';
-
+import { connectSocket } from '~/utils/socket';
+let socket;
 const cx = classNames.bind(styles);
 
 function Post() {
@@ -91,6 +92,7 @@ function Post() {
                 const response = await api.post('/user/post', formData, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                 });
+                socket.emit('addnewPendingCar', response.data.data);
                 toast.success('Đăng tin bán xe thành công đang chờ admin duyệt!');
                 setTitle('');
                 setAddress('');
@@ -105,7 +107,9 @@ function Post() {
             }
         }
     };
-
+    useEffect(() => {
+        socket = connectSocket();
+    }, []);
     return (
         <div className={cx('post-page')}>
             <form className={cx('post-form')} onSubmit={handleSubmit}>

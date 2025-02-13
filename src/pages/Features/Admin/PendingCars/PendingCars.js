@@ -4,24 +4,34 @@ import ReactPaginate from 'react-paginate';
 import api from '~/api/api';
 import styles from './PendingCars.module.scss';
 import Button from '~/components/Button';
+import { connectSocket } from '~/utils/socket';
+
 const cx = classNames.bind(styles);
 const PendingProducts = () => {
     const [carList, setCarList] = useState([]);
+    const [changeCar, setChangeCar] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
+    const [loading, setLoading] = useState(false);
     const itemsPerPage = 4; // Số xe hiển thị mỗi trang
-
+    let socket;
+    socket = connectSocket();
+    socket.on('pendingCarNotification', (data) => {
+        setCarList((prevCarList) => [...prevCarList, data.carData]);
+    });
+    const fetchPendingCars = async () => {
+        try {
+            const response = await api.get('/admin/get-PendingCars');
+            setCarList(response.data.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
     useEffect(() => {
-        const fetchPendingCars = async () => {
-            try {
-                const response = await api.get('/admin/get-PendingCars');
-                setCarList(response.data.data);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
         fetchPendingCars();
-    }, []);
+        return () => {
+            socket.off('pendingCarNotification');
+        };
+    }, [changeCar]);
 
     // Lấy danh sách xe theo trang hiện tại
     const offset = currentPage * itemsPerPage;
@@ -30,7 +40,33 @@ const PendingProducts = () => {
     const handlePageChange = (event) => {
         setCurrentPage(event.selected);
     };
-
+    const approvalCar = async (id) => {
+        try {
+            setLoading(true);
+            const response = await api.post('/admin/decision-pendingCars', {
+                id: id,
+                status: 'accepted',
+            });
+            setChangeCar(response.data.data);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    const rejectedCar = async (id) => {
+        try {
+            const response = await api.post('/admin/decision-pendingCars', {
+                id: id,
+                status: 'rejected',
+            });
+            setChangeCar(response.data.data);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    };
     return (
         <div className={cx('pending-products')}>
             <h2>Sản phẩm Chờ Duyệt</h2>
@@ -62,10 +98,21 @@ const PendingProducts = () => {
                                 <div className={cx('images')}>
                                     <img src={car.images[0]} alt={car.title} width="200" />
                                 </div>
-                                <div className={cx('btn-accept-reject')}>
-                                    <Button primary>Duyệt</Button>
-                                    <Button outline>Từ chối</Button>
-                                </div>
+                                {loading ? (
+                                    <div className={cx('btn-accept-reject')}>
+                                        <Button primary>loading</Button>
+                                        <Button outline>loading</Button>
+                                    </div>
+                                ) : (
+                                    <div className={cx('btn-accept-reject')}>
+                                        <Button primary onClick={() => approvalCar(car._id)}>
+                                            Duyệt
+                                        </Button>
+                                        <Button outline onClick={() => rejectedCar(car._id)}>
+                                            Từ chối
+                                        </Button>
+                                    </div>
+                                )}
                             </li>
                         ))}
                     </ul>

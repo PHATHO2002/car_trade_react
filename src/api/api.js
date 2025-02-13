@@ -59,8 +59,6 @@ api.interceptors.response.use(
             try {
                 const newAccessToken = await refreshAccessToken();
                 originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-                // console.log('test auto refresh token');
-                // console.log(newAccessToken);
                 return api(originalRequest); // Gửi lại request với token mới
             } catch (refreshError) {
                 return Promise.reject(refreshError);
