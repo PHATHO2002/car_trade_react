@@ -13,6 +13,7 @@ import {
     faSignOut,
     faUser,
     faAddressBook,
+    faCartShopping,
 } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
 import Button from '~/components/Button';
@@ -25,7 +26,6 @@ function Header() {
     const dispatch = useDispatch();
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const userData = useSelector((state) => state.auth.user);
-
     const handleLogout = async () => {
         try {
             await api.post('/logout'); // Sử dụng instance API
@@ -36,7 +36,9 @@ function Header() {
     };
     const userMenuItems = [
         {
-            label: 'item1',
+            label: 'Giỏ hàng',
+            to: '/user/cart',
+            icon: <FontAwesomeIcon className={cx('icon')} icon={faCartShopping} />,
         },
         {
             label: 'Đăng xuất',
@@ -74,7 +76,9 @@ function Header() {
                     </div>
 
                     <div className={cx('profile')}>
-                        <FontAwesomeIcon icon={faUser} />
+                        <div className={cx('profile-icon')}>
+                            <FontAwesomeIcon icon={faUser} />
+                        </div>
                         <span className={cx('profile-name')}>{userData.username}</span>
                         {userData.role === 'admin' ? (
                             <div>
@@ -87,7 +91,7 @@ function Header() {
                         )}
                     </div>
                     <div className={cx('post')}>
-                        <Button rightIcon={<FontAwesomeIcon icon={faArrowUpFromBracket} />} to="/post" primary>
+                        <Button rightIcon={<FontAwesomeIcon icon={faArrowUpFromBracket} />} to="/user/post" primary>
                             Đăng Tin
                         </Button>
                     </div>

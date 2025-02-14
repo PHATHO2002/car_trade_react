@@ -18,11 +18,11 @@ const refreshAccessToken = async () => {
         refreshTokenRequest = api
             .post('/refreshToken')
             .then((response) => {
-                console.log(response);
                 store.dispatch(setAccessToken(response.data.accessToken)); // Lưu vào Redux
                 return response.data.accessToken;
             })
             .catch((error) => {
+                console.log(error);
                 store.dispatch(logout()); // Xóa Redux state nếu lỗi
                 window.location.href = '/login'; // Chuyển hướng về trang login
                 return Promise.reject(error);

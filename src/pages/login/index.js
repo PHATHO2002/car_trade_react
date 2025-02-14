@@ -31,6 +31,7 @@ function Login() {
             dispatch(login({ decodedUser, accessToken })); // Cập nhật Redux state
             navigate('/'); // Điều hướng về trang chính
         } catch (error) {
+            console.log(error);
             setErrorMessage(error.response?.data?.message || 'Đăng nhập thất bại.');
         }
     };

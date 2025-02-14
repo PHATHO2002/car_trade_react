@@ -26,7 +26,7 @@ const connectSocket = () => {
     }
     return socket;
 };
-store.subscribe(() => {
-    socket.auth.token = store.getState().auth.accessToken;
-});
+// store.subscribe(() => {
+//     socket.auth.token = store.getState().auth.accessToken;
+// });
 export { connectSocket };

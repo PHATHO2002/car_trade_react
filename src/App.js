@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setAccessToken } from './redux/slices/authSlice';
 import { publicRoutes, privateRoutes, adminRoutes } from '~/routes';
+import { useSelector } from 'react-redux';
 import { DefaultLayout } from '~/components/Layout';
 import ProtectedRouteLogin from './components/ProtectedRoute/ProtectedRouteLogin';
 import ProtectedRouteAdmin from './components/ProtectedRoute/ProtectedRouteAdmin';
@@ -11,6 +12,7 @@ import api from './api/api';
 function App() {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
+    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
     useEffect(() => {
         const fetchAccessToken = async () => {
@@ -23,7 +25,10 @@ function App() {
                 setLoading(false);
             }
         };
-        fetchAccessToken();
+        if (isLoggedIn) {
+            fetchAccessToken();
+        }
+        setLoading(false);
     }, []);
 
     if (loading) {
