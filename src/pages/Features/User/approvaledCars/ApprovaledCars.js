@@ -7,13 +7,19 @@ import { faCartShopping, faMessage } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
+import { connectSocket } from '~/utils/socket';
+import store from '~/redux/store';
 const cx = classNames.bind(styles);
+
 const ApprovaledCars = () => {
     const [carList, setCarList] = useState([]);
     const [cartIdList, setcartsId] = useState([]);
+    const [usersOnline, setUserOnline] = useState([]);
     const [changeCar, setChangeCar] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
-    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+    const accessToken = useSelector((state) => state.auth.accessToken);
+    const user = useSelector((state) => state.auth.user);
+    let socket;
     const itemsPerPage = 4; // Số xe hiển thị mỗi trang
 
     const fetchPendingCars = async () => {
@@ -44,14 +50,30 @@ const ApprovaledCars = () => {
     const handlePageChange = (event) => {
         setCurrentPage(event.selected);
     };
+    const handleUserOnline = (usersOnline, sellerId) => {
+        const userOn = usersOnline.find((user) => user.userId === sellerId);
+        return userOn;
+    };
     useEffect(() => {
-        if (isLoggedIn) {
-            const timeout = setTimeout(() => {
-                fetchPendingCars();
-            }, 500);
-            return () => clearTimeout(timeout);
+        if (accessToken) {
+            fetchPendingCars();
+            socket = connectSocket();
+            socket.emit('user_connected', { userId: user.userId, socketId: socket.id });
+            socket.on('users_online', (data) => {
+                setUserOnline(data);
+            });
+            socket.on('user_disconnected', (data) => {
+                setUserOnline(data);
+            });
         }
-    }, [changeCar]);
+        return () => {
+            if (socket) {
+                socket.off('user_connected');
+                socket.off('users_online');
+                socket.disconnect();
+            }
+        };
+    }, [changeCar, accessToken]);
 
     const offset = currentPage * itemsPerPage;
     const currentItems = carList.slice(offset, offset + itemsPerPage);
@@ -103,6 +125,7 @@ const ApprovaledCars = () => {
 
                                             <div className={cx('chat')}>
                                                 <FontAwesomeIcon icon={faMessage} />
+                                                {handleUserOnline(usersOnline, car.sellerId) ? 'đang on' : 'đã off'}
                                             </div>
                                         </div>
                                     </div>

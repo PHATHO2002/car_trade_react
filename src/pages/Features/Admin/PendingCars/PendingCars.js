@@ -4,20 +4,19 @@ import ReactPaginate from 'react-paginate';
 import api from '~/api/api';
 import styles from './PendingCars.module.scss';
 import Button from '~/components/Button';
+import { useSelector } from 'react-redux';
 import { connectSocket } from '~/utils/socket';
 
 const cx = classNames.bind(styles);
+
 const PendingProducts = () => {
     const [carList, setCarList] = useState([]);
     const [changeCar, setChangeCar] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
     const [loading, setLoading] = useState(false);
+    const accessToken = useSelector((state) => state.auth.accessToken);
     const itemsPerPage = 4; // Số xe hiển thị mỗi trang
     let socket;
-    socket = connectSocket();
-    socket.on('pendingCarNotification', (data) => {
-        setCarList((prevCarList) => [...prevCarList, data.carData]);
-    });
     const fetchPendingCars = async () => {
         try {
             const response = await api.get('/admin/get-PendingCars');
@@ -27,11 +26,20 @@ const PendingProducts = () => {
         }
     };
     useEffect(() => {
-        fetchPendingCars();
+        if (accessToken) {
+            fetchPendingCars();
+            socket = connectSocket();
+            socket.on('pendingCarNotification', (data) => {
+                setCarList((prevCarList) => [...prevCarList, data.carData]);
+            });
+        }
+
         return () => {
-            socket.off('pendingCarNotification');
+            if (socket) {
+                socket.off('pendingCarNotification');
+            }
         };
-    }, [changeCar]);
+    }, [changeCar, accessToken]);
 
     // Lấy danh sách xe theo trang hiện tại
     const offset = currentPage * itemsPerPage;

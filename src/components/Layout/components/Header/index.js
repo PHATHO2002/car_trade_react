@@ -26,12 +26,14 @@ function Header() {
     const dispatch = useDispatch();
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const userData = useSelector((state) => state.auth.user);
+    const accessToken = useSelector((state) => state.auth.accessToken);
     const handleLogout = async () => {
         try {
             await api.post('/logout'); // Sử dụng instance API
             dispatch(logout()); // Cập nhật Redux state
         } catch (error) {
             console.error('Lỗi khi logout:', error);
+            dispatch(logout());
         }
     };
     const userMenuItems = [

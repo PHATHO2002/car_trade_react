@@ -2,12 +2,15 @@ import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import api from '~/api/api';
 import styles from './Cart.module.scss';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashCan, faInfo } from '@fortawesome/free-solid-svg-icons';
+import { ToastContainer, toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 const cx = classNames.bind(styles);
 const Cart = () => {
     const [carList, setCarList] = useState([]);
     const [changeCar, setChangeCar] = useState(null);
-
+    const accessToken = useSelector((state) => state.auth.accessToken);
     const fetchPendingCars = async () => {
         try {
             const response = await api.post('/user/get-cart');
@@ -20,13 +23,20 @@ const Cart = () => {
         const formattedPrice = number.toLocaleString('de-DE');
         return formattedPrice;
     };
-    useEffect(() => {
-        const timeout = setTimeout(() => {
+    const handleDeleteItem = async (carId) => {
+        try {
+            await api.post('/user/delete-item-in-cart', { carId });
             fetchPendingCars();
-        }, 500);
-
-        return () => clearTimeout(timeout);
-    }, [changeCar]);
+            toast.success('xóa đơn hàng thành công!');
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    useEffect(() => {
+        if (accessToken) {
+            fetchPendingCars();
+        }
+    }, [changeCar, accessToken]);
 
     return (
         <div className={cx('pending-products')}>
@@ -41,17 +51,34 @@ const Cart = () => {
                                 <div className={cx('images')}>
                                     <img src={car.images[0]} alt={car.title} width="200" />
                                 </div>
-                                <div className={cx('information')}>
-                                    <h3 className={cx('title')}>{car.title}</h3>
-                                    <p className={cx('price')}>
-                                        <strong>Giá:</strong> {handlePrice(car.price)} VND
-                                    </p>
+                                <div className={cx('body')}>
+                                    <div className={cx('information')}>
+                                        <h3 className={cx('title')}>{car.title}</h3>
+                                        <p className={cx('price')}>
+                                            <strong>Giá:</strong> {handlePrice(car.price)} VND
+                                        </p>
+                                    </div>
+                                    <div className={cx('actions')}>
+                                        <p
+                                            className={cx('trash')}
+                                            onClick={() => {
+                                                handleDeleteItem(car._id);
+                                            }}
+                                        >
+                                            <FontAwesomeIcon icon={faTrashCan} />
+                                        </p>
+                                        <p className={cx('faInfo')}>
+                                            <FontAwesomeIcon icon={faInfo} />
+                                            chi tiết
+                                        </p>
+                                    </div>
                                 </div>
                             </li>
                         ))}
                     </ul>
                 </>
             )}
+            <ToastContainer position="top-right" autoClose={3000} />
         </div>
     );
 };

@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '~/api/api';
 import { connectSocket } from '~/utils/socket';
+import { useSelector } from 'react-redux';
 let socket;
 const cx = classNames.bind(styles);
 
@@ -19,6 +20,8 @@ function Post() {
     const [images, setImages] = useState([]);
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
+
+    const accessToken = useSelector((state) => state.auth.accessToken);
     // Xử lý khi chọn file
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
@@ -108,8 +111,10 @@ function Post() {
         }
     };
     useEffect(() => {
-        socket = connectSocket();
-    }, []);
+        if (accessToken) {
+            socket = connectSocket();
+        }
+    }, [accessToken]);
     return (
         <div className={cx('post-page')}>
             <form className={cx('post-form')} onSubmit={handleSubmit}>

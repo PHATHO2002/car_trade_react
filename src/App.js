@@ -5,6 +5,8 @@ import { setAccessToken } from './redux/slices/authSlice';
 import { publicRoutes, privateRoutes, adminRoutes } from '~/routes';
 import { useSelector } from 'react-redux';
 import { DefaultLayout } from '~/components/Layout';
+import { logout } from '~/redux/slices/authSlice';
+
 import ProtectedRouteLogin from './components/ProtectedRoute/ProtectedRouteLogin';
 import ProtectedRouteAdmin from './components/ProtectedRoute/ProtectedRouteAdmin';
 import api from './api/api';
@@ -21,6 +23,7 @@ function App() {
                 dispatch(setAccessToken(response.data.accessToken));
             } catch (error) {
                 console.log('Lỗi refresh token:', error);
+                dispatch(logout());
             } finally {
                 setLoading(false);
             }
@@ -28,6 +31,7 @@ function App() {
         if (isLoggedIn) {
             fetchAccessToken();
         }
+
         setLoading(false);
     }, []);
 
