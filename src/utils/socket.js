@@ -3,6 +3,7 @@ import store from '~/redux/store';
 import api from '~/api/api';
 import { setAccessToken } from '~/redux/slices/authSlice';
 import { logout } from '~/redux/slices/authSlice';
+const user = store.getState().auth.user;
 let socket;
 // Hàm gọi API refresh token
 let refreshTokenRequest = null;
@@ -27,7 +28,7 @@ const refreshAccessToken = async () => {
     return refreshTokenRequest;
 };
 const connectSocket = () => {
-    if (!socket) {
+    if (!socket?.connected) {
         socket = io('http://localhost:5000', {
             auth: {
                 token: store.getState().auth.accessToken, // Lấy token khi connect
@@ -37,9 +38,9 @@ const connectSocket = () => {
             reconnectionAttempts: 5,
             reconnectionDelay: 2000,
         });
-
         // Log sự kiện kết nối
         socket.on('connect', () => {
+            socket.emit('user_connected', { userId: user.userId, socketId: socket.id });
             console.log('✅ Socket connected:', socket.id);
         });
 

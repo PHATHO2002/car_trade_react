@@ -6,6 +6,7 @@ import { jwtDecode } from 'jwt-decode';
 import { login } from '~/redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { connectSocket } from '~/utils/socket';
 import api from '~/api/api';
 
 import React, { useState } from 'react';
@@ -28,8 +29,8 @@ function Login() {
             const accessToken = response.data.data.accessToken;
             const decodedUser = jwtDecode(accessToken);
 
+            navigate('/');
             dispatch(login({ decodedUser, accessToken })); // Cập nhật Redux state
-            navigate('/'); // Điều hướng về trang chính
         } catch (error) {
             console.log(error);
             setErrorMessage(error.response?.data?.message || 'Đăng nhập thất bại.');

@@ -1,0 +1,32 @@
+.chat-box {
+    width: 300px;
+    .chat-header {
+        display: flex;
+        justify-content: space-between;
+    }
+    .chat-messages {
+        height: 200px;
+        overflow: auto;
+        border: 1px solid black;
+        display: flex;
+        flex-direction: column; /* Giữ thứ tự từ trên xuống dưới */
+        gap: 8px;
+        div {
+            border-radius: 3px;
+            max-width: 200px;
+            margin: 0 10px;
+        }
+        .message_right {
+            background-color: blue;
+            color: white;
+            align-self: flex-start;
+        }
+        .message_left {
+            align-self: flex-end;
+            background-color: rgb(190, 184, 184);
+            color: blue;
+        }
+    }
+    .chat-input {
+    }
+}

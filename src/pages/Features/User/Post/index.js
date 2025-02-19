@@ -9,7 +9,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import api from '~/api/api';
 import { connectSocket } from '~/utils/socket';
 import { useSelector } from 'react-redux';
-let socket;
 const cx = classNames.bind(styles);
 
 function Post() {
@@ -20,8 +19,8 @@ function Post() {
     const [images, setImages] = useState([]);
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
+    let socket = connectSocket();
 
-    const accessToken = useSelector((state) => state.auth.accessToken);
     // Xử lý khi chọn file
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
@@ -95,7 +94,9 @@ function Post() {
                 const response = await api.post('/user/post', formData, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                 });
-                socket.emit('addnewPendingCar', response.data.data);
+                if (socket) {
+                    socket.emit('addnewPendingCar', response.data.data);
+                }
                 toast.success('Đăng tin bán xe thành công đang chờ admin duyệt!');
                 setTitle('');
                 setAddress('');
@@ -110,11 +111,7 @@ function Post() {
             }
         }
     };
-    useEffect(() => {
-        if (accessToken) {
-            socket = connectSocket();
-        }
-    }, [accessToken]);
+
     return (
         <div className={cx('post-page')}>
             <form className={cx('post-form')} onSubmit={handleSubmit}>

@@ -15,6 +15,7 @@ function App() {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+    const accessToken = useSelector((state) => state.auth.accessToken);
 
     useEffect(() => {
         const fetchAccessToken = async () => {
@@ -29,11 +30,13 @@ function App() {
             }
         };
         if (isLoggedIn) {
-            fetchAccessToken();
+            if (!accessToken) {
+                fetchAccessToken();
+            }
         }
 
         setLoading(false);
-    }, []);
+    }, [accessToken, isLoggedIn]);
 
     if (loading) {
         return <div className="loading">Đang tải...</div>;

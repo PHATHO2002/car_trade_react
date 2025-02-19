@@ -4,7 +4,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import DropdownMenu from '~/components/DropdownMenu/DropdownMenu';
+import { useNavigate } from 'react-router-dom';
 import api from '~/api/api';
+import { connectSocket } from '~/utils/socket';
 import {
     faMagnifyingGlass,
     faBell,
@@ -24,13 +26,17 @@ const cx = classNames.bind(styles);
 
 function Header() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const userData = useSelector((state) => state.auth.user);
-    const accessToken = useSelector((state) => state.auth.accessToken);
+
     const handleLogout = async () => {
         try {
             await api.post('/logout'); // Sử dụng instance API
-            dispatch(logout()); // Cập nhật Redux state
+            let socket = connectSocket();
+            socket.disconnect(); // Gọi hàm ngắt kết nối
+            dispatch(logout());
+            navigate('/');
         } catch (error) {
             console.error('Lỗi khi logout:', error);
             dispatch(logout());

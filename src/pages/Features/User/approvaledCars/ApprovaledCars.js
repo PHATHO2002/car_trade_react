@@ -1,14 +1,14 @@
 import classNames from 'classnames/bind';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import api from '~/api/api';
 import styles from './ApprovaledCars.module.scss';
-import { faCartShopping, faMessage } from '@fortawesome/free-solid-svg-icons';
+import { faCartShopping, faL, faMessage } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import { connectSocket } from '~/utils/socket';
-import store from '~/redux/store';
+import ChatBox from '~/components/ChatBox';
 const cx = classNames.bind(styles);
 
 const ApprovaledCars = () => {
@@ -17,12 +17,14 @@ const ApprovaledCars = () => {
     const [usersOnline, setUserOnline] = useState([]);
     const [changeCar, setChangeCar] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
+    const [receiverIdList, setReceiverIdList] = useState([]); // để render list chatbox
     const accessToken = useSelector((state) => state.auth.accessToken);
-    const user = useSelector((state) => state.auth.user);
+
     let socket;
+
     const itemsPerPage = 4; // Số xe hiển thị mỗi trang
 
-    const fetchPendingCars = async () => {
+    const fetchAproveldCars = async () => {
         try {
             const response = await api.post('/user/get-selling-car');
             const response2 = await api.post('/user/get-cart');
@@ -54,23 +56,26 @@ const ApprovaledCars = () => {
         const userOn = usersOnline.find((user) => user.userId === sellerId);
         return userOn;
     };
+    const handleOpenChatBox = (receiId, usename) => {
+        setReceiverIdList((prev) =>
+            prev.find((item) => item.receiId === receiId) ? prev : [...prev, { receiId, usename }],
+        );
+    };
+    const closeChatBox = (receiId) => {
+        setReceiverIdList((prev) => prev.filter((item) => item.receiId !== receiId));
+    };
+
     useEffect(() => {
         if (accessToken) {
-            fetchPendingCars();
+            fetchAproveldCars();
             socket = connectSocket();
-            socket.emit('user_connected', { userId: user.userId, socketId: socket.id });
             socket.on('users_online', (data) => {
-                setUserOnline(data);
-            });
-            socket.on('user_disconnected', (data) => {
                 setUserOnline(data);
             });
         }
         return () => {
             if (socket) {
-                socket.off('user_connected');
                 socket.off('users_online');
-                socket.disconnect();
             }
         };
     }, [changeCar, accessToken]);
@@ -81,6 +86,7 @@ const ApprovaledCars = () => {
     return (
         <div className={cx('pending-products')}>
             <h2>Bảng tin</h2>
+
             {carList.length === 0 ? (
                 <p>Không có sản phẩm nào.</p>
             ) : (
@@ -106,6 +112,9 @@ const ApprovaledCars = () => {
                                             <strong>Mô tả:</strong> {car.description}
                                         </p>
                                         <p>
+                                            <strong>người bán:</strong> {car.sellerName}
+                                        </p>
+                                        <p>
                                             <strong>Ngày đăng:</strong> {new Date(car.createdAt).toLocaleString()}
                                         </p>
                                         <div className={cx('actions')}>
@@ -124,8 +133,17 @@ const ApprovaledCars = () => {
                                             )}
 
                                             <div className={cx('chat')}>
-                                                <FontAwesomeIcon icon={faMessage} />
-                                                {handleUserOnline(usersOnline, car.sellerId) ? 'đang on' : 'đã off'}
+                                                <FontAwesomeIcon
+                                                    onClick={() => {
+                                                        handleOpenChatBox(car.sellerId, car.sellerName);
+                                                    }}
+                                                    icon={faMessage}
+                                                />
+                                                {handleUserOnline(usersOnline, car.sellerId) ? (
+                                                    <p>người bán đang on</p>
+                                                ) : (
+                                                    'đã off'
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -133,6 +151,18 @@ const ApprovaledCars = () => {
                             </li>
                         ))}
                     </ul>
+                    <div className={cx('listChatBox')}>
+                        {receiverIdList.map((item) => {
+                            return (
+                                <ChatBox
+                                    key={item.receiId}
+                                    receiverId={item.receiId}
+                                    username={item.usename}
+                                    closeChatBox={closeChatBox}
+                                />
+                            );
+                        })}
+                    </div>
 
                     {/* Phân trang */}
                     <ReactPaginate

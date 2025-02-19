@@ -29,9 +29,11 @@ const PendingProducts = () => {
         if (accessToken) {
             fetchPendingCars();
             socket = connectSocket();
-            socket.on('pendingCarNotification', (data) => {
-                setCarList((prevCarList) => [...prevCarList, data.carData]);
-            });
+            if (socket) {
+                socket.on('pendingCarNotification', (data) => {
+                    setCarList((prevCarList) => [...prevCarList, data.carData]);
+                });
+            }
         }
 
         return () => {
@@ -97,6 +99,9 @@ const PendingProducts = () => {
                                     </p>
                                     <p>
                                         <strong>Mô tả:</strong> {car.description}
+                                    </p>
+                                    <p>
+                                        <strong>người bán:</strong> {car.sellerName}
                                     </p>
                                     <p>
                                         <strong>Ngày đăng:</strong> {new Date(car.createdAt).toLocaleString()}
