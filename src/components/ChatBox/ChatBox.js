@@ -6,26 +6,32 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames/bind';
 import styles from './ChatBox.scss.module.scss';
-
+import { useRef } from 'react';
+import Button from '../Button';
 const cx = classNames.bind(styles);
 
 const ChatBox = ({ receiverId, closeChatBox, username }) => {
     const [messages, setMessages] = useState([]); // Lưu trữ danh sách tin nhắn
     const [newMessage, setNewMessage] = useState(''); // Lưu trữ tin nhắn mới
-
     const accessToken = useSelector((state) => state.auth.accessToken);
     const user = useSelector((state) => state.auth.user);
-
+    const messagesContainerRef = useRef(null);
     let socket = connectSocket();
     const handleSendMess = async () => {
         try {
             await api.post('/user/chat-two', { receiverId: receiverId, message: newMessage });
 
-            socket.emit('send_message', { senderId: user.userId, receiverId, message: newMessage });
+            socket.emit('send_message', {
+                senderId: user.userId,
+                receiverId,
+                message: newMessage,
+                username: user.username,
+            });
             socket.on('send_message_error', (data) => {
                 console.log(data);
             });
             fetchMess();
+            setNewMessage('');
         } catch (error) {
             console.log(error);
         }
@@ -61,20 +67,25 @@ const ChatBox = ({ receiverId, closeChatBox, username }) => {
             }
         };
     }, [accessToken]);
+    useEffect(() => {
+        if (messagesContainerRef.current) {
+            messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+        }
+    }, [messages]);
     return (
         <div className={cx('chat-box')}>
             <div className={cx('chat-header')}>
                 <h3>{username}</h3>
                 <div
+                    className={cx('close-icon')}
                     onClick={() => {
-                        console.log(receiverId);
                         closeChatBox(receiverId);
                     }}
                 >
                     <FontAwesomeIcon icon={faXmark} />
                 </div>
             </div>
-            <div className={cx('chat-messages')}>
+            <div className={cx('chat-messages')} ref={messagesContainerRef}>
                 {messages.map((mess, index) => {
                     const isCurrentUser = user.userId === mess.senderId;
 
@@ -100,7 +111,9 @@ const ChatBox = ({ receiverId, closeChatBox, username }) => {
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Type a message..."
                 />
-                <button onClick={handleSendMess}>Send</button>
+                <Button onClick={handleSendMess} primary>
+                    Send
+                </Button>
             </div>
         </div>
     );

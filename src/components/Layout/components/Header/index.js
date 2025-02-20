@@ -15,7 +15,9 @@ import {
     faSignOut,
     faUser,
     faAddressBook,
+    faNewspaper,
     faCartShopping,
+    faComments,
 } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
 import Button from '~/components/Button';
@@ -49,6 +51,10 @@ function Header() {
             icon: <FontAwesomeIcon className={cx('icon')} icon={faCartShopping} />,
         },
         {
+            label: 'Tin của bạn',
+            icon: <FontAwesomeIcon className={cx('icon')} icon={faNewspaper} />,
+        },
+        {
             label: 'Đăng xuất',
             onClick: handleLogout,
             icon: <FontAwesomeIcon className={cx('icon')} icon={faSignOut} />,
@@ -79,6 +85,9 @@ function Header() {
                     </div>
                 </div>
                 <div className={cx('actions')}>
+                    <div className={cx('mess-notification')}>
+                        <FontAwesomeIcon icon={faComments} />
+                    </div>
                     <div className={cx('notification')}>
                         <FontAwesomeIcon icon={faBell} />
                     </div>
@@ -119,9 +128,6 @@ function Header() {
                     </div>
                 </div>
                 <div className={cx('actions')}>
-                    <div className={cx('notification')}>
-                        <FontAwesomeIcon icon={faBell} />
-                    </div>
                     <Link className={cx('login')} to="/login">
                         <FontAwesomeIcon icon={faRightToBracket} />
                         <span>Đăng nhập</span>

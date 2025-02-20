@@ -43,7 +43,9 @@ const connectSocket = () => {
             socket.emit('user_connected', { userId: user.userId, socketId: socket.id });
             console.log('✅ Socket connected:', socket.id);
         });
-
+        socket.on('disconnect', (reason) => {
+            console.warn('⚠️ Socket disconnected:', reason);
+        });
         socket.on('connect_error', async (err) => {
             if (err.message.includes('TokenExpiredError')) {
                 try {
@@ -64,9 +66,5 @@ const connectSocket = () => {
     }
     return socket;
 };
-store.subscribe(() => {
-    if (socket) {
-        socket.auth.token = store.getState().auth.accessToken;
-    }
-});
+
 export { connectSocket };
