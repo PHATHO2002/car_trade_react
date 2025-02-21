@@ -92,7 +92,6 @@ const UserHomePage = () => {
             });
             socket.on('receive_message', (data) => {
                 const { senderId, username } = data;
-
                 handleOpenChatBox(senderId, username);
             }); //automatically generated chat box when a message arrives
         }
@@ -114,7 +113,7 @@ const UserHomePage = () => {
                 <>
                     <ul className={cx('product-list')}>
                         {currentItems.map((car, index) =>
-                            car.sellerId === user.userId ? (
+                            car.sellerId === user?.userId ? (
                                 ''
                             ) : (
                                 <li key={index}>

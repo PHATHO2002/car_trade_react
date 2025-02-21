@@ -43,6 +43,10 @@ const ChatBox = ({ receiverId, closeChatBox, username }) => {
         try {
             const response = await api.post('/user/get-message', { receiverId: receiverId });
             let messInRp = response.data.data;
+            let unReadedMess = messInRp.filter((mess) => {
+                return mess.isRead == false;
+            });
+            await api.post('/user/mark-readed-mess', { unReadedMess });
             setMessages(messInRp);
         } catch (error) {
             console.log(error);

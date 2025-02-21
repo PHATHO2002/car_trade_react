@@ -6,7 +6,6 @@ import { publicRoutes, privateRoutes, adminRoutes } from '~/routes';
 import { useSelector } from 'react-redux';
 import { DefaultLayout } from '~/components/Layout';
 import { logout } from '~/redux/slices/authSlice';
-import { connectSocket } from './utils/socket';
 import ProtectedRouteLogin from './components/ProtectedRoute/ProtectedRouteLogin';
 import ProtectedRouteAdmin from './components/ProtectedRoute/ProtectedRouteAdmin';
 import api from './api/api';
@@ -32,11 +31,8 @@ function App() {
         if (isLoggedIn) {
             if (!accessToken) {
                 fetchAccessToken();
-            } else {
-                // connectSocket();
             }
         }
-
         setLoading(false);
     }, [accessToken, isLoggedIn]);
 

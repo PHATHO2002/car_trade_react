@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import DropdownMenu from '~/components/DropdownMenu/DropdownMenu';
+import ChatPartnerList from '~/components/ChatList/ChatList';
 import { useNavigate } from 'react-router-dom';
 import api from '~/api/api';
 import { connectSocket } from '~/utils/socket';
@@ -86,7 +87,7 @@ function Header() {
                 </div>
                 <div className={cx('actions')}>
                     <div className={cx('mess-notification')}>
-                        <FontAwesomeIcon icon={faComments} />
+                        <ChatPartnerList />
                     </div>
                     <div className={cx('notification')}>
                         <FontAwesomeIcon icon={faBell} />
