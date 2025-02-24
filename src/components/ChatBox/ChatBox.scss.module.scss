@@ -28,10 +28,10 @@
         .message_right {
             background-color: var(--primary);
             color: rgb(243, 237, 237);
-            align-self: flex-start;
+            align-self: flex-end;
         }
         .message_left {
-            align-self: flex-end;
+            align-self: flex-start;
             background-color: rgb(231, 223, 223);
             color: rgb(93, 93, 95);
         }

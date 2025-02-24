@@ -89,10 +89,6 @@ function Header() {
                     <div className={cx('mess-notification')}>
                         <ChatPartnerList />
                     </div>
-                    <div className={cx('notification')}>
-                        <FontAwesomeIcon icon={faBell} />
-                    </div>
-
                     <div className={cx('profile')}>
                         <div className={cx('profile-icon')}>
                             <FontAwesomeIcon icon={faUser} />

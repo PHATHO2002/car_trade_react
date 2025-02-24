@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCaretLeft, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames/bind';
 import styles from './DropdownMenu.scss.module.scss';
 
@@ -30,7 +31,7 @@ const DropdownMenu = ({ title = '', items = [] }) => {
     return (
         <div className={cx('dropdown')} ref={menuRef}>
             <button className={cx('dropdown-button')} onClick={toggleMenu}>
-                {title} ▼
+                {isOpen ? <FontAwesomeIcon icon={faCaretDown} /> : <FontAwesomeIcon icon={faCaretLeft} />}
             </button>
             {isOpen && (
                 <ul className={cx('dropdown-menu')}>

@@ -4,10 +4,11 @@
     --search-top-spacer: 9px;
     --search-button-width: 52px;
     width: 100%;
-    height: var(--default-layout-header-height, 60px);
+    min-height: var(--default-layout-header-height, 60px);
     box-shadow: 0px 1px 1px rgb(0 0 0 / 12%);
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 .inner {
     height: 100%;
@@ -75,10 +76,6 @@
     transform: translateY(-50%);
     &:hover {
         cursor: pointer;
-        background-color: rgba(22, 24, 35, 0.03);
-    }
-    &:active {
-        background-color: rgba(22, 24, 35, 0.06);
     }
 }
 .actions {
@@ -99,4 +96,16 @@
 .actions > * {
     padding: 0 10px 0 10px;
     font-size: 20px;
+}
+@media (max-width: 768px) {
+    .inner {
+        flex-direction: column; // Chuyển thành dạng dọc trên tablet
+        align-items: center;
+    }
+    .search {
+        width: 90%; // Ô tìm kiếm full width trên mobile
+    }
+    .actions {
+        margin-top: 10px; // Tạo khoảng cách giữa search và actions
+    }
 }
