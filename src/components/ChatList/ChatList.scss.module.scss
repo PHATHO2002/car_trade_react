@@ -1,4 +1,4 @@
-.ChatPartnerList {
+.wraper {
     position: relative;
     .chatPartIcon {
         position: relative;
@@ -16,7 +16,7 @@
             color: rgb(248, 237, 237);
         }
     }
-    .container {
+    .inner {
         position: absolute;
         width: 300px;
         background-color: rgb(229, 229, 204);

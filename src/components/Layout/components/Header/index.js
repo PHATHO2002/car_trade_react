@@ -20,6 +20,7 @@ import {
     faCartShopping,
     faComments,
 } from '@fortawesome/free-solid-svg-icons';
+import Search from '~/components/Search/search';
 import { useSelector } from 'react-redux';
 import Button from '~/components/Button';
 import styles from './Header.module.scss';
@@ -53,6 +54,7 @@ function Header() {
         },
         {
             label: 'Tin của bạn',
+            to: '/user/own-post',
             icon: <FontAwesomeIcon className={cx('icon')} icon={faNewspaper} />,
         },
         {
@@ -80,10 +82,7 @@ function Header() {
                     <img src="https://muaban.net/logo/muaban.svg" alt="Mua bán bất động sản" />
                 </div>
                 <div className={cx('search')}>
-                    <input></input>
-                    <div className={cx('search-btn')}>
-                        <FontAwesomeIcon icon={faMagnifyingGlass} />
-                    </div>
+                    <Search />
                 </div>
                 <div className={cx('actions')}>
                     <div className={cx('mess-notification')}>
@@ -119,10 +118,7 @@ function Header() {
                     <img src="https://muaban.net/logo/muaban.svg" alt="Mua bán bất động sản" />
                 </div>
                 <div className={cx('search')}>
-                    <input></input>
-                    <div className={cx('search-btn')}>
-                        <FontAwesomeIcon icon={faMagnifyingGlass} />
-                    </div>
+                    <Search />
                 </div>
                 <div className={cx('actions')}>
                     <Link className={cx('login')} to="/login">

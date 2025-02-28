@@ -106,7 +106,7 @@ const UserHomePage = () => {
     const currentItems = carList.slice(offset, offset + itemsPerPage);
 
     return (
-        <div className={cx('pending-products')}>
+        <div className={cx('wraper')}>
             {carList.length === 0 ? (
                 <p>Empty Bảng tin</p>
             ) : (

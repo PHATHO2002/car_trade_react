@@ -1,5 +1,12 @@
 .wraper {
+    overflow: hidden;
+    text-overflow: ellipsis;
     margin-top: 50px;
+    h3 {
+        color: var(--primary);
+        padding: 10px;
+        text-align: center;
+    }
     .product-list {
         list-style: none;
         padding: 0;
@@ -34,22 +41,6 @@
                     color: #717375;
                     cursor: pointer;
                 }
-                p {
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                }
-                .online {
-                    color: green;
-                    display: flex;
-                    align-items: center;
-                    gap: 2px;
-                }
-                .offline {
-                    color: #c7a8a8;
-                    display: flex;
-                    align-items: center;
-                    gap: 2px;
-                }
             }
             .actions {
                 display: flex;
@@ -58,15 +49,6 @@
 
                 div {
                     cursor: pointer;
-                }
-                .cart {
-                    color: #778ca1;
-                }
-                .chat {
-                    color: #2583e1;
-                    display: flex;
-                    gap: 5px;
-                    justify-content: center;
                 }
             }
 
@@ -90,13 +72,6 @@
                     object-fit: cover;
                     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
                 }
-            }
-
-            .btn-accept-reject {
-                display: flex;
-                gap: 10px;
-                justify-content: flex-end;
-                margin-top: 10px;
             }
         }
     }
@@ -152,14 +127,5 @@
                 pointer-events: none;
             }
         }
-    }
-    .listChatBox {
-        display: flex;
-        gap: 10px;
-        position: fixed;
-        top: 70%;
-        left: 70%;
-        transform: translate(-50%, -50%);
-        z-index: 9999;
     }
 }

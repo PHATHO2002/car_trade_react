@@ -61,13 +61,13 @@ const ChatPartnerList = () => {
         }
     }, [accessToken]);
     return (
-        <div className={cx('ChatPartnerList')}>
+        <div className={cx('wraper')}>
             <div onClick={toggleMenu} className={cx('chatPartIcon')}>
                 <FontAwesomeIcon icon={faComment} />
                 <span className={cx('quantity-unread')}>{countUnread}</span>
             </div>
             {isOpen ? (
-                <div className={cx('container')} ref={contentRef}>
+                <div className={cx('inner')} ref={contentRef}>
                     <h2 className={cx('title')}>Đoạn chat</h2>
                     <ul className={cx('list-partner')}>
                         {listPartner.map((partner) => (
