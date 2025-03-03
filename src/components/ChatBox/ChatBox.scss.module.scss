@@ -2,7 +2,6 @@
     width: 300px;
 
     .chat-header {
-        display: flex;
         justify-content: space-between;
         background-color: var(--primary);
         color: aliceblue;
@@ -16,9 +15,6 @@
         height: 200px;
         overflow: auto;
         border: 1px solid rgb(236, 231, 231);
-        display: flex;
-        flex-direction: column; /* Giữ thứ tự từ trên xuống dưới */
-        gap: 8px;
         background-color: rgb(232, 236, 239);
         div {
             border-radius: 3px;
@@ -38,7 +34,7 @@
     }
     .chat-input {
         padding: 10px 20px;
-        display: flex;
+        flex-wrap: nowrap;
         border: 1px solid rgb(236, 231, 231);
         color: aliceblue;
     }

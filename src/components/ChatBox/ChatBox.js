@@ -78,7 +78,7 @@ const ChatBox = ({ receiverId, closeChatBox, username }) => {
     }, [messages]);
     return (
         <div className={cx('chat-box')}>
-            <div className={cx('chat-header')}>
+            <div className={cx('chat-header', 'row')}>
                 <h3>{username}</h3>
                 <div
                     className={cx('close-icon')}
@@ -89,7 +89,7 @@ const ChatBox = ({ receiverId, closeChatBox, username }) => {
                     <FontAwesomeIcon icon={faXmark} />
                 </div>
             </div>
-            <div className={cx('chat-messages')} ref={messagesContainerRef}>
+            <div className={cx('chat-messages', 'flex-column')} ref={messagesContainerRef}>
                 {messages.map((mess, index) => {
                     const isCurrentUser = user.userId === mess.senderId;
 
@@ -108,7 +108,7 @@ const ChatBox = ({ receiverId, closeChatBox, username }) => {
                     );
                 })}
             </div>
-            <div className={cx('chat-input')}>
+            <div className={cx('chat-input', 'row')}>
                 <input
                     type="text"
                     value={newMessage}

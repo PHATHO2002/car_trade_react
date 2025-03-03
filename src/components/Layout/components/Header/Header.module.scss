@@ -29,23 +29,21 @@
             padding: 0 5px;
         }
         .profile-role {
-            font-size: 10px;
+            font-size: 1rem;
             color: red;
         }
     }
 }
 .actions > * {
-    padding: 0 10px 0 10px;
-    font-size: 20px;
+    padding: 0 1rem 0 1rem;
+    font-size: 2rem;
 }
 @media (max-width: 768px) {
     .inner {
         flex-direction: column; // Chuyển thành dạng dọc trên tablet
         align-items: center;
     }
-    .search {
-        width: 90%; // Ô tìm kiếm full width trên mobile
-    }
+
     .actions {
         margin-top: 10px; // Tạo khoảng cách giữa search và actions
     }
