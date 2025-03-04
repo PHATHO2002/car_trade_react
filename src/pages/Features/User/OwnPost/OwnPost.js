@@ -89,45 +89,44 @@ const OwnPost = () => {
                                     </span>
                                     <img src={car.images[0]} alt={car.title} />
                                 </div>
-                                <div className={cx('body')}>
-                                    <div className={cx('information')}>
-                                        <h4 className={cx('title')}>{car.title}</h4>
-                                        <p className={cx('price')}>
-                                            <strong>Giá:</strong> {car.price.toLocaleString('de-DE')} VND
-                                        </p>
-                                        <p>
-                                            <strong>Địa chỉ người bán:</strong> {car.address}
-                                        </p>
 
-                                        <p>
-                                            <strong>Mô tả:</strong> {car.description}
-                                        </p>
-                                        <p>
-                                            <strong>Trạng thái:</strong> {car.status}
-                                        </p>
-                                        <p>
-                                            <strong>Ngày đăng:</strong> {new Date(car.createdAt).toLocaleString()}
-                                        </p>
+                                <div className={cx('information')}>
+                                    <h4 className={cx('title')}>{car.title}</h4>
+                                    <p className={cx('price')}>
+                                        <strong>Giá:</strong> {car.price.toLocaleString('de-DE')} VND
+                                    </p>
+                                    <p>
+                                        <strong>Địa chỉ người bán:</strong> {car.address}
+                                    </p>
 
-                                        <div className={cx('actions')}>
-                                            <div
+                                    <p>
+                                        <strong>Mô tả:</strong> {car.description}
+                                    </p>
+                                    <p>
+                                        <strong>Trạng thái:</strong> {car.status}
+                                    </p>
+                                    <p>
+                                        <strong>Ngày đăng:</strong> {new Date(car.createdAt).toLocaleString()}
+                                    </p>
+
+                                    <div className={cx('actions', 'row')}>
+                                        <div
+                                            onClick={() => {
+                                                deletePost(car._id);
+                                            }}
+                                            className={cx('delete')}
+                                        >
+                                            <FontAwesomeIcon icon={faTrash} />
+                                        </div>
+                                        <div className={cx('sold')}>
+                                            <Button
                                                 onClick={() => {
-                                                    deletePost(car._id);
+                                                    confirmIsSold(car._id);
                                                 }}
-                                                className={cx('delete')}
-                                            >
-                                                <FontAwesomeIcon icon={faTrash} />
-                                            </div>
-                                            <div className={cx('sold')}>
-                                                <Button
-                                                    onClick={() => {
-                                                        confirmIsSold(car._id);
-                                                    }}
-                                                    small
-                                                    primary
-                                                    children={'đã bán ?'}
-                                                />{' '}
-                                            </div>
+                                                small
+                                                primary
+                                                children={'đã bán ?'}
+                                            />{' '}
                                         </div>
                                     </div>
                                 </div>

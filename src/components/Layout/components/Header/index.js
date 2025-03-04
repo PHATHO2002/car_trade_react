@@ -9,8 +9,6 @@ import { useNavigate } from 'react-router-dom';
 import api from '~/api/api';
 import { connectSocket } from '~/utils/socket';
 import {
-    faMagnifyingGlass,
-    faBell,
     faRightToBracket,
     faArrowUpFromBracket,
     faSignOut,
@@ -18,14 +16,15 @@ import {
     faAddressBook,
     faNewspaper,
     faCartShopping,
-    faComments,
+    faHouse,
+    faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons';
 import Search from '~/components/Search/search';
 import { useSelector } from 'react-redux';
 import Button from '~/components/Button';
 import styles from './Header.module.scss';
 import { logout } from '~/redux/slices/authSlice';
-
+import { userMenuItems, adminMenuItems } from '~/staticData';
 const cx = classNames.bind(styles);
 
 function Header() {
@@ -46,35 +45,7 @@ function Header() {
             dispatch(logout());
         }
     };
-    const userMenuItems = [
-        {
-            label: 'Giỏ hàng',
-            to: '/user/cart',
-            icon: <FontAwesomeIcon className={cx('icon')} icon={faCartShopping} />,
-        },
-        {
-            label: 'Tin của bạn',
-            to: '/user/own-post',
-            icon: <FontAwesomeIcon className={cx('icon')} icon={faNewspaper} />,
-        },
-        {
-            label: 'Đăng xuất',
-            onClick: handleLogout,
-            icon: <FontAwesomeIcon className={cx('icon')} icon={faSignOut} />,
-        },
-    ];
-    const adminMenuItems = [
-        {
-            label: 'Xe chờ duyệt',
-            to: '/admin/get-pendingCars',
-            icon: <FontAwesomeIcon className={cx('icon')} icon={faAddressBook} />,
-        },
-        {
-            label: 'Đăng xuất',
-            onClick: handleLogout,
-            icon: <FontAwesomeIcon className={cx('icon')} icon={faSignOut} />,
-        },
-    ];
+
     return isLoggedIn ? (
         <div className={cx('wrapper')}>
             <div className={cx('inner')}>
@@ -85,14 +56,21 @@ function Header() {
                     <Search />
                 </div>
                 <div className={cx('actions')}>
+                    <div className={cx('home')}>
+                        <Link to="/">
+                            <FontAwesomeIcon icon={faHouse} />
+                        </Link>
+                    </div>
                     <div className={cx('mess-notification')}>
                         <ChatPartnerList />
                     </div>
-                    <div className={cx('profile')}>
-                        <div className={cx('profile-icon')}>
-                            <FontAwesomeIcon icon={faUser} />
-                        </div>
-                        <span className={cx('profile-name')}>{userData.username}</span>
+                    <div className={cx('personal')}>
+                        <Link to="/user/Personal">
+                            <div className={cx('profile')}>
+                                <FontAwesomeIcon icon={faUser} />
+                                <span>{userData.username}</span>
+                            </div>
+                        </Link>
                         {userData.role === 'admin' ? (
                             <div>
                                 <DropdownMenu title={userData.role} items={adminMenuItems} />
@@ -108,6 +86,32 @@ function Header() {
                             Đăng Tin
                         </Button>
                     </div>
+                </div>
+                <div className={cx('bottom-header')}>
+                    {/* //appeared when this web on mobile */}
+                    <ul className={cx('bottom-menu')}>
+                        <li>
+                            <Link to="/">
+                                <FontAwesomeIcon icon={faHouse} />
+                            </Link>
+                        </li>
+                        <li>
+                            <ChatPartnerList />
+                        </li>
+                        <li>
+                            <FontAwesomeIcon icon={faMagnifyingGlass} />
+                        </li>
+                        <li>
+                            <Link to="/user/post">
+                                <FontAwesomeIcon icon={faArrowUpFromBracket} />
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/user/Personal">
+                                <FontAwesomeIcon icon={faUser} />
+                            </Link>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -125,12 +129,6 @@ function Header() {
                         <FontAwesomeIcon icon={faRightToBracket} />
                         <span>Đăng nhập</span>
                     </Link>
-
-                    <div className={cx('post')}>
-                        <Button rightIcon={<FontAwesomeIcon icon={faArrowUpFromBracket} />} to="/login" primary>
-                            Đăng Tin
-                        </Button>
-                    </div>
                 </div>
             </div>
         </div>

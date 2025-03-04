@@ -115,7 +115,7 @@ function Post() {
     return (
         <div className={cx('post-page')}>
             <form className={cx('post-form')} onSubmit={handleSubmit}>
-                <h2>Đăng tin bán xe</h2>
+                <h2>Đăng tin </h2>
                 <div className={cx('form-group')}>
                     <label htmlFor="title">Tiêu đề:</label>
                     <input

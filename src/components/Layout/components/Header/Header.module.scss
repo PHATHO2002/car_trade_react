@@ -9,42 +9,65 @@
     display: flex;
     justify-content: center;
     align-items: center;
-}
-.inner {
-    height: 100%;
-    width: var(--default-layout-width);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.actions {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    .profile {
-        cursor: default !important  ;
-        display: flex;
-        .profile-name {
-            padding: 0 5px;
-        }
-        .profile-role {
-            font-size: 1rem;
-            color: red;
-        }
-    }
-}
-.actions > * {
-    padding: 0 1rem 0 1rem;
-    font-size: 2rem;
-}
-@media (max-width: 768px) {
     .inner {
-        flex-direction: column; // Chuyển thành dạng dọc trên tablet
+        height: 100%;
+        width: var(--default-layout-width);
+        display: flex;
         align-items: center;
+        justify-content: space-between;
+        .actions {
+            display: flex;
+            align-items: center;
+            .personal {
+                display: flex;
+                .profile {
+                    padding: 0 5px;
+                }
+            }
+        }
+        .actions > * {
+            cursor: pointer;
+            padding: 0 1rem 0 1rem;
+            font-size: 2rem;
+        }
+        .bottom-header {
+            display: none;
+            width: 100%;
+            height: var(--default-layout-header-height);
+            background-color: rgb(192, 196, 199);
+            .bottom-menu {
+                list-style-type: none;
+                font-size: 2rem;
+                width: var(--default-layout-width);
+                padding: 2rem;
+                margin: auto;
+                display: flex;
+                justify-content: space-between;
+            }
+        }
     }
+}
 
-    .actions {
-        margin-top: 10px; // Tạo khoảng cách giữa search và actions
+@media (max-width: 768px) {
+    .wrapper {
+        .inner {
+            .logo {
+                margin: auto;
+            }
+            .search {
+                display: none;
+            }
+            .actions {
+                display: none;
+            }
+            .bottom-header {
+                display: block;
+                position: fixed;
+                bottom: 0;
+                left: 50%;
+                transform: translate(-50%);
+                z-index: 999;
+            }
+        }
     }
 }

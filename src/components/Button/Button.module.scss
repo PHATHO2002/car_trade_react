@@ -40,9 +40,9 @@
 }
 
 .primary {
-    color: var(--white);
-    background-color: var(--primary);
-    border-color: var(--primary);
+    color: var(--white) !important;
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
 
     &:hover {
         border-color: var(--primary);

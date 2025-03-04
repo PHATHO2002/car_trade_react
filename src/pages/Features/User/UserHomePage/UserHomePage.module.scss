@@ -1,6 +1,6 @@
 .wraper {
-    margin-top: 5rem;
-
+    margin: var(--default-layout-header-height) 0;
+    width: 600px;
     .product-list {
         list-style: none;
 
@@ -146,13 +146,19 @@
     }
 }
 @media (max-width: 768px) {
-    li {
-        flex-direction: column;
-        .information {
-            max-width: 100% !important;
-        }
-        .images {
-            width: 100% !important;
+    .wraper {
+        max-width: 100%;
+        li {
+            flex-direction: column;
+            .information {
+                max-width: 100% !important;
+            }
+            .images {
+                width: 100% !important;
+                img {
+                    height: 200px !important    ;
+                }
+            }
         }
     }
 }

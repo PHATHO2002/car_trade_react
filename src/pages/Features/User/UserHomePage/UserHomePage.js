@@ -104,90 +104,89 @@ const UserHomePage = () => {
 
     const offset = currentPage * itemsPerPage;
     const currentItems = carList.slice(offset, offset + itemsPerPage);
-
+    let newCurrentItems = [];
+    newCurrentItems = currentItems.filter((item) => {
+        return !(item.sellerId === user?.userId);
+    });
     return (
         <div className={cx('wraper')}>
-            {carList.length === 0 ? (
+            {newCurrentItems.length === 0 ? (
                 <p>Empty Bảng tin</p>
             ) : (
                 <>
                     <ul className={cx('product-list', 'flex-column')}>
-                        {currentItems.map((car, index) =>
-                            car.sellerId === user?.userId ? (
-                                ''
-                            ) : (
-                                <li key={index}>
-                                    <div
-                                        className={cx('images')}
-                                        onClick={() => {
-                                            handleOpenImages(car.images);
-                                        }}
-                                    >
-                                        <span className={cx('img-quantity')}>
-                                            {' '}
-                                            <FontAwesomeIcon icon={faImages} />
-                                        </span>
-                                        <img src={car.images[0]} alt={car.title} />
-                                    </div>
+                        {newCurrentItems.map((car, index) => (
+                            <li key={index}>
+                                <div
+                                    className={cx('images')}
+                                    onClick={() => {
+                                        handleOpenImages(car.images);
+                                    }}
+                                >
+                                    <span className={cx('img-quantity')}>
+                                        {' '}
+                                        <FontAwesomeIcon icon={faImages} />
+                                    </span>
+                                    <img src={car.images[0]} alt={car.title} />
+                                </div>
 
-                                    <div className={cx('information', 'flex-column')}>
-                                        <h3 className={cx('title')}>{car.title}</h3>
-                                        <p className={cx('price')}>
-                                            <strong>Giá:</strong> {handlePrice(car.price)} VND
-                                        </p>
-                                        <p>
-                                            <strong>Địa chỉ người bán:</strong> {car.address}
-                                        </p>
+                                <div className={cx('information', 'flex-column')}>
+                                    <h3 className={cx('title')}>{car.title}</h3>
+                                    <p className={cx('price')}>
+                                        <strong>Giá:</strong> {handlePrice(car.price)} VND
+                                    </p>
+                                    <p>
+                                        <strong>Địa chỉ người bán:</strong> {car.address}
+                                    </p>
 
-                                        <p>
-                                            <strong>Mô tả:</strong> {car.description}
+                                    <p>
+                                        <strong>Mô tả:</strong> {car.description}
+                                    </p>
+                                    <p>
+                                        <strong>người bán:</strong> {car.sellerName}
+                                    </p>
+                                    <p>
+                                        <strong>Ngày đăng:</strong> {new Date(car.createdAt).toLocaleString()}
+                                    </p>
+                                    {handleUserOnline(usersOnline, car.sellerId) ? (
+                                        <p className={cx('online')}>
+                                            <FontAwesomeIcon icon={faCircleCheck} /> người bán online
                                         </p>
-                                        <p>
-                                            <strong>người bán:</strong> {car.sellerName}
+                                    ) : (
+                                        <p className={cx('offline')}>
+                                            <FontAwesomeIcon icon={faCircleXmark} /> người bán offline
                                         </p>
-                                        <p>
-                                            <strong>Ngày đăng:</strong> {new Date(car.createdAt).toLocaleString()}
-                                        </p>
-                                        {handleUserOnline(usersOnline, car.sellerId) ? (
-                                            <p className={cx('online')}>
-                                                <FontAwesomeIcon icon={faCircleCheck} /> người bán online
-                                            </p>
+                                    )}
+                                    <div className={cx('actions', 'row')}>
+                                        {cartIdList.includes(car._id) ? (
+                                            <p>đã thêm vào giỏ hàng</p>
                                         ) : (
-                                            <p className={cx('offline')}>
-                                                <FontAwesomeIcon icon={faCircleXmark} /> người bán offline
-                                            </p>
-                                        )}
-                                        <div className={cx('actions', 'row')}>
-                                            {cartIdList.includes(car._id) ? (
-                                                <p>đã thêm vào giỏ hàng</p>
-                                            ) : (
-                                                <div
-                                                    className={cx('cart')}
-                                                    onClick={() => {
-                                                        handAddToCart(car._id);
-                                                        setChangeCar(car._id);
-                                                    }}
-                                                >
-                                                    <FontAwesomeIcon icon={faCartShopping} />
-                                                </div>
-                                            )}
-
-                                            <div className={cx('chat')}>
-                                                <p>
-                                                    {' '}
-                                                    <FontAwesomeIcon
-                                                        onClick={() => {
-                                                            handleOpenChatBox(car.sellerId, car.sellerName);
-                                                        }}
-                                                        icon={faMessage}
-                                                    />
-                                                </p>
+                                            <div
+                                                className={cx('cart')}
+                                                onClick={() => {
+                                                    handAddToCart(car._id);
+                                                    setChangeCar(car._id);
+                                                }}
+                                            >
+                                                <FontAwesomeIcon icon={faCartShopping} />
                                             </div>
+                                        )}
+
+                                        <div className={cx('chat')}>
+                                            <p>
+                                                {' '}
+                                                <FontAwesomeIcon
+                                                    onClick={() => {
+                                                        handleOpenChatBox(car.sellerId, car.sellerName);
+                                                    }}
+                                                    icon={faMessage}
+                                                />
+                                            </p>
                                         </div>
                                     </div>
-                                </li>
-                            ),
-                        )}
+                                </div>
+                            </li>
+                        ))}
                     </ul>
                     <div className={cx('listChatBox')}>
                         {receiverIdList.slice(-2).map((item) => (

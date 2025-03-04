@@ -19,10 +19,12 @@
     .inner {
         position: absolute;
         width: 300px;
-        background-color: rgb(229, 229, 204);
+        background-color: rgb(229, 229, 221);
         z-index: 999;
         top: 50px;
         border-radius: 5px;
+        border: 1px solid #ddd;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
         .list-partner {
             list-style: none;
             li {
