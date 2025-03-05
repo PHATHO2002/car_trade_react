@@ -116,7 +116,7 @@ const UserHomePage = () => {
                 <>
                     <ul className={cx('product-list', 'flex-column')}>
                         {newCurrentItems.map((car, index) => (
-                            <li key={index}>
+                            <li className={cx('row-nowrap')} key={index}>
                                 <div
                                     className={cx('images')}
                                     onClick={() => {
@@ -188,7 +188,7 @@ const UserHomePage = () => {
                             </li>
                         ))}
                     </ul>
-                    <div className={cx('listChatBox')}>
+                    <div className={cx('listChatBox', 'row-nowrap')}>
                         {receiverIdList.slice(-2).map((item) => (
                             <ChatBox
                                 key={item.receiId}

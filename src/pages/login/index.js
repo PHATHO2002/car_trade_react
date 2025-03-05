@@ -28,7 +28,6 @@ function Login() {
             const response = await api.post('/login', { username, password }); // Sử dụng instance API
             const accessToken = response.data.data.accessToken;
             const decodedUser = jwtDecode(accessToken);
-
             navigate('/');
             dispatch(login({ decodedUser, accessToken })); // Cập nhật Redux state
         } catch (error) {

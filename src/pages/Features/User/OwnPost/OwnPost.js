@@ -74,9 +74,9 @@ const OwnPost = () => {
             ) : (
                 <>
                     <h3> Post của bạn</h3>
-                    <ul className={cx('product-list')}>
+                    <ul className={cx('product-list', 'flex-column')}>
                         {currentItems.map((car, index) => (
-                            <li key={index}>
+                            <li className={cx('row-nowrap')} key={index}>
                                 <div
                                     className={cx('images')}
                                     onClick={() => {

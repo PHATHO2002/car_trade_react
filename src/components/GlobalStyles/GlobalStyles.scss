@@ -36,11 +36,18 @@ input,
     flex-wrap: wrap;
     gap: 1.6rem; /* Khoảng cách giữa các cột */
 }
+.row-nowrap {
+    display: flex;
+    flex-wrap: nowrap; /* Ngăn chặn xuống dòng */
+    gap: 1.6rem;
+}
 
 .col {
     flex: 1; /* Các cột có độ rộng bằng nhau */
 }
-
+.col-full {
+    flex-grow: 1; /* Cột này sẽ chiếm hết phần còn lại */
+}
 .col-1 {
     flex: 0 0 calc(100% / 12 * 1);
 }

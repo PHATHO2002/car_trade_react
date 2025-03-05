@@ -1,13 +1,8 @@
-import { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import DropdownMenu from '~/components/DropdownMenu/DropdownMenu';
 import ChatPartnerList from '~/components/ChatList/ChatList';
-import { useNavigate } from 'react-router-dom';
-import api from '~/api/api';
-import { connectSocket } from '~/utils/socket';
 import {
     faRightToBracket,
     faArrowUpFromBracket,
@@ -23,29 +18,14 @@ import Search from '~/components/Search/search';
 import { useSelector } from 'react-redux';
 import Button from '~/components/Button';
 import styles from './Header.module.scss';
-import { logout } from '~/redux/slices/authSlice';
-import { userMenuItems, adminMenuItems } from '~/staticData';
+import { useUserMenuItems, useAdminMenuItems } from '~/staticDataHook';
 const cx = classNames.bind(styles);
 
 function Header() {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const userData = useSelector((state) => state.auth.user);
-
-    const handleLogout = async () => {
-        try {
-            await api.post('/logout'); // Sử dụng instance API
-            let socket = connectSocket();
-            socket.disconnect(); // Gọi hàm ngắt kết nối
-            dispatch(logout());
-            navigate('/');
-        } catch (error) {
-            console.error('Lỗi khi logout:', error);
-            dispatch(logout());
-        }
-    };
-
+    const userMenuItems = useUserMenuItems();
+    const adminMenuItems = useAdminMenuItems();
     return isLoggedIn ? (
         <div className={cx('wrapper')}>
             <div className={cx('inner')}>

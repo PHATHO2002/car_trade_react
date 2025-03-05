@@ -1,41 +1,65 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import api from '~/api/api';
 import classNames from 'classnames/bind';
 import styles from './Personal.module.scss';
-import { userMenuItems } from '~/staticData';
+import DropdownMenu from '~/components/DropdownMenu/DropdownMenu';
+import { useUserMenuItems, useAdminMenuItems } from '~/staticDataHook';
 import { Link } from 'react-router-dom';
 const cx = classNames.bind(styles);
 const Personal = () => {
-    const userData = useSelector((state) => state.auth.user);
+    const [userData, setUserData] = useState({});
+    const userMenuItems = useUserMenuItems();
+    const getUserData = async () => {
+        try {
+            const response = await api.get('/user/detail');
+            setUserData(response.data.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    useEffect(() => {
+        getUserData();
+    }, []);
 
     return (
-        <div className={cx('wraper')}>
-            <div className={cx('head', '.flex-column')}>
-                <img src="https://muaban.net/images/account/avatar-default.png"></img>
-                <h3>{userData.username}</h3>
-                <p>Vai trò {userData.role} </p>
+        <div className={cx('wraper', 'row-nowrap')}>
+            <div className={cx('col-3', '.flex-column')}>
+                <div className={cx('resume')}>
+                    <img src="https://muaban.net/images/account/avatar-default.png"></img>
+                    <p>
+                        tham gia từ{' '}
+                        {new Date(userData.createdAt).toLocaleDateString('vi-VN', {
+                            month: 'long',
+                            year: 'numeric',
+                        })}{' '}
+                    </p>
+                </div>
+                <DropdownMenu title={'Tiện ích'} items={userMenuItems} />
             </div>
-            <div className={cx('body')}>
-                <ul className={cx('actions')}>
-                    {userMenuItems.map((item, index) => (
-                        <li key={index} onClick={item.onClick ? item.onClick : undefined}>
-                            {item.to ? (
-                                <Link className={cx('link')} to={item.to}>
-                                    {item.icon && <span className={cx('icon')}>{item.icon}</span>}
-                                    {item.label}
-                                </Link>
-                            ) : (
-                                <span>
-                                    {' '}
-                                    {item.icon && <span className={cx('icon')}>{item.icon}</span>}
-                                    {item.label}
-                                </span>
-                            )}
-                        </li>
-                    ))}
-                </ul>
-                <div className={cx('infor-detail')}></div>
+            <div className={cx('col-full')}>
+                <div className={cx('infor-detail')}>
+                    {' '}
+                    <div className="">
+                        <h2 className="">Thông tin tài khoản</h2>
+                        <div className="row-nowrap">
+                            <label className="">Username:</label>
+                            <p className="">{userData.username}</p>
+                        </div>
+                        <div className="row-nowrap">
+                            <label className="">Email:</label>
+                            <p className="">{userData.email}</p>
+                        </div>
+                        <div className="row-nowrap">
+                            <label className="">Phone:</label>
+                            <p className="">{userData.phone}</p>
+                        </div>
+                        <div className="row-nowrap">
+                            <label className="">Address:</label>
+                            <p className="">{userData.address}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
