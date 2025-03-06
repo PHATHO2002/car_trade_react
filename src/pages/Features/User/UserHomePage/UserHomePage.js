@@ -29,7 +29,6 @@ const UserHomePage = () => {
     const [images, setImages] = useState([]); // to slide image
     const [displaySlide, setDisplaySlide] = useState(false); // to displayslide
     const user = useSelector((state) => state.auth.user);
-    const accessToken = useSelector((state) => state.auth.accessToken);
     let socket;
     const itemsPerPage = 4; // Số xe hiển thị mỗi trang
 
@@ -84,23 +83,22 @@ const UserHomePage = () => {
     };
 
     useEffect(() => {
-        if (accessToken) {
-            fetchAproveldCars();
-            socket = connectSocket();
-            socket.on('users_online', (data) => {
-                setUserOnline(data);
-            });
-            socket.on('receive_message', (data) => {
-                const { senderId, username } = data;
-                handleOpenChatBox(senderId, username);
-            }); //automatically generated chat box when a message arrives
-        }
+        fetchAproveldCars();
+        socket = connectSocket();
+        socket.on('users_online', (data) => {
+            setUserOnline(data);
+        });
+        socket.on('receive_message', (data) => {
+            const { senderId, username } = data;
+            handleOpenChatBox(senderId, username);
+        }); //automatically generated chat box when a message arrives
+
         return () => {
             if (socket) {
                 socket.off('users_online');
             }
         };
-    }, [changeCar, accessToken]);
+    }, [changeCar]);
 
     const offset = currentPage * itemsPerPage;
     const currentItems = carList.slice(offset, offset + itemsPerPage);
@@ -117,71 +115,75 @@ const UserHomePage = () => {
                     <ul className={cx('product-list', 'flex-column')}>
                         {newCurrentItems.map((car, index) => (
                             <li className={cx('row-nowrap')} key={index}>
-                                <div
-                                    className={cx('images')}
-                                    onClick={() => {
-                                        handleOpenImages(car.images);
-                                    }}
-                                >
-                                    <span className={cx('img-quantity')}>
-                                        {' '}
-                                        <FontAwesomeIcon icon={faImages} />
-                                    </span>
-                                    <img src={car.images[0]} alt={car.title} />
+                                <div className="col">
+                                    <div
+                                        className={cx('images')}
+                                        onClick={() => {
+                                            handleOpenImages(car.images);
+                                        }}
+                                    >
+                                        <span className={cx('img-quantity')}>
+                                            {' '}
+                                            <FontAwesomeIcon icon={faImages} />
+                                        </span>
+                                        <img src={car.images[0]} alt={car.title} />
+                                    </div>
                                 </div>
-
-                                <div className={cx('information', 'flex-column')}>
-                                    <h3 className={cx('title')}>{car.title}</h3>
-                                    <p className={cx('price')}>
-                                        <strong>Giá:</strong> {handlePrice(car.price)} VND
-                                    </p>
-                                    <p>
-                                        <strong>Địa chỉ người bán:</strong> {car.address}
-                                    </p>
-
-                                    <p>
-                                        <strong>Mô tả:</strong> {car.description}
-                                    </p>
-                                    <p>
-                                        <strong>người bán:</strong> {car.sellerName}
-                                    </p>
-                                    <p>
-                                        <strong>Ngày đăng:</strong> {new Date(car.createdAt).toLocaleString()}
-                                    </p>
-                                    {handleUserOnline(usersOnline, car.sellerId) ? (
-                                        <p className={cx('online')}>
-                                            <FontAwesomeIcon icon={faCircleCheck} /> người bán online
+                                <div className="col">
+                                    {' '}
+                                    <div className={cx('information', 'flex-column')}>
+                                        <h3 className={cx('title')}>{car.title}</h3>
+                                        <p className={cx('price')}>
+                                            <strong>Giá:</strong> {handlePrice(car.price)} VND
                                         </p>
-                                    ) : (
-                                        <p className={cx('offline')}>
-                                            <FontAwesomeIcon icon={faCircleXmark} /> người bán offline
+                                        <p>
+                                            <strong>Địa chỉ người bán:</strong> {car.address}
                                         </p>
-                                    )}
-                                    <div className={cx('actions', 'row')}>
-                                        {cartIdList.includes(car._id) ? (
-                                            <p>đã thêm vào giỏ hàng</p>
-                                        ) : (
-                                            <div
-                                                className={cx('cart')}
-                                                onClick={() => {
-                                                    handAddToCart(car._id);
-                                                    setChangeCar(car._id);
-                                                }}
-                                            >
-                                                <FontAwesomeIcon icon={faCartShopping} />
-                                            </div>
-                                        )}
 
-                                        <div className={cx('chat')}>
-                                            <p>
-                                                {' '}
-                                                <FontAwesomeIcon
-                                                    onClick={() => {
-                                                        handleOpenChatBox(car.sellerId, car.sellerName);
-                                                    }}
-                                                    icon={faMessage}
-                                                />
+                                        <p>
+                                            <strong>Mô tả:</strong> {car.description}
+                                        </p>
+                                        <p>
+                                            <strong>người bán:</strong> {car.sellerName}
+                                        </p>
+                                        <p>
+                                            <strong>Ngày đăng:</strong> {new Date(car.createdAt).toLocaleString()}
+                                        </p>
+                                        {handleUserOnline(usersOnline, car.sellerId) ? (
+                                            <p className={cx('online')}>
+                                                <FontAwesomeIcon icon={faCircleCheck} /> người bán online
                                             </p>
+                                        ) : (
+                                            <p className={cx('offline')}>
+                                                <FontAwesomeIcon icon={faCircleXmark} /> người bán offline
+                                            </p>
+                                        )}
+                                        <div className={cx('actions', 'row')}>
+                                            {cartIdList.includes(car._id) ? (
+                                                <p>đã thêm vào giỏ hàng</p>
+                                            ) : (
+                                                <div
+                                                    className={cx('cart')}
+                                                    onClick={() => {
+                                                        handAddToCart(car._id);
+                                                        setChangeCar(car._id);
+                                                    }}
+                                                >
+                                                    <FontAwesomeIcon icon={faCartShopping} />
+                                                </div>
+                                            )}
+
+                                            <div className={cx('chat')}>
+                                                <p>
+                                                    {' '}
+                                                    <FontAwesomeIcon
+                                                        onClick={() => {
+                                                            handleOpenChatBox(car.sellerId, car.sellerName);
+                                                        }}
+                                                        icon={faMessage}
+                                                    />
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

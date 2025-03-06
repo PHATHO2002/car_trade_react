@@ -1,10 +1,11 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import api from '~/api/api';
+import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames/bind';
 import styles from './Personal.module.scss';
-import DropdownMenu from '~/components/DropdownMenu/DropdownMenu';
-import { useUserMenuItems, useAdminMenuItems } from '~/staticDataHook';
+import { useUserMenuItems, useAdminMenuItems } from '~/staticData';
 import { Link } from 'react-router-dom';
 const cx = classNames.bind(styles);
 const Personal = () => {
@@ -25,41 +26,93 @@ const Personal = () => {
     return (
         <div className={cx('wraper', 'row-nowrap')}>
             <div className={cx('col-3', '.flex-column')}>
-                <div className={cx('resume')}>
+                <div className={cx('resume', 'row-nowrap')}>
                     <img src="https://muaban.net/images/account/avatar-default.png"></img>
-                    <p>
-                        tham gia từ{' '}
-                        {new Date(userData.createdAt).toLocaleDateString('vi-VN', {
-                            month: 'long',
-                            year: 'numeric',
-                        })}{' '}
-                    </p>
-                </div>
-                <DropdownMenu title={'Tiện ích'} items={userMenuItems} />
-            </div>
-            <div className={cx('col-full')}>
-                <div className={cx('infor-detail')}>
-                    {' '}
-                    <div className="">
-                        <h2 className="">Thông tin tài khoản</h2>
-                        <div className="row-nowrap">
-                            <label className="">Username:</label>
-                            <p className="">{userData.username}</p>
-                        </div>
-                        <div className="row-nowrap">
-                            <label className="">Email:</label>
-                            <p className="">{userData.email}</p>
-                        </div>
-                        <div className="row-nowrap">
-                            <label className="">Phone:</label>
-                            <p className="">{userData.phone}</p>
-                        </div>
-                        <div className="row-nowrap">
-                            <label className="">Address:</label>
-                            <p className="">{userData.address}</p>
-                        </div>
+                    <div>
+                        <h3>{userData.username}</h3>
+                        <p>
+                            tham gia từ{' '}
+                            {new Date(userData.createdAt).toLocaleDateString('vi-VN', {
+                                month: 'long',
+                                year: 'numeric',
+                            })}{' '}
+                        </p>
                     </div>
                 </div>
+                <ul className={cx('actions')}>
+                    <h3>Cá nhân</h3>
+                    {userMenuItems.map((item, index) => {
+                        return (
+                            <li key={index} onClick={item.onClick ? item.onClick : undefined}>
+                                {item.to ? (
+                                    <Link className={cx('link')} to={item.to}>
+                                        {item.icon && <span className={cx('icon')}>{item.icon}</span>}
+                                        {item.label}
+                                    </Link>
+                                ) : (
+                                    <span>
+                                        {' '}
+                                        {item.icon && <span className={cx('icon')}>{item.icon}</span>}
+                                        {item.label}
+                                    </span>
+                                )}
+                            </li>
+                        );
+                    })}
+                </ul>
+            </div>
+            <div className={cx('col-full')}>
+                <ul className={cx('infor-detail', 'flex-column')}>
+                    <h2>Thông tin tài khoản</h2>
+
+                    <li className="row-nowrap">
+                        <div className="col-3">
+                            <label className={cx('label')}>Username:</label>
+                        </div>
+                        <div className="col-full">
+                            <div className={cx('row-space-between')}>
+                                <p>{userData.username}</p>
+                                <FontAwesomeIcon icon={faPenToSquare} />
+                            </div>
+                        </div>
+                    </li>
+
+                    <li className="row-nowrap">
+                        <div className="col-3">
+                            <label className={cx('label')}>Email:</label>
+                        </div>
+                        <div className="col-full">
+                            <div className={cx('row-space-between')}>
+                                <p>{userData.email}</p>
+                                <FontAwesomeIcon icon={faPenToSquare} />
+                            </div>
+                        </div>
+                    </li>
+
+                    <li className="row-nowrap">
+                        <div className="col-3">
+                            <label className={cx('label')}>Phone:</label>
+                        </div>
+                        <div className="col-full">
+                            <div className={cx('row-space-between')}>
+                                <p>{userData.phone}</p>
+                                <FontAwesomeIcon icon={faPenToSquare} />
+                            </div>
+                        </div>
+                    </li>
+
+                    <li className="row-nowrap">
+                        <div className="col-3">
+                            <label className={cx('label')}>Address:</label>
+                        </div>
+                        <div className="col-full">
+                            <div className={cx('row-space-between')}>
+                                <p>{userData.address}</p>
+                                <FontAwesomeIcon icon={faPenToSquare} />
+                            </div>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
     );

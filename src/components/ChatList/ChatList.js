@@ -72,6 +72,7 @@ const ChatPartnerList = () => {
                     <ul className={cx('list-partner')}>
                         {listPartner.map((partner) => (
                             <li
+                                className="flex-column"
                                 key={partner.id}
                                 onClick={() => {
                                     handleOpenChatBox(partner.id, partner.name);
@@ -79,15 +80,15 @@ const ChatPartnerList = () => {
                             >
                                 <span className={cx('partner-name')}>{partner.name}</span>
                                 {partner.senderId == user.userId ? (
-                                    <div className={cx('newMess-group')}>
+                                    <div className={cx('newMess-group', 'row')}>
                                         <span className={cx('partner-newMess')}>Bạn:{partner.mess}</span>
                                     </div>
                                 ) : partner.isRead ? (
-                                    <div className={cx('newMess-group')}>
+                                    <div className={cx('newMess-group', 'row')}>
                                         <span className={cx('partner-newMess')}>{partner.mess}</span>
                                     </div>
                                 ) : (
-                                    <div className={cx('newMess-group')}>
+                                    <div className={cx('newMess-group', 'row')}>
                                         <span className={cx('partner-newMess', 'unread')}>{partner.mess} </span>
                                         <span className={cx('quantity-unRead-partner')}>
                                             {unReadMess.filter((item) => item.senderId === partner.id).length}
@@ -101,7 +102,7 @@ const ChatPartnerList = () => {
             ) : (
                 ''
             )}
-            <div className={cx('listChatBox')}>
+            <div className={cx('listChatBox', 'row-nowrap')}>
                 {receiverIdList.slice(-2).map((item) => (
                     <ChatBox
                         key={item.receiId}

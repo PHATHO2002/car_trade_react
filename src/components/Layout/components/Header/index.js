@@ -18,7 +18,7 @@ import Search from '~/components/Search/search';
 import { useSelector } from 'react-redux';
 import Button from '~/components/Button';
 import styles from './Header.module.scss';
-import { useUserMenuItems, useAdminMenuItems } from '~/staticDataHook';
+import { useUserMenuItems, useAdminMenuItems } from '~/staticData';
 const cx = classNames.bind(styles);
 
 function Header() {

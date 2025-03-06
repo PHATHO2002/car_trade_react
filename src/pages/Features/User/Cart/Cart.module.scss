@@ -1,62 +1,40 @@
-.pending-products {
+.wraper {
+    width: 600px;
+    margin: auto;
     .product-list {
         list-style: none;
         padding: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
 
         li {
-            display: flex;
-            gap: 10px;
-            padding: 15px;
+            padding: 1.5rem;
             border: 1px solid #ddd;
             border-radius: 8px;
             background: #fff;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s ease-in-out;
             .images {
-                height: 200px;
                 img {
-                    max-width: 100%;
+                    height: 200px;
+                    width: 100%;
                 }
             }
             &:hover {
                 transform: scale(1.02);
             }
-            .actions {
-                display: flex;
-                gap: 10px;
-            }
             .information {
-                display: flex;
-                flex-direction: column;
                 gap: 5px;
-                font-size: 14px;
+                font-size: 1.4rem;
                 color: #555;
+
+                overflow: hidden;
+                text-overflow: ellipsis;
+
                 .title {
                     margin: 0;
                     font-size: 20px;
                     color: #717375;
                     cursor: pointer;
                 }
-            }
-
-            .images {
-                img {
-                    width: 100%;
-                    max-width: 250px;
-                    border-radius: 5px;
-                    object-fit: cover;
-                    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-                }
-            }
-
-            .btn-accept-reject {
-                display: flex;
-                gap: 10px;
-                justify-content: flex-end;
-                margin-top: 10px;
             }
         }
     }
@@ -110,6 +88,21 @@
                 color: #ccc;
                 border-color: #eee;
                 pointer-events: none;
+            }
+        }
+    }
+}
+@media (max-width: 768px) {
+    .wraper {
+        max-width: 100% !important;
+
+        li {
+            flex-direction: column;
+            .information {
+                max-width: 100% !important;
+            }
+            .images {
+                width: 100% !important;
             }
         }
     }

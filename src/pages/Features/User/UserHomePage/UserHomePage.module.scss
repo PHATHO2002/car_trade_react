@@ -3,7 +3,6 @@
     margin: auto;
     .product-list {
         list-style: none;
-
         li {
             padding: 1.5rem;
             border: 1px solid #ddd;
@@ -18,7 +17,6 @@
             }
 
             .information {
-                max-width: 50%;
                 .title {
                     margin: 0;
                     color: #717375;
@@ -50,7 +48,6 @@
 
             .images {
                 padding: 0 0.5rem;
-                width: 50%;
                 position: relative;
                 cursor: pointer;
                 .img-quantity {

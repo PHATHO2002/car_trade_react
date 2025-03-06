@@ -78,7 +78,7 @@ const ChatBox = ({ receiverId, closeChatBox, username }) => {
     }, [messages]);
     return (
         <div className={cx('chat-box')}>
-            <div className={cx('chat-header', 'row')}>
+            <div className={cx('chat-header', 'row-space-between')}>
                 <h3>{username}</h3>
                 <div
                     className={cx('close-icon')}

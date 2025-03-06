@@ -5,7 +5,6 @@ import api from '~/api/api';
 import styles from './OwnPost.module.scss';
 import { faImages, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import Button from '~/components/Button';
 
@@ -18,7 +17,6 @@ const OwnPost = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [images, setImages] = useState([]); // to slide image
     const [displaySlide, setDisplaySlide] = useState(false); // to displayslide
-    const accessToken = useSelector((state) => state.auth.accessToken);
     const itemsPerPage = 4; // Số xe hiển thị mỗi trang
 
     const fetchPosts = async () => {
@@ -59,10 +57,8 @@ const OwnPost = () => {
         }
     };
     useEffect(() => {
-        if (accessToken) {
-            fetchPosts();
-        }
-    }, [changeCar, accessToken]);
+        fetchPosts();
+    }, [changeCar]);
 
     const offset = currentPage * itemsPerPage;
     const currentItems = carList.slice(offset, offset + itemsPerPage);
@@ -77,56 +73,60 @@ const OwnPost = () => {
                     <ul className={cx('product-list', 'flex-column')}>
                         {currentItems.map((car, index) => (
                             <li className={cx('row-nowrap')} key={index}>
-                                <div
-                                    className={cx('images')}
-                                    onClick={() => {
-                                        handleOpenImages(car.images);
-                                    }}
-                                >
-                                    <span className={cx('img-quantity')}>
-                                        {' '}
-                                        <FontAwesomeIcon icon={faImages} />
-                                    </span>
-                                    <img src={car.images[0]} alt={car.title} />
+                                <div className="col">
+                                    <div
+                                        className={cx('images')}
+                                        onClick={() => {
+                                            handleOpenImages(car.images);
+                                        }}
+                                    >
+                                        <span className={cx('img-quantity')}>
+                                            {' '}
+                                            <FontAwesomeIcon icon={faImages} />
+                                        </span>
+                                        <img src={car.images[0]} alt={car.title} />
+                                    </div>
                                 </div>
+                                <div className="col">
+                                    {' '}
+                                    <div className={cx('information')}>
+                                        <h4 className={cx('title')}>{car.title}</h4>
+                                        <p className={cx('price')}>
+                                            <strong>Giá:</strong> {car.price.toLocaleString('de-DE')} VND
+                                        </p>
+                                        <p>
+                                            <strong>Địa chỉ người bán:</strong> {car.address}
+                                        </p>
 
-                                <div className={cx('information')}>
-                                    <h4 className={cx('title')}>{car.title}</h4>
-                                    <p className={cx('price')}>
-                                        <strong>Giá:</strong> {car.price.toLocaleString('de-DE')} VND
-                                    </p>
-                                    <p>
-                                        <strong>Địa chỉ người bán:</strong> {car.address}
-                                    </p>
+                                        <p>
+                                            <strong>Mô tả:</strong> {car.description}
+                                        </p>
+                                        <p>
+                                            <strong>Trạng thái:</strong> {car.status}
+                                        </p>
+                                        <p>
+                                            <strong>Ngày đăng:</strong> {new Date(car.createdAt).toLocaleString()}
+                                        </p>
 
-                                    <p>
-                                        <strong>Mô tả:</strong> {car.description}
-                                    </p>
-                                    <p>
-                                        <strong>Trạng thái:</strong> {car.status}
-                                    </p>
-                                    <p>
-                                        <strong>Ngày đăng:</strong> {new Date(car.createdAt).toLocaleString()}
-                                    </p>
-
-                                    <div className={cx('actions', 'row')}>
-                                        <div
-                                            onClick={() => {
-                                                deletePost(car._id);
-                                            }}
-                                            className={cx('delete')}
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </div>
-                                        <div className={cx('sold')}>
-                                            <Button
+                                        <div className={cx('actions', 'row')}>
+                                            <div
                                                 onClick={() => {
-                                                    confirmIsSold(car._id);
+                                                    deletePost(car._id);
                                                 }}
-                                                small
-                                                primary
-                                                children={'đã bán ?'}
-                                            />{' '}
+                                                className={cx('delete')}
+                                            >
+                                                <FontAwesomeIcon icon={faTrash} />
+                                            </div>
+                                            <div className={cx('sold')}>
+                                                <Button
+                                                    onClick={() => {
+                                                        confirmIsSold(car._id);
+                                                    }}
+                                                    small
+                                                    primary
+                                                    children={'đã bán ?'}
+                                                />{' '}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

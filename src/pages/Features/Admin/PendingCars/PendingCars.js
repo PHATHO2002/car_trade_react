@@ -4,7 +4,6 @@ import ReactPaginate from 'react-paginate';
 import api from '~/api/api';
 import styles from './PendingCars.module.scss';
 import Button from '~/components/Button';
-import { useSelector } from 'react-redux';
 import { connectSocket } from '~/utils/socket';
 
 const cx = classNames.bind(styles);
@@ -14,7 +13,6 @@ const PendingProducts = () => {
     const [changeCar, setChangeCar] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
     const [loading, setLoading] = useState(false);
-    const accessToken = useSelector((state) => state.auth.accessToken);
     const itemsPerPage = 4; // Số xe hiển thị mỗi trang
     let socket;
     const fetchPendingCars = async () => {
@@ -26,14 +24,12 @@ const PendingProducts = () => {
         }
     };
     useEffect(() => {
-        if (accessToken) {
-            fetchPendingCars();
-            socket = connectSocket();
-            if (socket) {
-                socket.on('pendingCarNotification', (data) => {
-                    setCarList((prevCarList) => [...prevCarList, data.carData]);
-                });
-            }
+        fetchPendingCars();
+        socket = connectSocket();
+        if (socket) {
+            socket.on('pendingCarNotification', (data) => {
+                setCarList((prevCarList) => [...prevCarList, data.carData]);
+            });
         }
 
         return () => {
@@ -41,7 +37,7 @@ const PendingProducts = () => {
                 socket.off('pendingCarNotification');
             }
         };
-    }, [changeCar, accessToken]);
+    }, [changeCar]);
 
     // Lấy danh sách xe theo trang hiện tại
     const offset = currentPage * itemsPerPage;

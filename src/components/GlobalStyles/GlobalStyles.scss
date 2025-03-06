@@ -41,9 +41,15 @@ input,
     flex-wrap: nowrap; /* Ngăn chặn xuống dòng */
     gap: 1.6rem;
 }
-
+.row-space-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+}
 .col {
     flex: 1; /* Các cột có độ rộng bằng nhau */
+    min-width: 0;
 }
 .col-full {
     flex-grow: 1; /* Cột này sẽ chiếm hết phần còn lại */

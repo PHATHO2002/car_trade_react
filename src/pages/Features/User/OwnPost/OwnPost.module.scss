@@ -1,5 +1,4 @@
 .wraper {
-    margin-top: 5rem;
     width: 600px;
     margin: auto;
     .product-list {
@@ -19,7 +18,6 @@
             }
 
             .information {
-                max-width: 50%;
                 .title {
                     margin: 0;
                     color: #717375;
@@ -51,7 +49,7 @@
 
             .images {
                 padding: 0 0.5rem;
-                width: 50%;
+
                 position: relative;
                 cursor: pointer;
                 .img-quantity {

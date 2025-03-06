@@ -28,13 +28,12 @@ function App() {
                 setLoading(false);
             }
         };
-        if (isLoggedIn) {
-            if (!accessToken) {
-                fetchAccessToken();
-            }
+        if (isLoggedIn && !accessToken) {
+            fetchAccessToken();
+        } else {
+            setLoading(false);
         }
-        setLoading(false);
-    }, [accessToken, isLoggedIn]);
+    }, [isLoggedIn]);
 
     if (loading) {
         return <div className="loading">Đang tải...</div>;
