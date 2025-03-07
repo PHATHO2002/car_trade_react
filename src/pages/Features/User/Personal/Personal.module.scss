@@ -1,15 +1,24 @@
 .wraper {
     width: 100%;
+    .resume {
+        text-align: center;
+        p {
+            font-size: 1rem;
+        }
+        img {
+            max-width: 100% !important;
+        }
+    }
     .actions {
         margin-top: 1rem;
         border-radius: 1px;
-        box-shadow: rgba(0, 0, 0, 0.08) 4px 4px 16px;
+        box-shadow: rgba(0, 0, 0, 0.08) 0.4rem 0.4rem 1.6rem;
         list-style: none;
         li {
             color: black;
             padding: 0.5rem 0px;
             border: 2px;
-            box-shadow: rgba(0, 0, 0, 0.08) 4px 4px 16px;
+            box-shadow: rgba(0, 0, 0, 0.08) 0.4rem 0.4rem 1.6rem;
             .link {
                 display: block;
                 width: 100%;
@@ -31,8 +40,28 @@
         }
     }
     .infor-detail {
-        div {
+        .label {
+            padding: 1rem;
+        }
+        .value {
+            input {
+                margin-right: 1rem;
+                padding: 1rem 0;
+                font-size: 1.6rem;
+                border: 2px solid #ccc;
+                border-radius: 0.8rem;
+                outline: none;
+                transition: all 0.3s ease-in-out;
+            }
+            padding: 1rem;
             background-color: rgb(172, 181, 189);
+        }
+    }
+}
+@media (max-width: 768px) {
+    .wraper {
+        li {
+            flex-direction: column !important;
         }
     }
 }

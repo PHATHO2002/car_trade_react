@@ -5,16 +5,16 @@
     }
     .dropdown-menu {
         position: absolute;
-        width: 200px;
+        width: 20rem;
         right: 0;
         top: 50px;
         border-radius: 1px;
-        box-shadow: rgba(0, 0, 0, 0.08) 4px 4px 16px;
+        box-shadow: rgba(0, 0, 0, 0.08) 4px 4px 1.6rem;
         z-index: 101;
         list-style: none;
         li {
             color: black;
-            padding: 5px 20px;
+            padding: 0.5rem 2rem;
             .link {
                 display: block; // Đảm bảo chiếm toàn bộ `li`
                 width: 100%; // Tránh bị lệch
