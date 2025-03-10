@@ -35,14 +35,14 @@ function Register() {
 
     return (
         <div className={cx('register-page')}>
-            <div className={cx('register-container')}>
-                <div className={cx('welcome-img')}>
+            <div className={cx('register-container', 'row-nowrap')}>
+                <div className={cx('welcome-img', 'col')}>
                     <img src="/images/welcome.webp" alt="Welcome" />
                 </div>
-                <div className={cx('register-form')}>
+                <div className={cx('register-form', 'col')}>
                     <h2>Đăng ký</h2>
 
-                    <div className={cx('form-group')}>
+                    <div className={cx('form-group', 'flex-column')}>
                         <label htmlFor="username">Tên đăng nhập:</label>
                         <input
                             type="text"
@@ -52,7 +52,7 @@ function Register() {
                             onChange={(e) => setUsername(e.target.value)}
                         />
                     </div>
-                    <div className={cx('form-group')}>
+                    <div className={cx('form-group', 'flex-column')}>
                         <label htmlFor="password">Mật khẩu:</label>
                         <input
                             type="password"
@@ -62,7 +62,7 @@ function Register() {
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
-                    <div className={cx('form-group')}>
+                    <div className={cx('form-group', 'flex-column')}>
                         <label htmlFor="confirm-password">Xác nhận mật khẩu:</label>
                         <input
                             type="password"

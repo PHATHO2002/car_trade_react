@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import api from '~/api/api';
 import styles from './UserHomePage.module.scss';
