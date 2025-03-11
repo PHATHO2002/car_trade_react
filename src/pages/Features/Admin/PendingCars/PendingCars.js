@@ -87,9 +87,7 @@ const PendingProducts = () => {
                                     <h3>{car.title}</h3>
                                 </div>
                                 <div className={cx('information')}>
-                                    <p>
-                                        <strong>Địa chỉ người bán:</strong> {car.address}
-                                    </p>
+                                    <p>{/* <strong>Địa chỉ người bán:</strong> {car.address} */}</p>
                                     <p>
                                         <strong>Giá:</strong> {car.price} VND
                                     </p>

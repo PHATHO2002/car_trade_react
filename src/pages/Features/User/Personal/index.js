@@ -16,8 +16,9 @@ const Personal = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
+    const [emailStatic, setEmailStatic] = useState('');
+    const [phoneStatic, setPhoneStatic] = useState('');
     const [address, setAddress] = useState({});
-    const [err, setErr] = useState('');
     const [createdAt, setCreatedAt] = useState('');
     const [editingField, setEditingField] = useState([]);
 
@@ -75,21 +76,25 @@ const Personal = () => {
     };
 
     const profileFields = [
-        { label: 'Email', value: email, setValue: setEmail, field: 'email' },
-        { label: 'Phone', value: phone, setValue: setPhone, field: 'phone' },
+        { label: 'Email', value: email, staticValue: emailStatic, setValue: setEmail, field: 'email' },
+        { label: 'Phone', value: phone, staticValue: phoneStatic, setValue: setPhone, field: 'phone' },
     ];
     const getUserData = async () => {
         try {
             const response = await api.get('/user/detail');
 
-            setUsername(response.data.data.username);
-            setEmail(response.data.data.email);
-            setPhone(response.data.data.phone);
-            setAddress(response.data.data.address);
-            setCurrentProvice(response.data.data.address.province);
-            setCurrentDistrict(response.data.data.address.district);
-            setCurrentWardsDistrict(response.data.data.address.ward);
-            setCreatedAt(response.data.data.createdAt);
+            const { username, email, phone, address, createdAt } = response.data.data;
+
+            setUsername(username);
+            setEmail(email);
+            setPhone(phone);
+            setEmailStatic(email);
+            setPhoneStatic(phone);
+            setAddress(address);
+            setCurrentProvice(address.province);
+            setCurrentDistrict(address.district);
+            setCurrentWardsDistrict(address.ward);
+            setCreatedAt(createdAt);
         } catch (error) {
             console.log(error);
         }
@@ -108,16 +113,14 @@ const Personal = () => {
             const phoneRegex = /^(0|\+84)[3-9][0-9]{8}$/; // Hỗ trợ số điện thoại Việt Nam
 
             if (!emailRegex.test(email)) {
-                setErr('Email không hợp lệ.');
+                toast.error('Email không hợp lệ.');
                 return;
             }
 
             if (!phoneRegex.test(phone)) {
-                setErr('Số điện thoại không hợp lệ.');
+                toast.error('Số điện thoại không hợp lệ.');
                 return;
             }
-
-            setErr('');
 
             if (districtSelectRef.current && wardSelectRef.current) {
                 // cập nhập dữ liệu option hieent thị hiện tại
@@ -137,10 +140,25 @@ const Personal = () => {
                         },
                     },
                 });
+                getUserData();
+                toast.success('cập nhập thông tin thành công');
+            } else {
+                await api.put('/user', {
+                    username,
+                    email,
+                    phone,
+                    address: {
+                        province: address.province,
+                        district: address.district,
+                        ward: address.ward,
+                    },
+                });
+
+                getUserData();
+                toast.success('cập nhập thông tin thành công');
             }
-            toast.success('cập nhập thông tin thành công');
         } catch (error) {
-            console.log(error);
+            toast.error(error?.response?.data?.message);
         }
     };
 
@@ -227,7 +245,7 @@ const Personal = () => {
                                             </>
                                         ) : (
                                             <>
-                                                <p>{item.value}</p>
+                                                <p>{item.staticValue}</p>
 
                                                 <div onClick={() => displayEditField(item.label)}>
                                                     <FontAwesomeIcon icon={faPenToSquare} />
@@ -321,12 +339,14 @@ const Personal = () => {
                         </div>
                     </li>
                 </ul>
-                <p>{err}</p>
+
                 <div style={{ marginTop: '1.6rem' }}>
                     {editingField.length > 0 ? (
-                        <Button onClick={updateUserInfor} primary>
-                            Cập nhật
-                        </Button>
+                        <>
+                            <Button onClick={updateUserInfor} primary>
+                                Cập nhật
+                            </Button>
+                        </>
                     ) : (
                         ''
                     )}

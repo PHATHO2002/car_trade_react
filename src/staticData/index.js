@@ -9,7 +9,6 @@ import { logout } from '~/redux/slices/authSlice';
 // ✅ Correct way: Convert to a custom hook
 const useMenuHandlers = () => {
     const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     const handleLogout = async () => {
         try {
@@ -17,7 +16,7 @@ const useMenuHandlers = () => {
             let socket = connectSocket();
             socket.disconnect();
             dispatch(logout());
-            navigate('/');
+            window.location.href = '/';
         } catch (error) {
             console.error('Lỗi khi logout:', error);
             dispatch(logout());

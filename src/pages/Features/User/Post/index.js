@@ -8,7 +8,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '~/api/api';
 import { connectSocket } from '~/utils/socket';
-import { useSelector } from 'react-redux';
 const cx = classNames.bind(styles);
 
 function Post() {
@@ -16,19 +15,42 @@ function Post() {
     const [price, setPrice] = useState('');
     const [description, setDescription] = useState('');
     const [address, setAddress] = useState('');
-    const [images, setImages] = useState([]);
+    const [brand, setBrand] = useState('');
+    const [year, setYear] = useState('');
+    const [condition, setCondition] = useState('');
+    const [mileage, setMileage] = useState('');
+    const [carImages, setCarImages] = useState([]);
+    const [documentImages, setDocumentImages] = useState([]);
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
     let socket = connectSocket();
 
     // Xử lý khi chọn file
     const handleFileChange = (e) => {
-        const files = Array.from(e.target.files);
-        if (files.length > 10) {
-            setErrors((prev) => ({ ...prev, images: 'Bạn chỉ được tải lên tối đa 10 ảnh!' }));
-        } else {
-            setImages(files);
-            setErrors((prev) => ({ ...prev, images: '' }));
+        switch (e.target.id) {
+            case 'carImages': {
+                const files = Array.from(e.target.files);
+                if (files.length > 10) {
+                    setErrors((prev) => ({ ...prev, images: 'Bạn chỉ được tải lên tối đa 10 ảnh!' }));
+                } else {
+                    setCarImages(files);
+                    setErrors((prev) => ({ ...prev, images: '' }));
+                }
+                break;
+            }
+
+            case 'documentImages': {
+                const files = Array.from(e.target.files);
+                if (files.length > 10) {
+                    setErrors((prev) => ({ ...prev, images: 'Bạn chỉ được tải lên tối đa 10 ảnh!' }));
+                } else {
+                    setDocumentImages(files);
+                    setErrors((prev) => ({ ...prev, images: '' }));
+                }
+                break;
+            }
+            default:
+                break;
         }
     };
 
@@ -41,6 +63,28 @@ function Post() {
             newErrors.title = 'Tiêu đề không được để trống!';
         } else if (title.trim().length < 5) {
             newErrors.title = 'Tiêu đề phải có ít nhất 5 ký tự.';
+        }
+
+        // Kiểm tra hãng xe
+        if (!brand.trim()) {
+            newErrors.brand = 'Hãng xe không được để trống!';
+        }
+
+        // Kiểm tra năm sản xuất
+        if (!year) {
+            newErrors.year = 'Vui lòng chọn năm sản xuất!';
+        }
+
+        // Kiểm tra số km đã đi
+        if (!mileage.trim()) {
+            newErrors.mileage = 'Số km đã đi không được để trống!';
+        } else if (isNaN(Number(mileage)) || Number(mileage) < 0) {
+            newErrors.mileage = 'Số km phải là số và không được âm!';
+        }
+
+        // Kiểm tra tình trạng xe
+        if (!condition.trim()) {
+            newErrors.condition = 'Vui lòng nhập tình trạng xe!';
         }
 
         // Kiểm tra giá bán
@@ -57,16 +101,14 @@ function Post() {
             newErrors.description = 'Miêu tả phải có ít nhất 10 ký tự.';
         }
 
-        // Kiểm tra địa chỉ
-        if (!address.trim()) {
-            newErrors.address = 'Địa chỉ không được để trống!';
+        // Kiểm tra ảnh xe
+        if (carImages.length === 0) {
+            newErrors.carImages = 'Vui lòng tải lên ít nhất một hình ảnh về xe!';
         }
 
-        // Kiểm tra hình ảnh
-        if (images.length === 0) {
-            newErrors.images = 'Bạn phải tải lên ít nhất 1 ảnh!';
-        } else if (images.length > 10) {
-            newErrors.images = 'Bạn chỉ được tải lên tối đa 10 ảnh!';
+        // Kiểm tra ảnh giấy tờ xe
+        if (documentImages.length === 0) {
+            newErrors.documentImages = 'Vui lòng tải lên ít nhất một hình ảnh giấy tờ xe!';
         }
 
         setErrors(newErrors);
@@ -80,17 +122,22 @@ function Post() {
             try {
                 setLoading(true);
                 const formData = new FormData();
-                const data = JSON.parse(localStorage.getItem('userData'));
-                const sellerId = data.userId;
                 formData.append('title', title);
                 formData.append('price', price);
-                formData.append('address', address);
-                formData.append('description', description);
-                formData.append('sellerId', sellerId);
+                formData.append('brand', brand);
+                formData.append('year', year);
+                formData.append('condition', condition);
+                formData.append('mileage', mileage);
 
-                images.forEach((file) => {
-                    formData.append('images', file);
+                formData.append('description', description);
+
+                carImages.forEach((file) => {
+                    formData.append('carImages', file);
                 });
+                documentImages.forEach((file) => {
+                    formData.append('documentImages', file);
+                });
+
                 const response = await api.post('/user/post', formData, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                 });
@@ -101,7 +148,7 @@ function Post() {
                 setTitle('');
                 setAddress('');
                 setDescription('');
-                setImages([]);
+                setCarImages([]);
                 setPrice('');
             } catch (error) {
                 console.log(error);
@@ -116,90 +163,166 @@ function Post() {
         <div className={cx('post-page')}>
             <form className={cx('post-form')} onSubmit={handleSubmit}>
                 <h2>Đăng tin </h2>
-                <div className={cx('form-group')}>
-                    <label htmlFor="title">Tiêu đề:</label>
-                    <input
-                        type="text"
-                        id="title"
-                        placeholder="Nhập tiêu đề"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                    />
-                    {errors.title && (
-                        <p className={cx('error')}>
-                            {errors.title}
-                            <FontAwesomeIcon icon={faTriangleExclamation} />
-                        </p>
-                    )}
+                <div className="row-nowrap">
+                    <div className="col">
+                        <div className={cx('form-group')}>
+                            <label htmlFor="title">Tiêu đề:</label>
+                            <input
+                                type="text"
+                                id="title"
+                                placeholder="Nhập tiêu đề"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                            />
+                            {errors.title && (
+                                <p className={cx('error')}>
+                                    {errors.title}
+                                    <FontAwesomeIcon icon={faTriangleExclamation} />
+                                </p>
+                            )}
+                        </div>
+                        <div className={cx('form-group')}>
+                            <label htmlFor="title">Hãng:</label>
+                            <input
+                                type="text"
+                                id="brand"
+                                placeholder="Nhập vào hãng"
+                                value={brand}
+                                onChange={(e) => setBrand(e.target.value)}
+                            />
+                            {errors.brand && (
+                                <p className={cx('error')}>
+                                    {errors.brand}
+                                    <FontAwesomeIcon icon={faTriangleExclamation} />
+                                </p>
+                            )}
+                        </div>
+                        <div className={cx('form-group')}>
+                            <label htmlFor="year">Năm sản xuất:</label>
+                            <select id="year" value={year} onChange={(e) => setYear(e.target.value)}>
+                                <option value="">Chọn năm</option>
+                                {Array.from({ length: new Date().getFullYear() - 1979 }, (_, i) => (
+                                    <option key={i} value={1980 + i}>
+                                        {1980 + i}
+                                    </option>
+                                ))}
+                            </select>
+                            {errors.year && (
+                                <p className={cx('error')}>
+                                    {errors.year}
+                                    <FontAwesomeIcon icon={faTriangleExclamation} />
+                                </p>
+                            )}
+                        </div>
+                        <div className={cx('form-group')}>
+                            <label htmlFor="price">Số km đã đi:</label>
+                            <input
+                                type="number"
+                                id="mileage"
+                                placeholder="Nhập vào số km đã đi "
+                                value={mileage}
+                                onChange={(e) => setMileage(e.target.value)}
+                            />
+                            {errors.mileage && (
+                                <p className={cx('error')}>
+                                    {errors.mileage}
+                                    <FontAwesomeIcon icon={faTriangleExclamation} />
+                                </p>
+                            )}
+                        </div>
+                        <div className={cx('form-group')}>
+                            <label htmlFor="title">Tình trạng:</label>
+                            <input
+                                type="text"
+                                id="condition"
+                                placeholder=" vd: mới mua hoặc cũ ... "
+                                value={condition}
+                                onChange={(e) => setCondition(e.target.value)}
+                            />
+                            {errors.condition && (
+                                <p className={cx('error')}>
+                                    {errors.condition}
+                                    <FontAwesomeIcon icon={faTriangleExclamation} />
+                                </p>
+                            )}
+                        </div>
+                        <div className={cx('form-group')}>
+                            <label htmlFor="price">Giá:</label>
+                            <input
+                                type="text"
+                                id="price"
+                                placeholder="Nhập vào giá"
+                                value={price}
+                                onChange={(e) => setPrice(e.target.value)}
+                            />
+                            {errors.price && (
+                                <p className={cx('error')}>
+                                    {errors.price}
+                                    <FontAwesomeIcon icon={faTriangleExclamation} />
+                                </p>
+                            )}
+                        </div>
+                        <div className={cx('form-group')}>
+                            <label htmlFor="description">Miêu tả:</label>
+                            <input
+                                type="text"
+                                id="description"
+                                placeholder="Nhập vào miêu tả"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                            />
+                            {errors.description && (
+                                <p className={cx('error')}>
+                                    {errors.description}
+                                    <FontAwesomeIcon icon={faTriangleExclamation} />
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                    <div className="col">
+                        <div className={cx('form-group')}>
+                            <label htmlFor="carImages">
+                                {' '}
+                                Tải lên hình ảnh về xe <FontAwesomeIcon icon={faCameraRetro} />{' '}
+                            </label>
+                            <input
+                                id="carImages"
+                                accept="image/png, image/jpeg, image/gif"
+                                className={cx('choose-file')}
+                                type="file"
+                                multiple
+                                onChange={handleFileChange}
+                            />
+                            {errors.images && (
+                                <p className={cx('error')}>
+                                    {errors.images}
+                                    <FontAwesomeIcon icon={faTriangleExclamation} />
+                                </p>
+                            )}
+                        </div>
+                        <div className={cx('form-group')}>
+                            <label htmlFor="documentImages">
+                                {' '}
+                                Tải lên hình ảnh về giấy tờ xe <FontAwesomeIcon icon={faCameraRetro} />{' '}
+                            </label>
+                            <input
+                                id="documentImages"
+                                accept="image/png, image/jpeg, image/gif"
+                                className={cx('choose-file')}
+                                type="file"
+                                multiple
+                                onChange={handleFileChange}
+                            />
+                            {errors.images && (
+                                <p className={cx('error')}>
+                                    {errors.images}
+                                    <FontAwesomeIcon icon={faTriangleExclamation} />
+                                </p>
+                            )}
+                        </div>
+                    </div>
                 </div>
-                <div className={cx('form-group')}>
-                    <label htmlFor="price">Giá:</label>
-                    <input
-                        type="text"
-                        id="price"
-                        placeholder="Nhập vào giá"
-                        value={price}
-                        onChange={(e) => setPrice(e.target.value)}
-                    />
-                    {errors.price && (
-                        <p className={cx('error')}>
-                            {errors.price}
-                            <FontAwesomeIcon icon={faTriangleExclamation} />
-                        </p>
-                    )}
-                </div>
-                <div className={cx('form-group')}>
-                    <label htmlFor="address">Địa chỉ:</label>
-                    <input
-                        type="text"
-                        id="address"
-                        placeholder="Nhập vào địa chỉ bán"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                    />
-                    {errors.address && (
-                        <p className={cx('error')}>
-                            {errors.address}
-                            <FontAwesomeIcon icon={faTriangleExclamation} />
-                        </p>
-                    )}
-                </div>
-                <div className={cx('form-group')}>
-                    <label htmlFor="description">Miêu tả:</label>
-                    <input
-                        type="text"
-                        id="description"
-                        placeholder="Nhập vào miêu tả"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                    />
-                    {errors.description && (
-                        <p className={cx('error')}>
-                            {errors.description}
-                            <FontAwesomeIcon icon={faTriangleExclamation} />
-                        </p>
-                    )}
-                </div>
-                <div className={cx('form-group')}>
-                    <label htmlFor="images">
-                        {' '}
-                        Tải lên hình ảnh về xe <FontAwesomeIcon icon={faCameraRetro} />{' '}
-                    </label>
-                    <input
-                        id="images"
-                        accept="image/png, image/jpeg, image/gif"
-                        className={cx('choose-file')}
-                        type="file"
-                        multiple
-                        onChange={handleFileChange}
-                    />
-                    {errors.images && (
-                        <p className={cx('error')}>
-                            {errors.images}
-                            <FontAwesomeIcon icon={faTriangleExclamation} />
-                        </p>
-                    )}
-                </div>
+
                 {loading ? (
                     <Button disabled primary>
                         <p className={cx('post-btn')}>loading</p>

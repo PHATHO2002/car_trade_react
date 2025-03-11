@@ -137,14 +137,15 @@ const UserHomePage = () => {
                                             <strong>Giá:</strong> {handlePrice(car.price)} VND
                                         </p>
                                         <p>
-                                            <strong>Địa chỉ người bán:</strong> {car.address}
+                                            <strong>Hãng xe:</strong> {car.brand}
+                                        </p>
+                                        <p>
+                                            <strong>năm sản xuất:</strong> {car.year}
                                         </p>
 
                                         <p>
-                                            <strong>Mô tả:</strong> {car.description}
-                                        </p>
-                                        <p>
-                                            <strong>người bán:</strong> {car.sellerName}
+                                            <strong>Địa chỉ người bán:</strong> {car.address?.province?.name},
+                                            {car.address?.district?.name},{car.address?.ward?.name}
                                         </p>
                                         <p>
                                             <strong>Ngày đăng:</strong> {new Date(car.createdAt).toLocaleString()}
