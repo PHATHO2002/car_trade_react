@@ -12,7 +12,7 @@ const Search = () => {
     const [result, setResult] = useState([]);
     const hanldeSearch = async () => {
         try {
-            const rp = await api.get(`user/search/${query}`);
+            const rp = await api.get(`car/search/${query}`);
             setResult(rp.data.data);
         } catch (error) {
             console.log(error);
