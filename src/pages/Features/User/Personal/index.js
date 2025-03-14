@@ -36,7 +36,6 @@ const Personal = () => {
         switch (addressOption) {
             case 'province':
                 setCurrentProvice({ code: event.target.value, name: text });
-
                 break;
             case 'district':
                 setCurrentDistrict({ code: event.target.value, name: text });

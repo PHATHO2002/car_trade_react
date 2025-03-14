@@ -4,14 +4,7 @@ import ReactPaginate from 'react-paginate';
 import api from '~/api/api';
 import axios from 'axios';
 import styles from './UserHomePage.module.scss';
-import {
-    faCartShopping,
-    faL,
-    faMessage,
-    faCircleCheck,
-    faCircleXmark,
-    faImages,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCartShopping, faMessage, faCircleCheck, faCircleXmark, faImages } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
@@ -31,15 +24,20 @@ const UserHomePage = () => {
     const [images, setImages] = useState([]); // to slide image
     const [displaySlide, setDisplaySlide] = useState(false); // to displayslide
     const user = useSelector((state) => state.auth.user);
-
+    //state lọc theo hãng
+    const [brands, setBrands] = useState([]);
+    const [currentBrand, setCurrentBrand] = useState('');
+    const [showAllBrands, setShowAllBrands] = useState(false); // see more or Hide address
     // state lọc theo adress
     const [currentListAdress, setCurrentListAdress] = useState([]); //list province or quận huyện or xã
+    const [currentAdress, setCurrentAdress] = useState(''); // check if filter address exits;
     const [currentDivisonType, setCurrentDivisonType] = useState('Tỉnh/Thành phố');
     const [showAllAdress, setShowAllAdress] = useState(false); // see more or Hide address
     const [errFilter, setErrFilter] = useState(false); // hiện thị không tìm kiếm thấy
     const [currentProvice, setCurrentProvice] = useState({});
     const [currentDistrict, setCurrentDistrict] = useState({});
     const visibleAdress = showAllAdress ? currentListAdress : currentListAdress.slice(0, 5);
+    const visibleBrands = showAllBrands ? brands : brands.slice(0, 5);
     let socket;
     const itemsPerPage = 4; // Số xe hiển thị mỗi trang
 
@@ -92,7 +90,7 @@ const UserHomePage = () => {
         setDisplaySlide(false);
     };
 
-    // fun handle filter address
+    // fun get getProvincesVn
     const getProvincesVn = async () => {
         try {
             const provincesRsp = await axios.get('https://provinces.open-api.vn/api/p');
@@ -101,43 +99,62 @@ const UserHomePage = () => {
             console.error('Lỗi khi gọi API:', error);
         }
     };
-    const handleChaneDivision = async (currentAdress) => {
+    const getCarBrands = async () => {
         try {
-            if (currentAdress?.code && currentAdress?.division_type == 'tỉnh') {
-                setCurrentProvice({
-                    code: currentAdress.code,
-                    name: currentAdress.name,
-                    division_type: currentAdress.division_type,
-                });
-                const provincesAndistricts = await axios.get(
-                    `https://provinces.open-api.vn/api/p/${currentAdress.code}?depth=2`, //includes huyện và xã
-                );
-                let filterCarList = carList.filter((car) => {
-                    // lọc theo province
-                    return car.address.province.code == currentAdress.code;
-                });
-                if (filterCarList.length < 1) {
-                    setErrFilter(true);
+            const brands = await api.get('/car/brands');
+            setBrands(brands.data.data);
+        } catch (error) {
+            console.error('Lỗi khi gọi API:', error);
+        }
+    };
+    const handleFilter = async (currentAdress = null, currentBrand = null) => {
+        try {
+            if (currentAdress && !currentBrand) {
+                if (currentAdress?.code && currentAdress?.division_type == 'tỉnh') {
+                    setCurrentProvice({
+                        code: currentAdress.code,
+                        name: currentAdress.name,
+                        division_type: currentAdress.division_type,
+                    });
+                    const provincesAndistricts = await axios.get(
+                        `https://provinces.open-api.vn/api/p/${currentAdress.code}?depth=2`, //includes huyện và xã
+                    );
+                    let filterCarList = carList.filter((car) => {
+                        // lọc theo province
+                        return car.address.province.code == currentAdress.code;
+                    });
+                    if (filterCarList.length < 1) {
+                        setErrFilter(true);
+                    }
+                    setCarList(filterCarList);
+                    setCurrentListAdress(provincesAndistricts.data.districts);
+                    setCurrentDivisonType('Huyện/Quận');
+                } else if (currentAdress?.code && currentAdress?.division_type == 'huyện') {
+                    setCurrentDistrict({
+                        code: currentAdress.code,
+                        name: currentAdress.name,
+                        division_type: currentAdress.division_type,
+                    });
+                    let filterCarList = carList.filter((car) => {
+                        // lọc theo disctrict
+                        return car.address.district.code == currentAdress.code;
+                    });
+                    if (filterCarList.length < 1) {
+                        setErrFilter(true);
+                    }
+                    setCarList(filterCarList);
                 }
-                setCarList(filterCarList);
-                setCurrentListAdress(provincesAndistricts.data.districts);
-                setCurrentDivisonType('Huyện/Quận');
-            } else if (currentAdress?.code && currentAdress?.division_type == 'huyện') {
-                setCurrentDistrict({
-                    code: currentAdress.code,
-                    name: currentAdress.name,
-                    division_type: currentAdress.division_type,
-                });
-                let filterCarList = carList.filter((car) => {
-                    // lọc theo disctrict
-                    return car.address.district.code == currentAdress.code;
-                });
-                if (filterCarList.length < 1) {
-                    setErrFilter(true);
-                }
-                setCarList(filterCarList);
-            } else {
+            }
+            if (!currentAdress && currentBrand) {
+                await fetchAproveldCars();
+                setCarList((prev) => prev.filter((car) => car.brand == currentBrand));
+            }
+            if (currentAdress && currentBrand) {
+            }
+            if (!currentAdress && !currentBrand) {
                 setCurrentProvice({});
+                setCurrentAdress('');
+                setCurrentBrand('');
                 setCurrentDistrict({});
                 setCurrentDivisonType('Tỉnh/Thành phố');
                 getProvincesVn();
@@ -167,6 +184,7 @@ const UserHomePage = () => {
 
     useEffect(() => {
         getProvincesVn();
+        getCarBrands();
     }, []);
     const offset = currentPage * itemsPerPage;
     const currentItems = carList.slice(offset, offset + itemsPerPage);
@@ -181,13 +199,25 @@ const UserHomePage = () => {
                     <ul className={cx('row-nowrap')}>
                         {currentProvice.name && (
                             <>
-                                <li onClick={() => handleChaneDivision()}>
+                                <li onClick={() => handleFilter()}>
                                     <strong>Khu vực </strong>
                                 </li>
                                 <li>{currentProvice.name}</li>
                             </>
                         )}
                         {currentDistrict.name && <li>{currentDistrict.name}</li>}
+                    </ul>
+                    <ul className={cx('row-nowrap')}>
+                        {currentBrand ? (
+                            <>
+                                <li onClick={() => handleFilter()}>
+                                    <strong>Hãng : </strong>
+                                </li>
+                                <li>{currentBrand}</li>
+                            </>
+                        ) : (
+                            ''
+                        )}
                     </ul>
                 </div>
                 <div className={cx('content', 'row-nowrap')}>
@@ -285,25 +315,58 @@ const UserHomePage = () => {
                             ))}
                         </ul>
                     )}
+                    <div className={cx('filter', 'flex-column')}>
+                        <ul className={cx('address-filter')}>
+                            <h1>{currentDivisonType}</h1>
+                            {visibleAdress.map((p, index) => (
+                                <li
+                                    onClick={() => {
+                                        if (currentBrand) {
+                                            handleFilter(p, currentBrand);
+                                            setCurrentAdress(p);
+                                        } else {
+                                            handleFilter(p);
 
-                    <ul className={cx('address-filter')}>
-                        <h1>{currentDivisonType}</h1>
-                        {visibleAdress.map((p, index) => (
-                            <li
-                                onClick={() => {
-                                    handleChaneDivision(p);
-                                }}
-                                key={index}
-                            >
-                                {p.name}
-                            </li>
-                        ))}
-                    </ul>
-                    {currentListAdress.length > 5 && (
-                        <button onClick={() => setShowAllAdress(!showAllAdress)}>
-                            {showAllAdress ? 'Thu gọn' : 'Xem thêm'}
-                        </button>
-                    )}
+                                            setCurrentAdress(p);
+                                        }
+                                    }}
+                                    key={index}
+                                >
+                                    {p.name}
+                                </li>
+                            ))}
+                        </ul>
+                        {currentListAdress.length > 5 && (
+                            <button onClick={() => setShowAllAdress(!showAllAdress)}>
+                                {showAllAdress ? 'Thu gọn' : 'Xem thêm'}
+                            </button>
+                        )}
+                        <ul className={cx('brand-filter')}>
+                            <h1>Hãng</h1>
+                            {visibleBrands.map((b, index) => (
+                                <li
+                                    onClick={() => {
+                                        if (currentAdress) {
+                                            // xử lý nếu có address thì lọc cả address
+                                            handleFilter(currentAdress, b.name);
+                                            setCurrentBrand(b.name);
+                                        } else {
+                                            handleFilter(null, b.name);
+                                            setCurrentBrand(b.name);
+                                        }
+                                    }}
+                                    key={index}
+                                >
+                                    {b.name}
+                                </li>
+                            ))}
+                        </ul>
+                        {brands.length > 5 && (
+                            <button onClick={() => setShowAllBrands(!showAllBrands)}>
+                                {showAllBrands ? 'Thu gọn' : 'Xem thêm'}
+                            </button>
+                        )}
+                    </div>
                 </div>
 
                 <div className={cx('listChatBox', 'row-nowrap')}>

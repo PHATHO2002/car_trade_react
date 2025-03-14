@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './Post.module.scss';
 import Button from '~/components/Button';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { faCameraRetro, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ToastContainer, toast } from 'react-toastify';
@@ -14,8 +14,8 @@ function Post() {
     const [title, setTitle] = useState('');
     const [price, setPrice] = useState('');
     const [description, setDescription] = useState('');
-    const [address, setAddress] = useState('');
     const [brand, setBrand] = useState('');
+    const [brands, setBrands] = useState([]);
     const [year, setYear] = useState('');
     const [condition, setCondition] = useState('');
     const [mileage, setMileage] = useState('');
@@ -23,6 +23,9 @@ function Post() {
     const [documentImages, setDocumentImages] = useState([]);
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
+    const carImagesInputRef = useRef(null);
+    const documentImagesInputRef = useRef(null);
+
     let socket = connectSocket();
 
     // Xử lý khi chọn file
@@ -53,7 +56,9 @@ function Post() {
                 break;
         }
     };
-
+    const handleSelectBrand = (e) => {
+        setBrand(e.target.value);
+    };
     // Validate form trước khi gửi
     const validateForm = () => {
         let newErrors = {};
@@ -63,11 +68,6 @@ function Post() {
             newErrors.title = 'Tiêu đề không được để trống!';
         } else if (title.trim().length < 5) {
             newErrors.title = 'Tiêu đề phải có ít nhất 5 ký tự.';
-        }
-
-        // Kiểm tra hãng xe
-        if (!brand.trim()) {
-            newErrors.brand = 'Hãng xe không được để trống!';
         }
 
         // Kiểm tra năm sản xuất
@@ -128,9 +128,7 @@ function Post() {
                 formData.append('year', year);
                 formData.append('condition', condition);
                 formData.append('mileage', mileage);
-
                 formData.append('description', description);
-
                 carImages.forEach((file) => {
                     formData.append('carImages', file);
                 });
@@ -146,10 +144,13 @@ function Post() {
                 }
                 toast.success('Đăng tin bán xe thành công đang chờ admin duyệt!');
                 setTitle('');
-                setAddress('');
-                setDescription('');
-                setCarImages([]);
+                setBrand('');
                 setPrice('');
+                setYear('');
+                setMileage('');
+                setDescription('');
+                carImagesInputRef.current.value = '';
+                documentImagesInputRef.current.value = '';
             } catch (error) {
                 console.log(error);
                 toast.error(error.response.data.message);
@@ -158,7 +159,17 @@ function Post() {
             }
         }
     };
-
+    const getBrands = async () => {
+        try {
+            const rsp = await api.get('/car/brands');
+            setBrands(rsp.data.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    useEffect(() => {
+        getBrands();
+    }, []);
     return (
         <div className={cx('post-page')}>
             <form className={cx('post-form')} onSubmit={handleSubmit}>
@@ -182,14 +193,16 @@ function Post() {
                             )}
                         </div>
                         <div className={cx('form-group')}>
-                            <label htmlFor="title">Hãng:</label>
-                            <input
-                                type="text"
-                                id="brand"
-                                placeholder="Nhập vào hãng"
-                                value={brand}
-                                onChange={(e) => setBrand(e.target.value)}
-                            />
+                            <label htmlFor="brand">Chọn một hãng xe :</label>
+                            <select id="brand" value={brand} onChange={handleSelectBrand}>
+                                {brands.map((e, index) => {
+                                    return (
+                                        <option key={index} value={e.name}>
+                                            {e.name}
+                                        </option>
+                                    );
+                                })}
+                            </select>
                             {errors.brand && (
                                 <p className={cx('error')}>
                                     {errors.brand}
@@ -292,6 +305,7 @@ function Post() {
                                 type="file"
                                 multiple
                                 onChange={handleFileChange}
+                                ref={carImagesInputRef}
                             />
                             {errors.images && (
                                 <p className={cx('error')}>
@@ -312,6 +326,7 @@ function Post() {
                                 type="file"
                                 multiple
                                 onChange={handleFileChange}
+                                ref={documentImagesInputRef}
                             />
                             {errors.images && (
                                 <p className={cx('error')}>
