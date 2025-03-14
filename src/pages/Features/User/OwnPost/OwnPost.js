@@ -6,6 +6,7 @@ import styles from './OwnPost.module.scss';
 import { faImages, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ToastContainer, toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 import Button from '~/components/Button';
 
 import Slide from '~/components/Slider/slide';
@@ -18,10 +19,10 @@ const OwnPost = () => {
     const [images, setImages] = useState([]); // to slide image
     const [displaySlide, setDisplaySlide] = useState(false); // to displayslide
     const itemsPerPage = 4; // Số xe hiển thị mỗi trang
-
+    const user = useSelector((state) => state.auth.user);
     const fetchPosts = async () => {
         try {
-            const response = await api.get('/user/get-user-own-posts');
+            const response = await api.get(`/car?sellerId=${user.userId}`);
             setCarList(response.data.data);
         } catch (error) {
             console.log(error);
@@ -49,7 +50,7 @@ const OwnPost = () => {
         let result = window.confirm('Bạn muốn xóa tin này');
         if (result) {
             try {
-                await api.post('user/delete-post', { carId: id });
+                await api.delete(`car/${id}`);
                 setChangeCar(true);
             } catch (error) {
                 console.log(error);
@@ -95,7 +96,8 @@ const OwnPost = () => {
                                             <strong>Giá:</strong> {car.price.toLocaleString('de-DE')} VND
                                         </p>
                                         <p>
-                                            <strong>Địa chỉ người bán:</strong> {car.address}
+                                            <strong>Địa chỉ người bán:</strong> {car.address?.province?.name},
+                                            {car.address?.district?.name},{car.address?.ward?.name}
                                         </p>
 
                                         <p>

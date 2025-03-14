@@ -19,8 +19,7 @@ const ChatBox = ({ receiverId, closeChatBox, username }) => {
     let socket = connectSocket();
     const handleSendMess = async () => {
         try {
-            await api.post('/user/chat-two', { receiverId: receiverId, message: newMessage });
-
+            await api.post('/chat', { receiverId: receiverId, message: newMessage });
             socket.emit('send_message', {
                 senderId: user.userId,
                 receiverId,
@@ -41,12 +40,12 @@ const ChatBox = ({ receiverId, closeChatBox, username }) => {
     };
     const fetchMess = async () => {
         try {
-            const response = await api.post('/user/get-message', { receiverId: receiverId });
+            const response = await api.get(`/chat?receiverId=${receiverId}`);
             let messInRp = response.data.data;
             let unReadedMess = messInRp.filter((mess) => {
                 return mess.isRead == false;
             });
-            await api.post('/user/mark-readed-mess', { unReadedMess });
+            await api.patch('/chat/', { unReadedMess }); // api đánh dấu đã đọc tn
             setMessages(messInRp);
         } catch (error) {
             console.log(error);

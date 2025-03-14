@@ -138,7 +138,7 @@ function Post() {
                     formData.append('documentImages', file);
                 });
 
-                const response = await api.post('/car/post', formData, {
+                const response = await api.post('/car', formData, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                 });
                 if (socket) {

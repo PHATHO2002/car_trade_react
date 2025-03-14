@@ -6,6 +6,7 @@ import { publicRoutes, privateRoutes, adminRoutes } from '~/routes';
 import { useSelector } from 'react-redux';
 import { DefaultLayout } from '~/components/Layout';
 import { logout } from '~/redux/slices/authSlice';
+import { connectSocket } from './utils/socket';
 import ProtectedRouteLogin from './components/ProtectedRoute/ProtectedRouteLogin';
 import ProtectedRouteAdmin from './components/ProtectedRoute/ProtectedRouteAdmin';
 import api from './api/api';
@@ -15,7 +16,6 @@ function App() {
     const [loading, setLoading] = useState(true);
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const accessToken = useSelector((state) => state.auth.accessToken);
-
     useEffect(() => {
         const fetchAccessToken = async () => {
             try {
@@ -34,7 +34,14 @@ function App() {
             setLoading(false);
         }
     }, [isLoggedIn]);
-
+    useEffect(() => {
+        if (isLoggedIn && accessToken) {
+            const socket = connectSocket(); // ✅ Connect socket khi có token
+            return () => {
+                socket.disconnect(); // ✅ Cleanup để tránh rò rỉ kết nối
+            };
+        }
+    }, [accessToken]);
     if (loading) {
         return <div className="loading">Đang tải...</div>;
     }

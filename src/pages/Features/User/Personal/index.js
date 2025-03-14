@@ -81,7 +81,7 @@ const Personal = () => {
     ];
     const getUserData = async () => {
         try {
-            const response = await api.get('/user/detail');
+            const response = await api.get('/user');
 
             const { username, email, phone, address, createdAt } = response.data.data;
 
@@ -143,7 +143,7 @@ const Personal = () => {
                 getUserData();
                 toast.success('cập nhập thông tin thành công');
             } else {
-                await api.put('/user', {
+                await api.patch('/user', {
                     username,
                     email,
                     phone,

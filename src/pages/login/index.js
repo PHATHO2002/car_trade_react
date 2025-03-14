@@ -5,15 +5,13 @@ import { Link } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { login } from '~/redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { connectSocket } from '~/utils/socket';
+
 import api from '~/api/api';
 
 import React, { useState } from 'react';
 const cx = classNames.bind(styles);
 function Login() {
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -28,7 +26,7 @@ function Login() {
             const response = await api.post('/login', { username, password }); // Sử dụng instance API
             const accessToken = response.data.data.accessToken;
             const decodedUser = jwtDecode(accessToken);
-            navigate('/');
+            window.location.href = '/';
             dispatch(login({ decodedUser, accessToken })); // Cập nhật Redux state
         } catch (error) {
             console.log(error);

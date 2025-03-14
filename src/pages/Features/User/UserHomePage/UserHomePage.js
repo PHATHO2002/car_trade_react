@@ -45,8 +45,8 @@ const UserHomePage = () => {
 
     const fetchAproveldCars = async () => {
         try {
-            const response = await api.post('/car/get-selling-car');
-            const response2 = await api.post('/user/get-cart');
+            const response = await api.get('/car?status=accepted');
+            const response2 = await api.get('/cart');
             setCarList(response.data.data);
             let cartIds = response2.data.data.carIds.map((item) => item._id);
             setcartsId(cartIds);
@@ -57,7 +57,7 @@ const UserHomePage = () => {
 
     const handAddToCart = async (carId) => {
         try {
-            await api.post('/user/add-to-cart', { carId: carId });
+            await api.post('/cart', { carId: carId });
             toast.success('thêm vào giỏ hàng thành công');
         } catch (error) {
             console.log(error);

@@ -28,7 +28,7 @@ const refreshAccessToken = async () => {
     return refreshTokenRequest;
 };
 const connectSocket = () => {
-    if (!socket?.connected) {
+    if (!socket) {
         socket = io('http://localhost:5000', {
             auth: {
                 token: store.getState().auth.accessToken, // Lấy token khi connect

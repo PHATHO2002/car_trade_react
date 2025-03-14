@@ -32,8 +32,8 @@ const ChatPartnerList = () => {
     };
     const fetchListPartner = async () => {
         try {
-            const response = await api.get('/user/get-list-chat-partner');
-            const response2 = await api.get('/user/get-unread-mess');
+            const response = await api.get('/chat/list-partner');
+            const response2 = await api.get('/chat?unRead=1');
             let list = response.data.data;
             setCountUnread(response2.data.data.length);
             setUnReadMess(response2.data.data);

@@ -12,7 +12,7 @@ const Cart = () => {
 
     const fetchPendingCars = async () => {
         try {
-            const response = await api.post('/user/get-cart');
+            const response = await api.get('/cart');
             setCarList(response.data.data.carIds);
         } catch (error) {
             console.log(error);
@@ -24,7 +24,7 @@ const Cart = () => {
     };
     const handleDeleteItem = async (carId) => {
         try {
-            await api.post('/user/delete-item-in-cart', { carId });
+            await api.delete(`/cart/${carId}`);
             fetchPendingCars();
             toast.success('xóa đơn hàng thành công!');
         } catch (error) {

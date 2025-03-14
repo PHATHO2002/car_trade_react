@@ -23,7 +23,7 @@ function Register() {
         }
 
         axios
-            .post('http://localhost:5000/user/register', { username, password })
+            .post('http://localhost:5000/user', { username, password })
             .then((response) => {
                 setErrorMessage('đăng ký thành công');
             })
