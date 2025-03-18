@@ -4,14 +4,20 @@ import ReactPaginate from 'react-paginate';
 import api from '~/api/api';
 import axios from 'axios';
 import styles from './UserHomePage.module.scss';
-import { faCartShopping, faMessage, faCircleCheck, faCircleXmark, faImages } from '@fortawesome/free-solid-svg-icons';
+import {
+    faCartShopping,
+    faMessage,
+    faCircleCheck,
+    faCircleXmark,
+    faImages,
+    faArrowRight,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import { connectSocket } from '~/utils/socket';
-import ChatBox from '~/components/ChatBox/ChatBox';
-import Slide from '~/components/Slider/slide';
 import NotFound from '~/components/notFound';
+import { Link } from 'react-router-dom';
 const cx = classNames.bind(styles);
 
 const UserHomePage = () => {
@@ -20,9 +26,7 @@ const UserHomePage = () => {
     const [usersOnline, setUserOnline] = useState([]);
     const [changeCar, setChangeCar] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
-    const [receiverIdList, setReceiverIdList] = useState([]); //it was made to render list chatbox
-    const [images, setImages] = useState([]); // to slide image
-    const [displaySlide, setDisplaySlide] = useState(false); // to displayslide
+
     const user = useSelector((state) => state.auth.user);
     //state lọc theo hãng
     const [brands, setBrands] = useState([]);
@@ -53,15 +57,6 @@ const UserHomePage = () => {
         }
     };
 
-    const handAddToCart = async (carId) => {
-        try {
-            await api.post('/cart', { carId: carId });
-            toast.success('thêm vào giỏ hàng thành công');
-        } catch (error) {
-            console.log(error);
-            toast.error('thêm vào giỏ hàng thất bại');
-        }
-    };
     const handlePrice = (number) => {
         const formattedPrice = number.toLocaleString('de-DE');
         return formattedPrice;
@@ -72,22 +67,6 @@ const UserHomePage = () => {
     const handleUserOnline = (usersOnline, sellerId) => {
         const userOn = usersOnline.find((user) => user.userId === sellerId);
         return userOn;
-    };
-    const handleOpenChatBox = (receiId, username) => {
-        setReceiverIdList((prev) =>
-            prev.some((item) => item.receiId === receiId) ? prev : [...prev, { receiId, username }],
-        );
-    };
-    const closeChatBox = (receiId) => {
-        setReceiverIdList((prev) => prev.filter((item) => item.receiId !== receiId));
-    };
-    const handleOpenImages = (images) => {
-        setImages(images);
-        setDisplaySlide(true);
-    };
-    const handleCloseImages = () => {
-        setImages([]);
-        setDisplaySlide(false);
     };
 
     // fun get getProvincesVn
@@ -107,7 +86,7 @@ const UserHomePage = () => {
             console.error('Lỗi khi gọi API:', error);
         }
     };
-    const handleFilter = async (currentAdress = null, currentBrand = null) => {
+    const handleFilter = async (currentAdress = null, currentBrand = null, closeCurrentFilter = null) => {
         try {
             if (currentAdress && !currentBrand) {
                 if (currentAdress?.code && currentAdress?.division_type == 'tỉnh') {
@@ -150,14 +129,42 @@ const UserHomePage = () => {
                 setCarList((prev) => prev.filter((car) => car.brand == currentBrand));
             }
             if (currentAdress && currentBrand) {
+                await fetchAproveldCars();
+                if (currentAdress.division_type == 'tỉnh') {
+                    setCurrentProvice({
+                        code: currentAdress.code,
+                        name: currentAdress.name,
+                        division_type: currentAdress.division_type,
+                    });
+                    setCarList((prev) =>
+                        prev.filter(
+                            (car) => car.brand == currentBrand && car.address?.province.code == currentAdress.code,
+                        ),
+                    );
+                } else {
+                    setCurrentDistrict({
+                        code: currentAdress.code,
+                        name: currentAdress.name,
+                        division_type: currentAdress.division_type,
+                    });
+                    setCarList((prev) =>
+                        prev.filter(
+                            (car) => car.brand == currentBrand && car.address?.district.code == currentAdress.code,
+                        ),
+                    );
+                }
             }
-            if (!currentAdress && !currentBrand) {
+            if (closeCurrentFilter == 'address') {
                 setCurrentProvice({});
                 setCurrentAdress('');
-                setCurrentBrand('');
                 setCurrentDistrict({});
                 setCurrentDivisonType('Tỉnh/Thành phố');
                 getProvincesVn();
+                fetchAproveldCars();
+            }
+            if (closeCurrentFilter == 'brand') {
+                setCurrentBrand('');
+
                 fetchAproveldCars();
             }
         } catch (error) {
@@ -170,10 +177,6 @@ const UserHomePage = () => {
         socket.on('users_online', (data) => {
             setUserOnline(data);
         });
-        socket.on('receive_message', (data) => {
-            const { senderId, username } = data;
-            handleOpenChatBox(senderId, username);
-        }); //automatically generated chat box when a message arrives
 
         return () => {
             if (socket) {
@@ -199,21 +202,34 @@ const UserHomePage = () => {
                     <ul className={cx('row-nowrap')}>
                         {currentProvice.name && (
                             <>
-                                <li onClick={() => handleFilter()}>
+                                <li onClick={() => handleFilter(null, null, 'address')}>
                                     <strong>Khu vực </strong>
                                 </li>
-                                <li>{currentProvice.name}</li>
+                                <li>
+                                    <FontAwesomeIcon icon={faArrowRight} />
+                                    &nbsp;
+                                    {currentProvice.name}
+                                </li>
                             </>
                         )}
-                        {currentDistrict.name && <li>{currentDistrict.name}</li>}
+                        {currentDistrict.name && (
+                            <li>
+                                <FontAwesomeIcon icon={faArrowRight} />
+                                &nbsp; {currentDistrict.name}
+                            </li>
+                        )}
                     </ul>
                     <ul className={cx('row-nowrap')}>
                         {currentBrand ? (
                             <>
-                                <li onClick={() => handleFilter()}>
-                                    <strong>Hãng : </strong>
+                                <li onClick={() => handleFilter(null, null, 'brand')}>
+                                    <strong>Hãng </strong>
                                 </li>
-                                <li>{currentBrand}</li>
+                                <li>
+                                    {' '}
+                                    <FontAwesomeIcon icon={faArrowRight} />
+                                    &nbsp; {currentBrand}
+                                </li>
                             </>
                         ) : (
                             ''
@@ -225,8 +241,8 @@ const UserHomePage = () => {
                         errFilter ? (
                             <div className="col">
                                 <NotFound
-                                    title={'Không tìm thấy kết quả tìm kiếm'}
-                                    describe={'Vui long lọc theo trường khác'}
+                                    title={`Không tìm thấy `}
+                                    describe={`Không tìm thấy kết quả cho  ${currentAdress.name} ${currentBrand}`}
                                 />
                             </div>
                         ) : (
@@ -235,16 +251,11 @@ const UserHomePage = () => {
                             </div>
                         )
                     ) : (
-                        <ul className={cx('product-list', 'col', 'flex-column')}>
+                        <ul className={cx('product-list', 'col-full', 'flex-column')}>
                             {newCurrentItems.map((car, index) => (
                                 <li className={cx('row-nowrap')} key={index}>
                                     <div className="col">
-                                        <div
-                                            className={cx('images')}
-                                            onClick={() => {
-                                                handleOpenImages(car.images);
-                                            }}
-                                        >
+                                        <div className={cx('images')}>
                                             <span className={cx('img-quantity')}>
                                                 {' '}
                                                 <FontAwesomeIcon icon={faImages} />
@@ -255,7 +266,9 @@ const UserHomePage = () => {
                                     <div className="col">
                                         {' '}
                                         <div className={cx('information', 'flex-column')}>
-                                            <h3 className={cx('title')}>{car.title}</h3>
+                                            <Link to={`/car/${car._id}`}>
+                                                <h3 className={cx('title')}>{car.title}</h3>
+                                            </Link>
                                             <p className={cx('price')}>
                                                 <strong>Giá:</strong> {handlePrice(car.price)} VND
                                             </p>
@@ -268,11 +281,9 @@ const UserHomePage = () => {
 
                                             <p>
                                                 <strong>Địa chỉ người bán:</strong> {car.address?.province?.name},
-                                                {car.address?.district?.name},{car.address?.ward?.name}
+                                                {car.address?.district?.name},
                                             </p>
-                                            <p>
-                                                <strong>Ngày đăng:</strong> {new Date(car.createdAt).toLocaleString()}
-                                            </p>
+
                                             {handleUserOnline(usersOnline, car.sellerId) ? (
                                                 <p className={cx('online')}>
                                                     <FontAwesomeIcon icon={faCircleCheck} /> người bán online
@@ -286,27 +297,22 @@ const UserHomePage = () => {
                                                 {cartIdList.includes(car._id) ? (
                                                     <p>đã thêm vào giỏ hàng</p>
                                                 ) : (
-                                                    <div
-                                                        className={cx('cart')}
-                                                        onClick={() => {
-                                                            handAddToCart(car._id);
-                                                            setChangeCar(car._id);
-                                                        }}
-                                                    >
-                                                        <FontAwesomeIcon icon={faCartShopping} />
-                                                    </div>
+                                                    <Link to={`/car/${car._id}`}>
+                                                        <p>
+                                                            <div className={cx('cart')}>
+                                                                <FontAwesomeIcon icon={faCartShopping} />
+                                                            </div>
+                                                        </p>
+                                                    </Link>
                                                 )}
 
                                                 <div className={cx('chat')}>
-                                                    <p>
-                                                        {' '}
-                                                        <FontAwesomeIcon
-                                                            onClick={() => {
-                                                                handleOpenChatBox(car.sellerId, car.sellerName);
-                                                            }}
-                                                            icon={faMessage}
-                                                        />
-                                                    </p>
+                                                    <Link to={`/car/${car._id}`}>
+                                                        <p>
+                                                            {' '}
+                                                            <FontAwesomeIcon icon={faMessage} />
+                                                        </p>
+                                                    </Link>
                                                 </div>
                                             </div>
                                         </div>
@@ -315,13 +321,14 @@ const UserHomePage = () => {
                             ))}
                         </ul>
                     )}
-                    <div className={cx('filter', 'flex-column')}>
+                    <div className={cx('filter', 'col-3', 'flex-column')}>
                         <ul className={cx('address-filter')}>
-                            <h1>{currentDivisonType}</h1>
+                            <h3>{currentDivisonType}</h3>
                             {visibleAdress.map((p, index) => (
                                 <li
                                     onClick={() => {
                                         if (currentBrand) {
+                                            // if exist current brand will filter both of them
                                             handleFilter(p, currentBrand);
                                             setCurrentAdress(p);
                                         } else {
@@ -342,7 +349,7 @@ const UserHomePage = () => {
                             </button>
                         )}
                         <ul className={cx('brand-filter')}>
-                            <h1>Hãng</h1>
+                            <h3>Hãng</h3>
                             {visibleBrands.map((b, index) => (
                                 <li
                                     onClick={() => {
@@ -369,17 +376,6 @@ const UserHomePage = () => {
                     </div>
                 </div>
 
-                <div className={cx('listChatBox', 'row-nowrap')}>
-                    {receiverIdList.slice(-2).map((item) => (
-                        <ChatBox
-                            key={item.receiId}
-                            receiverId={item.receiId}
-                            username={item.username}
-                            closeChatBox={closeChatBox}
-                        />
-                    ))}
-                </div>
-
                 {/* Phân trang */}
                 <ReactPaginate
                     previousLabel={'«'}
@@ -392,7 +388,7 @@ const UserHomePage = () => {
                     containerClassName={cx('pagination')}
                     activeClassName={'active'}
                 />
-                {displaySlide ? <Slide images={images} closeSlide={handleCloseImages} /> : ''}
+
                 <ToastContainer position="top-right" autoClose={3000} />
             </>
         </div>

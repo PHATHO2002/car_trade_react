@@ -5,7 +5,7 @@
     --text-color: #333;
 
     // Default layout
-    --default-layout-header-height: 60px;
+    --default-layout-header-height: 6rem;
     --default-layout-width: 80%;
 }
 * {
@@ -30,6 +30,12 @@ input,
 [tabindex] {
     outline: none;
     border: none;
+}
+ul {
+    list-style: none; /* Loại bỏ dấu chấm, số hoặc kiểu danh sách */
+}
+li {
+    cursor: pointer;
 }
 .row {
     display: flex;
@@ -56,21 +62,27 @@ input,
 }
 .col-1 {
     flex: 0 0 calc(100% / 12 * 1);
+    min-width: 0;
 }
 .col-2 {
     flex: 0 0 calc(100% / 12 * 2);
+    min-width: 0;
 }
 .col-3 {
     flex: 0 0 calc(100% / 12 * 3);
+    min-width: 0;
 }
 .col-4 {
     flex: 0 0 calc(100% / 12 * 4);
+    max-width: 100%;
 }
 .col-6 {
     flex: 0 0 calc(100% / 12 * 6);
+    min-width: 0;
 }
 .col-12 {
     flex: 0 0 100%;
+    min-width: 0;
 }
 .flex-column {
     display: flex;

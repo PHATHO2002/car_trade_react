@@ -10,12 +10,22 @@ import { connectSocket } from './utils/socket';
 import ProtectedRouteLogin from './components/ProtectedRoute/ProtectedRouteLogin';
 import ProtectedRouteAdmin from './components/ProtectedRoute/ProtectedRouteAdmin';
 import api from './api/api';
+import ChatBox from './components/ChatBox/ChatBox';
 
 function App() {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const accessToken = useSelector((state) => state.auth.accessToken);
+    const [receiverIdList, setReceiverIdList] = useState([]); //it was made to render list chatbox
+    const handleOpenChatBox = (receiId, username) => {
+        setReceiverIdList((prev) =>
+            prev.some((item) => item.receiId === receiId) ? prev : [...prev, { receiId, username }],
+        );
+    };
+    const closeChatBox = (receiId) => {
+        setReceiverIdList((prev) => prev.filter((item) => item.receiId !== receiId));
+    };
     useEffect(() => {
         const fetchAccessToken = async () => {
             try {
@@ -37,6 +47,11 @@ function App() {
     useEffect(() => {
         if (isLoggedIn && accessToken) {
             const socket = connectSocket(); // ✅ Connect socket khi có token
+            socket.on('receive_message', (data) => {
+                const { senderId, username } = data;
+                handleOpenChatBox(senderId, username);
+            }); //automatically generated chat box when a message arrives
+
             return () => {
                 socket.disconnect(); // ✅ Cleanup để tránh rò rỉ kết nối
             };
@@ -116,6 +131,15 @@ function App() {
                         );
                     })}
                 </Routes>
+
+                {receiverIdList.slice(-2).map((item) => (
+                    <ChatBox
+                        key={item.receiId}
+                        receiverId={item.receiId}
+                        username={item.username}
+                        closeChatBox={closeChatBox}
+                    />
+                ))}
             </div>
         </Router>
     );
