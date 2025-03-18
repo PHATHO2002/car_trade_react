@@ -6,11 +6,7 @@ import ChatPartnerList from '~/components/ChatList/ChatList';
 import {
     faRightToBracket,
     faArrowUpFromBracket,
-    faSignOut,
     faUser,
-    faAddressBook,
-    faNewspaper,
-    faCartShopping,
     faHouse,
     faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons';

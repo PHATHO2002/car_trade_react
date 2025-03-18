@@ -92,9 +92,6 @@ const DetailCar = () => {
                             </span>
                             <img src={carDetail.images[0]} alt={carDetail.title} />
                         </div>
-                    </div>
-                    <div className="col">
-                        {' '}
                         <div className={cx('information', 'flex-column')}>
                             <h3 className={cx('title')}>{carDetail.title}</h3>
 
@@ -134,6 +131,7 @@ const DetailCar = () => {
                             </div>
                         </div>
                     </div>
+                    <div className="col"> </div>
                 </div>
                 {displaySlide ? <Slide images={images} closeSlide={handleCloseImages} /> : ''}
                 <ToastContainer position="top-right" autoClose={3000} />

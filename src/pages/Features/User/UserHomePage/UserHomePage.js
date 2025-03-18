@@ -24,7 +24,6 @@ const UserHomePage = () => {
     const [carList, setCarList] = useState([]);
     const [cartIdList, setcartsId] = useState([]);
     const [usersOnline, setUserOnline] = useState([]);
-    const [changeCar, setChangeCar] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
 
     const user = useSelector((state) => state.auth.user);
@@ -173,6 +172,8 @@ const UserHomePage = () => {
     };
     useEffect(() => {
         fetchAproveldCars();
+        getProvincesVn();
+        getCarBrands();
         socket = connectSocket();
         socket.on('users_online', (data) => {
             setUserOnline(data);
@@ -183,11 +184,6 @@ const UserHomePage = () => {
                 socket.off('users_online');
             }
         };
-    }, [changeCar]);
-
-    useEffect(() => {
-        getProvincesVn();
-        getCarBrands();
     }, []);
     const offset = currentPage * itemsPerPage;
     const currentItems = carList.slice(offset, offset + itemsPerPage);
@@ -253,71 +249,65 @@ const UserHomePage = () => {
                     ) : (
                         <ul className={cx('product-list', 'col-full', 'flex-column')}>
                             {newCurrentItems.map((car, index) => (
-                                <li className={cx('row-nowrap')} key={index}>
-                                    <div className="col">
-                                        <div className={cx('images')}>
-                                            <span className={cx('img-quantity')}>
-                                                {' '}
-                                                <FontAwesomeIcon icon={faImages} />
-                                            </span>
-                                            <img src={car.images[0]} alt={car.title} />
+                                <Link to={`/car/${car._id}`}>
+                                    <li className={cx('row-nowrap')} key={index}>
+                                        <div className="col">
+                                            <div className={cx('images')}>
+                                                <img src={car.images[0]} alt={car.title} />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="col">
-                                        {' '}
-                                        <div className={cx('information', 'flex-column')}>
-                                            <Link to={`/car/${car._id}`}>
-                                                <h3 className={cx('title')}>{car.title}</h3>
-                                            </Link>
-                                            <p className={cx('price')}>
-                                                <strong>Giá:</strong> {handlePrice(car.price)} VND
-                                            </p>
-                                            <p>
-                                                <strong>Hãng xe:</strong> {car.brand}
-                                            </p>
-                                            <p>
-                                                <strong>năm sản xuất:</strong> {car.year}
-                                            </p>
-
-                                            <p>
-                                                <strong>Địa chỉ người bán:</strong> {car.address?.province?.name},
-                                                {car.address?.district?.name},
-                                            </p>
-
-                                            {handleUserOnline(usersOnline, car.sellerId) ? (
-                                                <p className={cx('online')}>
-                                                    <FontAwesomeIcon icon={faCircleCheck} /> người bán online
+                                        <div className="col">
+                                            {' '}
+                                            <div className={cx('information', 'flex-column')}>
+                                                <Link to={`/car/${car._id}`}>
+                                                    <h3 className={cx('title')}>{car.title}</h3>
+                                                </Link>
+                                                <p className={cx('price')}>
+                                                    <strong>Giá:</strong> {handlePrice(car.price)} VND
                                                 </p>
-                                            ) : (
-                                                <p className={cx('offline')}>
-                                                    <FontAwesomeIcon icon={faCircleXmark} /> người bán offline
+                                                <p>
+                                                    <strong>Hãng xe:</strong> {car.brand}
                                                 </p>
-                                            )}
-                                            <div className={cx('actions', 'row')}>
-                                                {cartIdList.includes(car._id) ? (
-                                                    <p>đã thêm vào giỏ hàng</p>
+                                                <p>
+                                                    <strong>năm sản xuất:</strong> {car.year}
+                                                </p>
+
+                                                <p>
+                                                    <strong>Địa chỉ người bán:</strong> {car.address?.province?.name},
+                                                    {car.address?.district?.name},
+                                                </p>
+
+                                                {handleUserOnline(usersOnline, car.sellerId) ? (
+                                                    <p className={cx('online')}>
+                                                        <FontAwesomeIcon icon={faCircleCheck} /> người bán online
+                                                    </p>
                                                 ) : (
-                                                    <Link to={`/car/${car._id}`}>
+                                                    <p className={cx('offline')}>
+                                                        <FontAwesomeIcon icon={faCircleXmark} /> người bán offline
+                                                    </p>
+                                                )}
+                                                <div className={cx('actions', 'row')}>
+                                                    {cartIdList.includes(car._id) ? (
+                                                        <p>đã thêm vào giỏ hàng</p>
+                                                    ) : (
                                                         <p>
                                                             <div className={cx('cart')}>
                                                                 <FontAwesomeIcon icon={faCartShopping} />
                                                             </div>
                                                         </p>
-                                                    </Link>
-                                                )}
+                                                    )}
 
-                                                <div className={cx('chat')}>
-                                                    <Link to={`/car/${car._id}`}>
+                                                    <div className={cx('chat')}>
                                                         <p>
                                                             {' '}
                                                             <FontAwesomeIcon icon={faMessage} />
                                                         </p>
-                                                    </Link>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </li>
+                                    </li>
+                                </Link>
                             ))}
                         </ul>
                     )}
