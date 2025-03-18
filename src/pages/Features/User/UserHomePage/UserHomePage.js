@@ -9,7 +9,7 @@ import {
     faMessage,
     faCircleCheck,
     faCircleXmark,
-    faImages,
+    faFilter,
     faArrowRight,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -31,6 +31,10 @@ const UserHomePage = () => {
     const [brands, setBrands] = useState([]);
     const [currentBrand, setCurrentBrand] = useState('');
     const [showAllBrands, setShowAllBrands] = useState(false); // see more or Hide address
+    const [showFilter, setShowFilter] = useState(false); // for responsive
+    const toggleShowFilter = () => {
+        setShowFilter((prev) => !prev);
+    };
     // state lọc theo adress
     const [currentListAdress, setCurrentListAdress] = useState([]); //list province or quận huyện or xã
     const [currentAdress, setCurrentAdress] = useState(''); // check if filter address exits;
@@ -250,7 +254,7 @@ const UserHomePage = () => {
                         <ul className={cx('product-list', 'col-full', 'flex-column')}>
                             {newCurrentItems.map((car, index) => (
                                 <Link to={`/car/${car._id}`}>
-                                    <li className={cx('row-nowrap')} key={index}>
+                                    <li className={cx('row-nowrap', 'boder_custom')} key={index}>
                                         <div className="col">
                                             <div className={cx('images')}>
                                                 <img src={car.images[0]} alt={car.title} />
@@ -362,6 +366,66 @@ const UserHomePage = () => {
                             <button onClick={() => setShowAllBrands(!showAllBrands)}>
                                 {showAllBrands ? 'Thu gọn' : 'Xem thêm'}
                             </button>
+                        )}
+                    </div>
+
+                    <div className={cx('filter_mobile', showFilter ? 'col-3' : '', 'flex-column')}>
+                        <FontAwesomeIcon icon={faFilter} onClick={toggleShowFilter} />
+
+                        {showFilter && (
+                            <>
+                                <ul className={cx('address-filter')}>
+                                    <h3>{currentDivisonType}</h3>
+                                    {visibleAdress.map((p, index) => (
+                                        <li
+                                            onClick={() => {
+                                                if (currentBrand) {
+                                                    // if exist current brand will filter both of them
+                                                    handleFilter(p, currentBrand);
+                                                    setCurrentAdress(p);
+                                                } else {
+                                                    handleFilter(p);
+
+                                                    setCurrentAdress(p);
+                                                }
+                                            }}
+                                            key={index}
+                                        >
+                                            {p.name}
+                                        </li>
+                                    ))}
+                                </ul>
+                                {currentListAdress.length > 5 && (
+                                    <button onClick={() => setShowAllAdress(!showAllAdress)}>
+                                        {showAllAdress ? 'Thu gọn' : 'Xem thêm'}
+                                    </button>
+                                )}
+                                <ul className={cx('brand-filter')}>
+                                    <h3>Hãng</h3>
+                                    {visibleBrands.map((b, index) => (
+                                        <li
+                                            onClick={() => {
+                                                if (currentAdress) {
+                                                    // xử lý nếu có address thì lọc cả address
+                                                    handleFilter(currentAdress, b.name);
+                                                    setCurrentBrand(b.name);
+                                                } else {
+                                                    handleFilter(null, b.name);
+                                                    setCurrentBrand(b.name);
+                                                }
+                                            }}
+                                            key={index}
+                                        >
+                                            {b.name}
+                                        </li>
+                                    ))}
+                                </ul>
+                                {brands.length > 5 && (
+                                    <button onClick={() => setShowAllBrands(!showAllBrands)}>
+                                        {showAllBrands ? 'Thu gọn' : 'Xem thêm'}
+                                    </button>
+                                )}
+                            </>
                         )}
                     </div>
                 </div>

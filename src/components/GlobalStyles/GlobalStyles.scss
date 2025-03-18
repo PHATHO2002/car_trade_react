@@ -93,7 +93,12 @@ a[href] {
     text-decoration: none;
     color: inherit;
 }
-
+.boder_custom {
+    margin-top: 1rem;
+    padding: 1.6rem;
+    border-radius: 0.5rem;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
 @media (max-width: 768px) {
     html {
         font-size: 50%;

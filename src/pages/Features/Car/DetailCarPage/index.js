@@ -3,7 +3,14 @@ import { useEffect, useState } from 'react';
 import api from '~/api/api';
 import styles from './detailCar.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMessage, faImages, faCartShopping } from '@fortawesome/free-solid-svg-icons';
+import {
+    faMessage,
+    faImages,
+    faCartShopping,
+    faPhone,
+    faEnvelope,
+    faLocationDot,
+} from '@fortawesome/free-solid-svg-icons';
 import { connectSocket } from '~/utils/socket';
 import { useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
@@ -15,6 +22,7 @@ const DetailCar = () => {
     const [images, setImages] = useState([]); // to slide image
     const [displaySlide, setDisplaySlide] = useState(false); // to displayslide
     const [carDetail, setCarDetail] = useState({});
+    const [seller, setSeller] = useState({});
     const [loading, setLoading] = useState(true);
     let socket;
     const [receiverIdList, setReceiverIdList] = useState([]); //it was made to render list chatbox
@@ -42,8 +50,9 @@ const DetailCar = () => {
     const getDetailCar = async () => {
         try {
             const rsp = await api.get(`/car?_id=${id}`);
-
+            const rsp2 = await api.get(`/user?_id=${rsp.data.data[0].sellerId}`);
             setCarDetail(rsp.data.data[0]);
+            setSeller(rsp2.data.data[0]);
         } catch (error) {
             console.log(error);
         } finally {
@@ -79,9 +88,9 @@ const DetailCar = () => {
         <>
             <div className={cx('wraper')}>
                 <div className={cx('row-nowrap')}>
-                    <div className="col">
+                    <div className="col-full">
                         <div
-                            className={cx('images')}
+                            className={cx('images', 'boder_custom')}
                             onClick={() => {
                                 handleOpenImages(carDetail.images);
                             }}
@@ -90,48 +99,101 @@ const DetailCar = () => {
                                 {' '}
                                 <FontAwesomeIcon icon={faImages} />
                             </span>
+
                             <img src={carDetail.images[0]} alt={carDetail.title} />
                         </div>
-                        <div className={cx('information', 'flex-column')}>
+                        <div className={cx('title_price', 'boder_custom')}>
                             <h3 className={cx('title')}>{carDetail.title}</h3>
 
-                            <p className={cx('price')}>
-                                {console.log(carDetail.price)}
-                                <strong>Giá:</strong> {handlePrice(carDetail.price)} VND
-                            </p>
-                            <p>
-                                <strong>Hãng xe:</strong> {carDetail.brand}
-                            </p>
-                            <p>
-                                <strong>năm sản xuất:</strong> {carDetail.year}
-                            </p>
-
-                            <p>
-                                <strong>Địa chỉ người bán:</strong> {carDetail.address?.province?.name},
-                                {carDetail.address?.district?.name},
-                            </p>
-                            <div
-                                className={cx('cart')}
-                                onClick={() => {
-                                    handAddToCart(carDetail._id);
-                                }}
-                            >
-                                <FontAwesomeIcon icon={faCartShopping} />
-                            </div>
-                            <div className={cx('chat')}>
+                            <p className={cx('price')}>{handlePrice(carDetail.price)} Đ</p>
+                            <div className={cx('action', 'row-nowrap')}>
+                                <p
+                                    onClick={() => {
+                                        handAddToCart(carDetail._id);
+                                    }}
+                                    title="Thêm vào giỏ hàng"
+                                >
+                                    <FontAwesomeIcon icon={faCartShopping} />
+                                </p>
                                 <p>
-                                    {' '}
                                     <FontAwesomeIcon
                                         onClick={() => {
                                             handleOpenChatBox(carDetail.sellerId, carDetail.sellerName);
                                         }}
+                                        title="chat với người bán"
                                         icon={faMessage}
                                     />
                                 </p>
                             </div>
+
+                            <p className={cx('date')}>
+                                <strong>Ngày đăng</strong>{' '}
+                                {new Date(carDetail.createdAt).toLocaleDateString('vi-VN', {
+                                    month: 'long',
+                                    year: 'numeric',
+                                })}{' '}
+                            </p>
+                        </div>
+                        <div className={cx('describe', 'boder_custom', 'flex-column')}>
+                            <h3>Miêu tả</h3>
+                            <div className="row-nowrap">
+                                <p>{carDetail.description}</p>
+                            </div>
+                        </div>
+                        <div className={cx('information', 'boder_custom', 'flex-column')}>
+                            <h3>Thông tin cơ bản</h3>
+                            <div className="row-nowrap">
+                                <p>
+                                    <strong>Hãng xe:</strong> {carDetail.brand}
+                                </p>
+                                <p>
+                                    <strong>Số vạn:</strong> {carDetail.mileage} Km
+                                </p>
+                            </div>
+                            <div className="row-nowrap">
+                                <p>
+                                    <strong>Tình trạng:</strong> {carDetail.condition}
+                                </p>
+                                <p>
+                                    <strong>Miêu tả:</strong> {carDetail.description}
+                                </p>
+                                <p>
+                                    <strong>năm sản xuất:</strong> {carDetail.year}
+                                </p>
+                            </div>
                         </div>
                     </div>
-                    <div className="col"> </div>
+                    <div className="col-3">
+                        <div className={cx('seller', 'boder_custom')}>
+                            <div className={cx('resume', 'flex-column')}>
+                                <div className="col">
+                                    <img src="https://muaban.net/images/account/avatar-default.png"></img>
+                                </div>
+
+                                <div className="col">
+                                    <h3>
+                                        {carDetail.sellerName}
+                                        &nbsp;
+                                        {'(Người bán)'}
+                                    </h3>
+                                    <div className={cx('seller-infor')}>
+                                        <p>
+                                            <FontAwesomeIcon icon={faPhone} /> &nbsp;{seller.phone}
+                                        </p>
+
+                                        <p>
+                                            <FontAwesomeIcon icon={faEnvelope} /> &nbsp;{seller.email}
+                                        </p>
+                                        <p>
+                                            <FontAwesomeIcon icon={faLocationDot} />
+                                            &nbsp; {carDetail.address?.province?.name},
+                                            {carDetail.address?.district?.name},{carDetail.address?.ward?.name}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 {displaySlide ? <Slide images={images} closeSlide={handleCloseImages} /> : ''}
                 <ToastContainer position="top-right" autoClose={3000} />

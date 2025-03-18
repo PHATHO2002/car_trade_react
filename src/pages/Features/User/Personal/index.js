@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import api from '~/api/api';
 import axios from 'axios';
-import { faPenToSquare, faRectangleXmark, faCaretLeft, faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { useSelector } from 'react-redux';
+import { faPenToSquare, faRectangleXmark } from '@fortawesome/free-solid-svg-icons';
 import { ToastContainer, toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames/bind';
@@ -21,7 +22,7 @@ const Personal = () => {
     const [address, setAddress] = useState({});
     const [createdAt, setCreatedAt] = useState('');
     const [editingField, setEditingField] = useState([]);
-
+    const userData = useSelector((state) => state.auth.user);
     // handler select address
     const [currentProvice, setCurrentProvice] = useState({});
     const [currentDistrict, setCurrentDistrict] = useState({});
@@ -80,9 +81,9 @@ const Personal = () => {
     ];
     const getUserData = async () => {
         try {
-            const response = await api.get('/user');
+            const response = await api.get(`/user?_id=${userData.userId}`);
 
-            const { username, email, phone, address, createdAt } = response.data.data;
+            const { username, email, phone, address, createdAt } = response.data.data[0];
 
             setUsername(username);
             setEmail(email);
@@ -123,7 +124,7 @@ const Personal = () => {
 
             if (districtSelectRef.current && wardSelectRef.current) {
                 // cập nhập dữ liệu option hieent thị hiện tại
-                await api.put('/user', {
+                await api.patch('/user', {
                     username,
                     email,
                     phone,

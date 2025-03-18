@@ -106,6 +106,32 @@ function Header() {
                         <span>Đăng nhập</span>
                     </Link>
                 </div>
+                <div className={cx('bottom-header')}>
+                    {/* //appeared when this web on mobile */}
+                    <ul className={cx('bottom-menu')}>
+                        <li>
+                            <Link to="/">
+                                <FontAwesomeIcon icon={faHouse} />
+                            </Link>
+                        </li>
+                        <li>
+                            <ChatPartnerList />
+                        </li>
+                        <li>
+                            <FontAwesomeIcon icon={faMagnifyingGlass} />
+                        </li>
+                        <li>
+                            <Link to="/user/post">
+                                <FontAwesomeIcon icon={faArrowUpFromBracket} />
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/user/Personal">
+                                <FontAwesomeIcon icon={faUser} />
+                            </Link>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     );
