@@ -42,7 +42,7 @@ function Login() {
                         <img src="/images/welcome.webp" />
                     </div>
                     <div className={cx('login-form')}>
-                        <h2>Đăng nhập</h2>
+                        <h3>Đăng nhập</h3>
 
                         <div className={cx('form-group')}>
                             <label for="username">Tên đăng nhập:</label>

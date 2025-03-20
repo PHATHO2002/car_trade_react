@@ -1,11 +1,11 @@
 :root {
-    --primary: #fe2c55;
+    --primary: #00c6ff;
     --black: #000;
     --white: #fff;
     --text-color: #333;
 
     // Default layout
-    --default-layout-header-height: 60px;
+    --default-layout-header-height: 6rem;
     --default-layout-width: 80%;
 }
 * {
@@ -25,11 +25,23 @@ body {
     width: 100%;
     overflow-x: hidden;
 }
-button,
-input,
-[tabindex] {
-    outline: none;
-    border: none;
+
+input {
+    width: 100%; /* Full chiều rộng */
+    padding: 1.5rem 2rem;
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: #333; /* Màu chữ đậm */
+    border: 2px solid var(--primary); /* Viền sử dụng màu chủ đạo */
+    border-radius: 0.5rem;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+ul {
+    list-style: none; /* Loại bỏ dấu chấm, số hoặc kiểu danh sách */
+}
+li {
+    cursor: pointer;
 }
 .row {
     display: flex;
@@ -56,21 +68,27 @@ input,
 }
 .col-1 {
     flex: 0 0 calc(100% / 12 * 1);
+    min-width: 0;
 }
 .col-2 {
     flex: 0 0 calc(100% / 12 * 2);
+    min-width: 0;
 }
 .col-3 {
     flex: 0 0 calc(100% / 12 * 3);
+    min-width: 0;
 }
 .col-4 {
     flex: 0 0 calc(100% / 12 * 4);
+    max-width: 100%;
 }
 .col-6 {
     flex: 0 0 calc(100% / 12 * 6);
+    min-width: 0;
 }
 .col-12 {
     flex: 0 0 100%;
+    min-width: 0;
 }
 .flex-column {
     display: flex;
@@ -81,7 +99,34 @@ a[href] {
     text-decoration: none;
     color: inherit;
 }
+.boder_custom {
+    margin-top: 1rem;
+    padding: 1.6rem;
+    border-radius: 0.5rem;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+h3 {
+    text-align: center;
+    font-weight: bold;
+    color: var(--primary); /* Màu chữ tối hơn để dễ đọc */
+    text-transform: uppercase; /* Chữ in hoa cho nổi bật */
+    letter-spacing: 2px; /* Tạo khoảng cách giữa các chữ */
+    margin-bottom: 1rem; /* Tạo khoảng cách dưới */
+    padding: 0.5rem;
+}
+label {
+    display: inline-flex;
+    padding: 1rem, 1.2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--primary); /* Dùng biến màu chủ đạo */
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
 
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
 @media (max-width: 768px) {
     html {
         font-size: 50%;

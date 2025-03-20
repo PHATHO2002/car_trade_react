@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './Post.module.scss';
 import Button from '~/components/Button';
 import { useEffect, useState, useRef } from 'react';
-import { faCameraRetro, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -33,11 +33,11 @@ function Post() {
         switch (e.target.id) {
             case 'carImages': {
                 const files = Array.from(e.target.files);
-                if (files.length > 10) {
-                    setErrors((prev) => ({ ...prev, images: 'Bạn chỉ được tải lên tối đa 10 ảnh!' }));
+                if (files.length > 10 || carImages.length >= 10) {
+                    setErrors((prev) => ({ ...prev, carimages: 'Bạn chỉ được tải lên tối đa 10 ảnh!' }));
                 } else {
-                    setCarImages(files);
-                    setErrors((prev) => ({ ...prev, images: '' }));
+                    setCarImages((prev) => [...prev, ...files]);
+                    setErrors((prev) => ({ ...prev, carimages: '' }));
                 }
                 break;
             }
@@ -45,10 +45,10 @@ function Post() {
             case 'documentImages': {
                 const files = Array.from(e.target.files);
                 if (files.length > 10) {
-                    setErrors((prev) => ({ ...prev, images: 'Bạn chỉ được tải lên tối đa 10 ảnh!' }));
+                    setErrors((prev) => ({ ...prev, docimages: 'Bạn chỉ được tải lên tối đa 10 ảnh!' }));
                 } else {
-                    setDocumentImages(files);
-                    setErrors((prev) => ({ ...prev, images: '' }));
+                    setDocumentImages((prev) => [...prev, ...files]);
+                    setErrors((prev) => ({ ...prev, docimages: '' }));
                 }
                 break;
             }
@@ -142,7 +142,9 @@ function Post() {
                 if (socket) {
                     socket.emit('addnewPendingCar', response.data.data);
                 }
-                toast.success('Đăng tin bán xe thành công đang chờ admin duyệt!');
+                toast.success(
+                    'Đăng tin bán xe thành công đang chờ admin duyệt! chúng tôi cũng đã gửi mail chúc mừng bạn',
+                );
                 setTitle('');
                 setBrand('');
                 setPrice('');
@@ -171,9 +173,9 @@ function Post() {
         getBrands();
     }, []);
     return (
-        <div className={cx('post-page')}>
+        <div className={cx('wraper')}>
             <form className={cx('post-form')} onSubmit={handleSubmit}>
-                <h2>Đăng tin </h2>
+                <h3>Đăng tin </h3>
                 <div className="row-nowrap">
                     <div className="col">
                         <div className={cx('form-group')}>
@@ -294,40 +296,55 @@ function Post() {
                     </div>
                     <div className="col">
                         <div className={cx('form-group')}>
-                            <label htmlFor="carImages">
-                                {' '}
-                                Tải lên hình ảnh về xe <FontAwesomeIcon icon={faCameraRetro} />{' '}
-                            </label>
-                            <input
-                                id="carImages"
-                                accept="image/png, image/jpeg, image/gif"
-                                className={cx('choose-file')}
-                                type="file"
-                                multiple
-                                onChange={handleFileChange}
-                                ref={carImagesInputRef}
-                            />
-                            {errors.images && (
+                            <h4>Tải lên hình ảnh về xe</h4>
+
+                            <div className={cx('box-image', 'row')}>
+                                <label htmlFor="carImages" className={cx('upload-label')}>
+                                    {' '}
+                                    <FontAwesomeIcon icon={faPlus} />{' '}
+                                </label>
+
+                                <input
+                                    id="carImages"
+                                    accept="image/png, image/jpeg, image/gif"
+                                    className={cx('choose-file')}
+                                    type="file"
+                                    onChange={handleFileChange}
+                                    ref={carImagesInputRef}
+                                />
+                                {carImages.map((file, index) => (
+                                    <img key={index} src={URL.createObjectURL(file)} alt={`Car ${index + 1}`} />
+                                ))}
+                            </div>
+
+                            {errors.carimages && (
                                 <p className={cx('error')}>
-                                    {errors.images}
+                                    {errors.carimages}
                                     <FontAwesomeIcon icon={faTriangleExclamation} />
                                 </p>
                             )}
                         </div>
                         <div className={cx('form-group')}>
-                            <label htmlFor="documentImages">
-                                {' '}
-                                Tải lên hình ảnh về giấy tờ xe <FontAwesomeIcon icon={faCameraRetro} />{' '}
-                            </label>
-                            <input
-                                id="documentImages"
-                                accept="image/png, image/jpeg, image/gif"
-                                className={cx('choose-file')}
-                                type="file"
-                                multiple
-                                onChange={handleFileChange}
-                                ref={documentImagesInputRef}
-                            />
+                            <h4> Tải lên hình ảnh về giấy tờ xe</h4>
+
+                            <div className={cx('box-image', 'row')}>
+                                <label htmlFor="documentImages" className={cx('upload-label')}>
+                                    {' '}
+                                    <FontAwesomeIcon icon={faPlus} />{' '}
+                                </label>
+                                <input
+                                    id="documentImages"
+                                    accept="image/png, image/jpeg, image/gif"
+                                    className={cx('choose-file')}
+                                    type="file"
+                                    onChange={handleFileChange}
+                                    ref={documentImagesInputRef}
+                                />
+                                {documentImages.map((file, index) => (
+                                    <img key={index} src={URL.createObjectURL(file)} alt={`Car ${index + 1}`} />
+                                ))}
+                            </div>
+
                             {errors.images && (
                                 <p className={cx('error')}>
                                     {errors.images}

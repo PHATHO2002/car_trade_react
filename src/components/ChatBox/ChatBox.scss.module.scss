@@ -1,6 +1,9 @@
 .chat-box {
     width: 300px;
-
+    position: fixed;
+    bottom: var(--default-layout-header-height);
+    right: 3rem;
+    z-index: 9999;
     .chat-header {
         background-color: var(--primary);
         color: aliceblue;

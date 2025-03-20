@@ -37,9 +37,6 @@ const Search = () => {
                             setQuery(e.target.value);
                         }}
                     ></input>
-                    <div className={cx('search-btn')}>
-                        <FontAwesomeIcon icon={faMagnifyingGlass} />
-                    </div>
                 </div>
             </div>
             <ul className={cx('search-result')}>
