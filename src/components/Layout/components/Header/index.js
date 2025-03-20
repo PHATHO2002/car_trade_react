@@ -10,7 +10,7 @@ import {
     faHouse,
     faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons';
-import Search from '~/components/Search/search';
+
 import { useSelector } from 'react-redux';
 import Button from '~/components/Button';
 import styles from './Header.module.scss';
@@ -28,9 +28,7 @@ function Header() {
                 <div className={cx('logo')}>
                     <img src="https://muaban.net/logo/muaban.svg" alt="Mua bán bất động sản" />
                 </div>
-                <div className={cx('search')}>
-                    <Search />
-                </div>
+
                 <div className={cx('actions')}>
                     <div className={cx('home')}>
                         <Link to="/">
@@ -75,9 +73,6 @@ function Header() {
                             <ChatPartnerList />
                         </li>
                         <li>
-                            <FontAwesomeIcon icon={faMagnifyingGlass} />
-                        </li>
-                        <li>
                             <Link to="/user/post">
                                 <FontAwesomeIcon icon={faArrowUpFromBracket} />
                             </Link>
@@ -97,9 +92,7 @@ function Header() {
                 <div className={cx('logo')}>
                     <img src="https://muaban.net/logo/muaban.svg" alt="Mua bán bất động sản" />
                 </div>
-                <div className={cx('search')}>
-                    <Search />
-                </div>
+
                 <div className={cx('actions')}>
                     <Link className={cx('login')} to="/login">
                         <FontAwesomeIcon icon={faRightToBracket} />

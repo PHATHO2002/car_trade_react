@@ -1,10 +1,6 @@
-.post-page {
+.wraper {
     width: 100%;
 
-    h2 {
-        text-align: center;
-        font-size: 3rem;
-    }
     .form-group {
         p {
             font-size: 0.5rem;
@@ -22,9 +18,40 @@
             padding: 0 1rem;
             border: 0.1rem solid var(--text-color);
         }
-        .choose-file {
-            border: none;
+
+        .box-image {
+            input {
+                display: none;
+            }
+            .upload-label {
+                display: flex; /* Giữ label vừa với nội dung */
+                align-items: center;
+                justify-content: center;
+                min-width: 10rem;
+                min-height: 10rem;
+                background: #007bff; /* Màu xanh dương */
+                color: white;
+                font-weight: bold;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: background 0.3s, transform 0.2s;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                text-align: center;
+            }
+
+            .upload-label:hover {
+                background: #0056b3; /* Màu xanh đậm hơn khi hover */
+                transform: scale(1.05); /* Hiệu ứng phóng to nhẹ */
+            }
+            img {
+                width: 10rem;
+                height: 10rem;
+                object-fit: cover;
+                border-radius: 1rem;
+                box-shadow: 0 0.2rem 5rem rgba(0, 0, 0, 0.2);
+            }
         }
+
         .error {
             color: red;
             font-size: 1.4rem;

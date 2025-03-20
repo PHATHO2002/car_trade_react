@@ -68,7 +68,7 @@ const ChatPartnerList = () => {
             </div>
             {isOpen ? (
                 <div className={cx('inner')} ref={contentRef}>
-                    <h2 className={cx('title')}>Đoạn chat</h2>
+                    <h3 className={cx('title')}>Đoạn chat</h3>
                     <ul className={cx('list-partner')}>
                         {listPartner.map((partner) => (
                             <li

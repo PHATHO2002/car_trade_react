@@ -11,25 +11,33 @@ import {
     faEnvelope,
     faLocationDot,
 } from '@fortawesome/free-solid-svg-icons';
+import { useSelector } from 'react-redux';
 import { connectSocket } from '~/utils/socket';
 import { useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import Slide from '~/components/Slider/slide';
 import ChatBox from '~/components/ChatBox/ChatBox';
+import { useNavigate } from 'react-router-dom';
 const cx = classNames.bind(styles);
 const DetailCar = () => {
+    const navigate = useNavigate();
     const { id } = useParams();
     const [images, setImages] = useState([]); // to slide image
     const [displaySlide, setDisplaySlide] = useState(false); // to displayslide
     const [carDetail, setCarDetail] = useState({});
     const [seller, setSeller] = useState({});
     const [loading, setLoading] = useState(true);
+    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     let socket;
     const [receiverIdList, setReceiverIdList] = useState([]); //it was made to render list chatbox
     const handleOpenChatBox = (receiId, username) => {
-        setReceiverIdList((prev) =>
-            prev.some((item) => item.receiId === receiId) ? prev : [...prev, { receiId, username }],
-        );
+        if (isLoggedIn) {
+            setReceiverIdList((prev) =>
+                prev.some((item) => item.receiId === receiId) ? prev : [...prev, { receiId, username }],
+            );
+        } else {
+            navigate('/login');
+        }
     };
     const closeChatBox = (receiId) => {
         setReceiverIdList((prev) => prev.filter((item) => item.receiId !== receiId));
@@ -39,12 +47,16 @@ const DetailCar = () => {
         return formattedPrice;
     };
     const handAddToCart = async (carId) => {
-        try {
-            await api.post('/cart', { carId: carId });
-            toast.success('thêm vào giỏ hàng thành công');
-        } catch (error) {
-            console.log(error);
-            toast.error('thêm vào giỏ hàng thất bại');
+        if (isLoggedIn) {
+            try {
+                await api.post('/cart', { carId: carId });
+                toast.success('thêm vào giỏ hàng thành công');
+            } catch (error) {
+                console.log(error);
+                toast.error('thêm vào giỏ hàng thất bại');
+            }
+        } else {
+            navigate('/login');
         }
     };
     const getDetailCar = async () => {

@@ -57,6 +57,7 @@
         }
         .filter {
             font-size: 1.5rem;
+            max-width: 100%;
             li {
                 cursor: pointer;
                 &:hover {
@@ -67,6 +68,7 @@
             }
         }
         .filter_mobile {
+            max-width: 100%;
             display: none;
         }
     }

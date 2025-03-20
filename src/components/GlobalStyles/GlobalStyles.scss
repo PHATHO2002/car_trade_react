@@ -1,5 +1,5 @@
 :root {
-    --primary: #fe2c55;
+    --primary: #00c6ff;
     --black: #000;
     --white: #fff;
     --text-color: #333;
@@ -25,11 +25,17 @@ body {
     width: 100%;
     overflow-x: hidden;
 }
-button,
-input,
-[tabindex] {
-    outline: none;
-    border: none;
+
+input {
+    width: 100%; /* Full chiều rộng */
+    padding: 1.5rem 2rem;
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: #333; /* Màu chữ đậm */
+    border: 2px solid var(--primary); /* Viền sử dụng màu chủ đạo */
+    border-radius: 0.5rem;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 ul {
     list-style: none; /* Loại bỏ dấu chấm, số hoặc kiểu danh sách */
@@ -98,6 +104,28 @@ a[href] {
     padding: 1.6rem;
     border-radius: 0.5rem;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+h3 {
+    text-align: center;
+    font-weight: bold;
+    color: var(--primary); /* Màu chữ tối hơn để dễ đọc */
+    text-transform: uppercase; /* Chữ in hoa cho nổi bật */
+    letter-spacing: 2px; /* Tạo khoảng cách giữa các chữ */
+    margin-bottom: 1rem; /* Tạo khoảng cách dưới */
+    padding: 0.5rem;
+}
+label {
+    display: inline-flex;
+    padding: 1rem, 1.2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--primary); /* Dùng biến màu chủ đạo */
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 @media (max-width: 768px) {
     html {

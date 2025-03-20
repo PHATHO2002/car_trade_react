@@ -18,6 +18,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { connectSocket } from '~/utils/socket';
 import NotFound from '~/components/notFound';
 import { Link } from 'react-router-dom';
+import Search from '~/components/Search/search';
 const cx = classNames.bind(styles);
 
 const UserHomePage = () => {
@@ -27,6 +28,7 @@ const UserHomePage = () => {
     const [currentPage, setCurrentPage] = useState(0);
 
     const user = useSelector((state) => state.auth.user);
+    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     //state lọc theo hãng
     const [brands, setBrands] = useState([]);
     const [currentBrand, setCurrentBrand] = useState('');
@@ -51,10 +53,13 @@ const UserHomePage = () => {
     const fetchAproveldCars = async () => {
         try {
             const response = await api.get('/car?status=accepted');
-            const response2 = await api.get('/cart');
+
             setCarList(response.data.data);
-            let cartIds = response2.data.data.carIds.map((item) => item._id);
-            setcartsId(cartIds);
+            if (isLoggedIn) {
+                const response2 = await api.get('/cart');
+                let cartIds = response2.data.data.carIds.map((item) => item._id);
+                setcartsId(cartIds);
+            }
         } catch (error) {
             console.log(error);
         }
@@ -190,6 +195,7 @@ const UserHomePage = () => {
         };
     }, []);
     const offset = currentPage * itemsPerPage;
+
     const currentItems = carList.slice(offset, offset + itemsPerPage);
     let newCurrentItems = [];
     newCurrentItems = currentItems.filter((item) => {
@@ -367,6 +373,10 @@ const UserHomePage = () => {
                                 {showAllBrands ? 'Thu gọn' : 'Xem thêm'}
                             </button>
                         )}
+                        <div className={cx('search')}>
+                            <h3>search</h3>
+                            <Search />
+                        </div>
                     </div>
 
                     <div className={cx('filter_mobile', showFilter ? 'col-3' : '', 'flex-column')}>
