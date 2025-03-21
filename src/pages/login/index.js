@@ -72,7 +72,7 @@ function Login() {
                         <span>Bạn chưa có tài khoản? </span>
                         <Link to="/register">Đăng Ký Ngay</Link>
                     </div>
-                    <div>
+                    <div className={cx('google-login-btn')}>
                         <GoogleLoginButton />
                     </div>
                 </div>
