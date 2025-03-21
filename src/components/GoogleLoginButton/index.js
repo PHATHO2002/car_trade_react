@@ -16,23 +16,7 @@ const GoogleLoginButton = () => {
             console.error(error);
         }
     };
-    if (process.env.ENV == 'production') {
-        return (
-            <GoogleLogin
-                onSuccess={handleSuccess}
-                onError={() => console.log('Login Failed')}
-                redirectUri="https://www.muabanotocu.click"
-            />
-        );
-    } else {
-        return (
-            <GoogleLogin
-                onSuccess={handleSuccess}
-                onError={() => console.log('Login Failed')}
-                redirectUri="http://localhost:3000"
-            />
-        );
-    }
+    <GoogleLogin onSuccess={handleSuccess} onError={() => console.log('Login Failed')} />;
 };
 
 export default GoogleLoginButton;
