@@ -21,7 +21,7 @@ const GoogleLoginButton = () => {
             <GoogleLogin
                 onSuccess={handleSuccess}
                 onError={() => console.log('Login Failed')}
-                redirectUri="https://www.muabanotocu.click/"
+                redirectUri="https://www.muabanotocu.click"
             />
         );
     } else {
