@@ -37,45 +37,43 @@ function Login() {
 
     return (
         <>
-            <div className={cx('login-page')}>
-                <div className={cx('login-container')}>
-                    <div className={cx('welcome-img')}>
-                        <img src="/images/welcome.webp" />
-                    </div>
-                    <div className={cx('login-form')}>
-                        <h3>Đăng nhập</h3>
+            <div className={cx('wraper', 'row-nowrap')}>
+                <div className={cx('welcome-img', 'col')}>
+                    <img src="/images/welcome.webp" />
+                </div>
+                <div className={cx('login-form', 'col', 'flex-column')}>
+                    <h3>Đăng nhập</h3>
 
-                        <div className={cx('form-group')}>
-                            <label for="username">Tên đăng nhập:</label>
-                            <input
-                                type="text"
-                                id="username"
-                                placeholder="Nhập tên đăng nhập"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                            />
-                        </div>
-                        <div className={cx('form-group')}>
-                            <label for="pass">Mật khẩu:</label>
-                            <input
-                                type="password"
-                                id="pass"
-                                placeholder="Nhập mật khẩu"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                        </div>
-                        {errorMessage && <p className={cx('error-message')}>{errorMessage}</p>}
-                        <Button onClick={handleLogin} primary>
-                            <p className={cx('login-btn')}>Đăng nhập</p>
-                        </Button>
-                        <div>
-                            <span>Bạn chưa có tài khoản? </span>
-                            <Link to="/register">Đăng Ký Ngay</Link>
-                        </div>
-                        <div>
-                            <GoogleLoginButton />
-                        </div>
+                    <div className={cx('form-group')}>
+                        <label for="username">Tên đăng nhập:</label>
+                        <input
+                            type="text"
+                            id="username"
+                            placeholder="Nhập tên đăng nhập"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                    </div>
+                    <div className={cx('form-group')}>
+                        <label for="pass">Mật khẩu:</label>
+                        <input
+                            type="password"
+                            id="pass"
+                            placeholder="Nhập mật khẩu"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+                    {errorMessage && <p className={cx('error-message')}>{errorMessage}</p>}
+                    <Button onClick={handleLogin} primary>
+                        <p className={cx('login-btn')}>Đăng nhập</p>
+                    </Button>
+                    <div>
+                        <span>Bạn chưa có tài khoản? </span>
+                        <Link to="/register">Đăng Ký Ngay</Link>
+                    </div>
+                    <div>
+                        <GoogleLoginButton />
                     </div>
                 </div>
             </div>

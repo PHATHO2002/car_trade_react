@@ -174,11 +174,12 @@ const UserHomePage = () => {
     }, []);
     const offset = currentPage * itemsPerPage;
 
-    const currentItems = carList.slice(offset, offset + itemsPerPage);
-    let newCurrentItems = [];
-    newCurrentItems = currentItems.filter((item) => {
-        return !(item.sellerId === user?.userId);
-    });
+    const currentItems = carList
+        .filter((item) => {
+            return !(item.sellerId === user?.userId);
+        })
+        .slice(offset, offset + itemsPerPage);
+
     return (
         <div className={cx('wraper')}>
             <>
@@ -232,7 +233,7 @@ const UserHomePage = () => {
                     </ul>
                 </div>
                 <div className={cx('content', 'row-nowrap')}>
-                    {newCurrentItems.length === 0 ? (
+                    {currentItems.length === 0 ? (
                         errFilter ? (
                             <div className="col">
                                 <NotFound
@@ -247,7 +248,7 @@ const UserHomePage = () => {
                         )
                     ) : (
                         <ul className={cx('product-list', 'col-full', 'flex-column')}>
-                            {newCurrentItems.map((car, index) => (
+                            {currentItems.map((car, index) => (
                                 <Link to={`/car/${car._id}`}>
                                     <li className={cx('row-nowrap', 'boder_custom')} key={index}>
                                         <div className="col">
