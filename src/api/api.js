@@ -4,11 +4,19 @@ import { setAccessToken } from '~/redux/slices/authSlice';
 import { logout } from '~/redux/slices/authSlice';
 
 // Tạo instance Axios
-const api = axios.create({
-    baseURL: 'https://car-trade-nodejs.onrender.com',
-    withCredentials: true, // Để gửi cookie (refreshToken)
-});
 
+let api;
+if (process.env.NODE_ENV == 'production') {
+    api = axios.create({
+        baseURL: 'https://car-trade-nodejs.onrender.com',
+        withCredentials: true, // Để gửi cookie (refreshToken)
+    });
+} else {
+    api = axios.create({
+        baseURL: 'http://localhost:5000',
+        withCredentials: true, // Để gửi cookie (refreshToken)
+    });
+}
 // Biến lưu Promise refreshToken để tránh gọi nhiều lần cùng lúc
 let refreshTokenRequest = null;
 

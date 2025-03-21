@@ -16,7 +16,7 @@ const GoogleLoginButton = () => {
             console.error(error);
         }
     };
-    if (process.env.ENV == 'production') {
+    if (process.env.NODE_ENV == 'production') {
         return (
             <GoogleLogin
                 onSuccess={handleSuccess}
