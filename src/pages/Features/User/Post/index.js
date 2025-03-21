@@ -6,7 +6,7 @@ import { faPlus, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import api from '~/api/api';
+import { getCarBrandsApi, createCarApi } from '~/api/car';
 import { connectSocket } from '~/utils/socket';
 const cx = classNames.bind(styles);
 
@@ -136,9 +136,8 @@ function Post() {
                     formData.append('documentImages', file);
                 });
 
-                const response = await api.post('/car', formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                });
+                const response = await createCarApi(formData);
+
                 if (socket) {
                     socket.emit('addnewPendingCar', response.data.data);
                 }
@@ -163,7 +162,7 @@ function Post() {
     };
     const getBrands = async () => {
         try {
-            const rsp = await api.get('/car/brands');
+            const rsp = await getCarBrandsApi();
             setBrands(rsp.data.data);
         } catch (error) {
             console.log(error);

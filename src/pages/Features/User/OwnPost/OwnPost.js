@@ -2,6 +2,7 @@ import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import api from '~/api/api';
+import { getCarApi, deleteCarApi } from '~/api/car';
 import styles from './OwnPost.module.scss';
 import { faImages, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -22,7 +23,7 @@ const OwnPost = () => {
     const user = useSelector((state) => state.auth.user);
     const fetchPosts = async () => {
         try {
-            const response = await api.get(`/car?sellerId=${user.userId}`);
+            const response = await getCarApi(`sellerId=${user.userId}`);
             setCarList(response.data.data);
         } catch (error) {
             console.log(error);
@@ -50,7 +51,7 @@ const OwnPost = () => {
         let result = window.confirm('Bạn muốn xóa tin này');
         if (result) {
             try {
-                await api.delete(`car/${id}`);
+                await deleteCarApi(id);
                 setChangeCar(true);
             } catch (error) {
                 console.log(error);

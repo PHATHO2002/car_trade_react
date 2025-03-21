@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
-import api from '~/api/api';
+import { getCartApi, removeFromCartApi } from '~/api/cart';
 import styles from './Cart.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan, faInfo } from '@fortawesome/free-solid-svg-icons';
@@ -8,11 +8,10 @@ import { ToastContainer, toast } from 'react-toastify';
 const cx = classNames.bind(styles);
 const Cart = () => {
     const [carList, setCarList] = useState([]);
-    const [changeCar, setChangeCar] = useState(null);
 
     const fetchPendingCars = async () => {
         try {
-            const response = await api.get('/cart');
+            const response = await getCartApi();
             setCarList(response.data.data.carIds);
         } catch (error) {
             console.log(error);
@@ -24,7 +23,7 @@ const Cart = () => {
     };
     const handleDeleteItem = async (carId) => {
         try {
-            await api.delete(`/cart/${carId}`);
+            await removeFromCartApi(carId);
             fetchPendingCars();
             toast.success('xóa đơn hàng thành công!');
         } catch (error) {
@@ -33,7 +32,7 @@ const Cart = () => {
     };
     useEffect(() => {
         fetchPendingCars();
-    }, [changeCar]);
+    }, []);
 
     return (
         <div className={cx('wraper')}>

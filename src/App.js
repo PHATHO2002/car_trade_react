@@ -11,7 +11,7 @@ import ProtectedRouteLogin from './components/ProtectedRoute/ProtectedRouteLogin
 import ProtectedRouteAdmin from './components/ProtectedRoute/ProtectedRouteAdmin';
 import api from './api/api';
 import ChatBox from './components/ChatBox/ChatBox';
-
+import { GoogleOAuthProvider } from '@react-oauth/google';
 function App() {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
@@ -63,84 +63,86 @@ function App() {
 
     return (
         <Router>
-            <div className="App">
-                <Routes>
-                    {/* Public Routes */}
-                    {publicRoutes.map((route, index) => {
-                        const Page = route.component;
-                        let Layout = DefaultLayout;
+            <GoogleOAuthProvider clientId="414614463550-dpcso01i0f237qjk76c30iva5vh7vcmj.apps.googleusercontent.com">
+                <div className="App">
+                    <Routes>
+                        {/* Public Routes */}
+                        {publicRoutes.map((route, index) => {
+                            const Page = route.component;
+                            let Layout = DefaultLayout;
 
-                        if (route.layout) {
-                            Layout = route.layout;
-                        } else if (route.layout === null) {
-                            Layout = Fragment;
-                        }
+                            if (route.layout) {
+                                Layout = route.layout;
+                            } else if (route.layout === null) {
+                                Layout = Fragment;
+                            }
 
-                        return (
-                            <Route
-                                key={index}
-                                path={route.path}
-                                element={
-                                    <Layout>
-                                        <Page />
-                                    </Layout>
-                                }
-                            />
-                        );
-                    })}
+                            return (
+                                <Route
+                                    key={index}
+                                    path={route.path}
+                                    element={
+                                        <Layout>
+                                            <Page />
+                                        </Layout>
+                                    }
+                                />
+                            );
+                        })}
 
-                    {/* Private Routes */}
-                    {privateRoutes.map((route, index) => {
-                        const Page = route.component;
-                        let Layout = DefaultLayout;
+                        {/* Private Routes */}
+                        {privateRoutes.map((route, index) => {
+                            const Page = route.component;
+                            let Layout = DefaultLayout;
 
-                        return (
-                            <Route
-                                key={index}
-                                path={route.path}
-                                element={
-                                    <ProtectedRouteLogin
-                                        element={
-                                            <Layout>
-                                                <Page />
-                                            </Layout>
-                                        }
-                                    />
-                                }
-                            />
-                        );
-                    })}
-                    {adminRoutes.map((route, index) => {
-                        const Page = route.component;
-                        let Layout = DefaultLayout;
+                            return (
+                                <Route
+                                    key={index}
+                                    path={route.path}
+                                    element={
+                                        <ProtectedRouteLogin
+                                            element={
+                                                <Layout>
+                                                    <Page />
+                                                </Layout>
+                                            }
+                                        />
+                                    }
+                                />
+                            );
+                        })}
+                        {adminRoutes.map((route, index) => {
+                            const Page = route.component;
+                            let Layout = DefaultLayout;
 
-                        return (
-                            <Route
-                                key={index}
-                                path={route.path}
-                                element={
-                                    <ProtectedRouteAdmin
-                                        element={
-                                            <Layout>
-                                                <Page />
-                                            </Layout>
-                                        }
-                                    />
-                                }
-                            />
-                        );
-                    })}
-                </Routes>
+                            return (
+                                <Route
+                                    key={index}
+                                    path={route.path}
+                                    element={
+                                        <ProtectedRouteAdmin
+                                            element={
+                                                <Layout>
+                                                    <Page />
+                                                </Layout>
+                                            }
+                                        />
+                                    }
+                                />
+                            );
+                        })}
+                    </Routes>
 
-                {receiverIdList.slice(-2).map((item) => (
-                    <ChatBox
-                        key={item.receiId}
-                        receiverId={item.receiId}
-                        username={item.username}
-                        closeChatBox={closeChatBox}
-                    />
-                ))}
-            </div>
+                    {receiverIdList.slice(-2).map((item) => (
+                        <ChatBox
+                            key={item.receiId}
+                            receiverId={item.receiId}
+                            username={item.username}
+                            closeChatBox={closeChatBox}
+                        />
+                    ))}
+                </div>
+            </GoogleOAuthProvider>
         </Router>
     );
 }

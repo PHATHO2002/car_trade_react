@@ -6,6 +6,7 @@ import { faComment } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames/bind';
 import styles from './ChatList.scss.module.scss';
 import ChatBox from '../ChatBox/ChatBox';
+import { getChatPartnersApi, getUnreadMessagesApi } from '~/api/chat';
 const cx = classNames.bind(styles);
 const ChatPartnerList = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -32,8 +33,9 @@ const ChatPartnerList = () => {
     };
     const fetchListPartner = async () => {
         try {
-            const response = await api.get('/chat/list-partner');
-            const response2 = await api.get('/chat?unRead=1');
+            const response = await getChatPartnersApi();
+
+            const response2 = await getUnreadMessagesApi();
             let list = response.data.data;
             setCountUnread(response2.data.data.length);
             setUnReadMess(response2.data.data);

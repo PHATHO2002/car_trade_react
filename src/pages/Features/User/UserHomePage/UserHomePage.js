@@ -1,9 +1,10 @@
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
-import api from '~/api/api';
-import axios from 'axios';
 import styles from './UserHomePage.module.scss';
+import { getCarApi, getCarBrandsApi } from '~/api/car';
+import { getCartApi } from '~/api/cart';
+import { getProvincesApi, getProvinceWithDistrictsApi } from '~/api/address';
 import {
     faCartShopping,
     faMessage,
@@ -22,7 +23,8 @@ import Search from '~/components/Search/search';
 const cx = classNames.bind(styles);
 
 const UserHomePage = () => {
-    const [carList, setCarList] = useState([]);
+    const [carList, setCarList] = useState([]); // use for display
+    const [carListStatic, setCarListStatic] = useState([]); // dung để filter
     const [cartIdList, setcartsId] = useState([]);
     const [usersOnline, setUserOnline] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
@@ -39,12 +41,10 @@ const UserHomePage = () => {
     };
     // state lọc theo adress
     const [currentListAdress, setCurrentListAdress] = useState([]); //list province or quận huyện or xã
-    const [currentAdress, setCurrentAdress] = useState(''); // check if filter address exits;
+    const [currentAdress, setCurrentAdress] = useState({ province: null, district: null }); // check if filter address exits;
     const [currentDivisonType, setCurrentDivisonType] = useState('Tỉnh/Thành phố');
     const [showAllAdress, setShowAllAdress] = useState(false); // see more or Hide address
     const [errFilter, setErrFilter] = useState(false); // hiện thị không tìm kiếm thấy
-    const [currentProvice, setCurrentProvice] = useState({});
-    const [currentDistrict, setCurrentDistrict] = useState({});
     const visibleAdress = showAllAdress ? currentListAdress : currentListAdress.slice(0, 5);
     const visibleBrands = showAllBrands ? brands : brands.slice(0, 5);
     let socket;
@@ -52,11 +52,12 @@ const UserHomePage = () => {
 
     const fetchAproveldCars = async () => {
         try {
-            const response = await api.get('/car?status=accepted');
+            const response = await getCarApi();
 
             setCarList(response.data.data);
+            setCarListStatic(response.data.data);
             if (isLoggedIn) {
-                const response2 = await api.get('/cart');
+                const response2 = await getCartApi();
                 let cartIds = response2.data.data.carIds.map((item) => item._id);
                 setcartsId(cartIds);
             }
@@ -80,7 +81,7 @@ const UserHomePage = () => {
     // fun get getProvincesVn
     const getProvincesVn = async () => {
         try {
-            const provincesRsp = await axios.get('https://provinces.open-api.vn/api/p');
+            const provincesRsp = await getProvincesApi();
             setCurrentListAdress(provincesRsp.data);
         } catch (error) {
             console.error('Lỗi khi gọi API:', error);
@@ -88,7 +89,7 @@ const UserHomePage = () => {
     };
     const getCarBrands = async () => {
         try {
-            const brands = await api.get('/car/brands');
+            const brands = await getCarBrandsApi();
             setBrands(brands.data.data);
         } catch (error) {
             console.error('Lỗi khi gọi API:', error);
@@ -97,18 +98,11 @@ const UserHomePage = () => {
     const handleFilter = async (currentAdress = null, currentBrand = null, closeCurrentFilter = null) => {
         try {
             if (currentAdress && !currentBrand) {
-                if (currentAdress?.code && currentAdress?.division_type == 'tỉnh') {
-                    setCurrentProvice({
-                        code: currentAdress.code,
-                        name: currentAdress.name,
-                        division_type: currentAdress.division_type,
-                    });
-                    const provincesAndistricts = await axios.get(
-                        `https://provinces.open-api.vn/api/p/${currentAdress.code}?depth=2`, //includes huyện và xã
-                    );
-                    let filterCarList = carList.filter((car) => {
+                if (currentAdress.province && !currentAdress.district) {
+                    const provincesAndistricts = await getProvinceWithDistrictsApi(currentAdress.province.code);
+                    let filterCarList = carListStatic.filter((car) => {
                         // lọc theo province
-                        return car.address.province.code == currentAdress.code;
+                        return car.address.province.code == currentAdress.province.code;
                     });
                     if (filterCarList.length < 1) {
                         setErrFilter(true);
@@ -116,16 +110,12 @@ const UserHomePage = () => {
                     setCarList(filterCarList);
                     setCurrentListAdress(provincesAndistricts.data.districts);
                     setCurrentDivisonType('Huyện/Quận');
-                } else if (currentAdress?.code && currentAdress?.division_type == 'huyện') {
-                    setCurrentDistrict({
-                        code: currentAdress.code,
-                        name: currentAdress.name,
-                        division_type: currentAdress.division_type,
-                    });
-                    let filterCarList = carList.filter((car) => {
+                } else if (currentAdress.province && currentAdress.district) {
+                    let filterCarList = carListStatic.filter((car) => {
                         // lọc theo disctrict
-                        return car.address.district.code == currentAdress.code;
+                        return car.address.district.code == currentAdress.district.code;
                     });
+
                     if (filterCarList.length < 1) {
                         setErrFilter(true);
                     }
@@ -133,46 +123,34 @@ const UserHomePage = () => {
                 }
             }
             if (!currentAdress && currentBrand) {
-                await fetchAproveldCars();
-                setCarList((prev) => prev.filter((car) => car.brand == currentBrand));
+                let filterCarList = carListStatic.filter((car) => {
+                    return car.brand == currentBrand;
+                });
+
+                setCarList(filterCarList);
             }
             if (currentAdress && currentBrand) {
-                await fetchAproveldCars();
-                if (currentAdress.division_type == 'tỉnh') {
-                    setCurrentProvice({
-                        code: currentAdress.code,
-                        name: currentAdress.name,
-                        division_type: currentAdress.division_type,
+                if (currentAdress.province && !currentAdress.district) {
+                    // check chỉ tỉnh
+                    let filterCarList = carListStatic.filter((car) => {
+                        return car.brand == currentBrand && car.address?.province.code == currentAdress.province.code;
                     });
-                    setCarList((prev) =>
-                        prev.filter(
-                            (car) => car.brand == currentBrand && car.address?.province.code == currentAdress.code,
-                        ),
-                    );
+                    setCarList(filterCarList);
                 } else {
-                    setCurrentDistrict({
-                        code: currentAdress.code,
-                        name: currentAdress.name,
-                        division_type: currentAdress.division_type,
+                    let filterCarList = carListStatic.filter((car) => {
+                        return car.brand == currentBrand && car.address?.district.code == currentAdress.district.code;
                     });
-                    setCarList((prev) =>
-                        prev.filter(
-                            (car) => car.brand == currentBrand && car.address?.district.code == currentAdress.code,
-                        ),
-                    );
+                    setCarList(filterCarList);
                 }
             }
             if (closeCurrentFilter == 'address') {
-                setCurrentProvice({});
-                setCurrentAdress('');
-                setCurrentDistrict({});
+                setCurrentAdress({ province: null, district: null });
                 setCurrentDivisonType('Tỉnh/Thành phố');
                 getProvincesVn();
                 fetchAproveldCars();
             }
             if (closeCurrentFilter == 'brand') {
                 setCurrentBrand('');
-
                 fetchAproveldCars();
             }
         } catch (error) {
@@ -206,29 +184,40 @@ const UserHomePage = () => {
             <>
                 <div className={cx('filter-header')}>
                     <ul className={cx('row-nowrap')}>
-                        {currentProvice.name && (
+                        {currentAdress.province && (
                             <>
-                                <li onClick={() => handleFilter(null, null, 'address')}>
+                                <li onClick={() => handleFilter(null, currentBrand, 'address')}>
                                     <strong>Khu vực </strong>
                                 </li>
-                                <li>
-                                    <FontAwesomeIcon icon={faArrowRight} />
-                                    &nbsp;
-                                    {currentProvice.name}
-                                </li>
+
+                                {Object.entries(currentAdress).map(([key, value]) => (
+                                    <li
+                                        key={key}
+                                        onClick={() => {
+                                            if (key === 'province') {
+                                                currentAdress.district = null;
+                                                handleFilter(currentAdress, currentBrand);
+                                            } else {
+                                                handleFilter(currentAdress, currentBrand);
+                                            }
+                                        }}
+                                    >
+                                        {value?.name ? (
+                                            <>
+                                                <FontAwesomeIcon icon={faArrowRight} /> {value.name}
+                                            </>
+                                        ) : (
+                                            ''
+                                        )}
+                                    </li>
+                                ))}
                             </>
-                        )}
-                        {currentDistrict.name && (
-                            <li>
-                                <FontAwesomeIcon icon={faArrowRight} />
-                                &nbsp; {currentDistrict.name}
-                            </li>
                         )}
                     </ul>
                     <ul className={cx('row-nowrap')}>
                         {currentBrand ? (
                             <>
-                                <li onClick={() => handleFilter(null, null, 'brand')}>
+                                <li onClick={() => handleFilter(currentAdress, null, 'brand')}>
                                     <strong>Hãng </strong>
                                 </li>
                                 <li>
@@ -248,7 +237,7 @@ const UserHomePage = () => {
                             <div className="col">
                                 <NotFound
                                     title={`Không tìm thấy `}
-                                    describe={`Không tìm thấy kết quả cho  ${currentAdress.name} ${currentBrand}`}
+                                    describe={`Không tìm thấy kết quả cho  ${currentAdress.province?.name} ${currentAdress.district?.name} ${currentBrand}`}
                                 />
                             </div>
                         ) : (
@@ -324,22 +313,29 @@ const UserHomePage = () => {
                     <div className={cx('filter', 'col-3', 'flex-column')}>
                         <ul className={cx('address-filter')}>
                             <h3>{currentDivisonType}</h3>
-                            {visibleAdress.map((p, index) => (
+                            {visibleAdress.map((a, index) => (
                                 <li
                                     onClick={() => {
                                         if (currentBrand) {
                                             // if exist current brand will filter both of them
-                                            handleFilter(p, currentBrand);
-                                            setCurrentAdress(p);
+                                            if (a.division_type == 'huyện') {
+                                                currentAdress.district = a;
+                                            } else {
+                                                currentAdress.province = a;
+                                            }
+                                            handleFilter(currentAdress, currentBrand);
                                         } else {
-                                            handleFilter(p);
-
-                                            setCurrentAdress(p);
+                                            if (a.division_type == 'huyện') {
+                                                currentAdress.district = a;
+                                            } else {
+                                                currentAdress.province = a;
+                                            }
+                                            handleFilter(currentAdress);
                                         }
                                     }}
                                     key={index}
                                 >
-                                    {p.name}
+                                    {a.name}
                                 </li>
                             ))}
                         </ul>
@@ -381,27 +377,33 @@ const UserHomePage = () => {
 
                     <div className={cx('filter_mobile', showFilter ? 'col-3' : '', 'flex-column')}>
                         <FontAwesomeIcon icon={faFilter} onClick={toggleShowFilter} />
-
                         {showFilter && (
                             <>
                                 <ul className={cx('address-filter')}>
                                     <h3>{currentDivisonType}</h3>
-                                    {visibleAdress.map((p, index) => (
+                                    {visibleAdress.map((a, index) => (
                                         <li
                                             onClick={() => {
                                                 if (currentBrand) {
                                                     // if exist current brand will filter both of them
-                                                    handleFilter(p, currentBrand);
-                                                    setCurrentAdress(p);
+                                                    if (a.division_type == 'huyện') {
+                                                        currentAdress.district = a;
+                                                    } else {
+                                                        currentAdress.province = a;
+                                                    }
+                                                    handleFilter(currentAdress, currentBrand);
                                                 } else {
-                                                    handleFilter(p);
-
-                                                    setCurrentAdress(p);
+                                                    if (a.division_type == 'huyện') {
+                                                        currentAdress.district = a;
+                                                    } else {
+                                                        currentAdress.province = a;
+                                                    }
+                                                    handleFilter(currentAdress);
                                                 }
                                             }}
                                             key={index}
                                         >
-                                            {p.name}
+                                            {a.name}
                                         </li>
                                     ))}
                                 </ul>

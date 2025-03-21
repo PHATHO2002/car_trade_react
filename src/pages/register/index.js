@@ -3,7 +3,8 @@ import styles from './Register.module.scss';
 import Button from '~/components/Button';
 import { Link } from 'react-router-dom';
 import React, { useState } from 'react';
-import axios from 'axios';
+import { registerUserApi } from '~/api/user';
+import api from '~/api/api';
 const cx = classNames.bind(styles);
 
 function Register() {
@@ -12,7 +13,7 @@ function Register() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
-    const handleRegister = () => {
+    const handleRegister = async () => {
         if (!username || !password || !confirmPassword) {
             setErrorMessage('Vui lòng điền đầy đủ thông tin.');
             return;
@@ -22,15 +23,12 @@ function Register() {
             return;
         }
 
-        axios
-            .post('http://localhost:5000/user', { username, password })
-            .then((response) => {
-                setErrorMessage('đăng ký thành công');
-            })
-            .catch((error) => {
-                setErrorMessage(error.response.data.message);
-            });
-        setErrorMessage(''); // Xóa thông báo lỗi nếu hợp lệ
+        try {
+            await registerUserApi(username, password);
+            setErrorMessage('Đăng ký thành công');
+        } catch (error) {
+            setErrorMessage(error.response?.data?.message || 'Đã xảy ra lỗi');
+        }
     };
 
     return (

@@ -1,11 +1,10 @@
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
-import api from '~/api/api';
 import styles from './PendingCars.module.scss';
 import Button from '~/components/Button';
 import { connectSocket } from '~/utils/socket';
-
+import { getCarPendingApi, updateCarStatusApi } from '~/api/car';
 const cx = classNames.bind(styles);
 
 const PendingProducts = () => {
@@ -17,7 +16,7 @@ const PendingProducts = () => {
     let socket;
     const fetchPendingCars = async () => {
         try {
-            const response = await api.get('/admin/get-PendingCars');
+            const response = await getCarPendingApi();
             setCarList(response.data.data);
         } catch (error) {
             console.log(error);
@@ -49,10 +48,8 @@ const PendingProducts = () => {
     const approvalCar = async (id) => {
         try {
             setLoading(true);
-            const response = await api.post('/admin/decision-pendingCars', {
-                id: id,
-                status: 'accepted',
-            });
+            const response = await updateCarStatusApi(id, 'accepted');
+
             setChangeCar(response.data.data);
         } catch (error) {
             console.log(error);
@@ -62,10 +59,7 @@ const PendingProducts = () => {
     };
     const rejectedCar = async (id) => {
         try {
-            const response = await api.post('/admin/decision-pendingCars', {
-                id: id,
-                status: 'rejected',
-            });
+            const response = await updateCarStatusApi(id, 'rejected');
             setChangeCar(response.data.data);
         } catch (error) {
             console.log(error);

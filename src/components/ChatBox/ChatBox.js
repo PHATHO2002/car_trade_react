@@ -8,6 +8,7 @@ import classNames from 'classnames/bind';
 import styles from './ChatBox.scss.module.scss';
 import { useRef } from 'react';
 import Button from '../Button';
+import { sendMessApi, getMessWithPartnerApi, markReadedApi } from '~/api/chat';
 const cx = classNames.bind(styles);
 
 const ChatBox = ({ receiverId, closeChatBox, username }) => {
@@ -19,7 +20,7 @@ const ChatBox = ({ receiverId, closeChatBox, username }) => {
     let socket = connectSocket();
     const handleSendMess = async () => {
         try {
-            await api.post('/chat', { receiverId: receiverId, message: newMessage });
+            await sendMessApi(receiverId, newMessage);
             socket.emit('send_message', {
                 senderId: user.userId,
                 receiverId,
@@ -40,12 +41,13 @@ const ChatBox = ({ receiverId, closeChatBox, username }) => {
     };
     const fetchMess = async () => {
         try {
-            const response = await api.get(`/chat?receiverId=${receiverId}`);
+            const response = await getMessWithPartnerApi(receiverId);
+
             let messInRp = response.data.data;
             let unReadedMess = messInRp.filter((mess) => {
                 return mess.isRead == false;
             });
-            await api.patch('/chat/', { unReadedMess }); // api đánh dấu đã đọc tn
+            await markReadedApi(unReadedMess); // api đánh dấu đã đọc tn
             setMessages(messInRp);
         } catch (error) {
             console.log(error);

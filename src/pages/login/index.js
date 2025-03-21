@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { login } from '~/redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
-
-import api from '~/api/api';
+import GoogleLoginButton from '~/components/GoogleLoginButton';
+import { loginApi } from '~/api/auth';
 
 import React, { useState } from 'react';
 const cx = classNames.bind(styles);
@@ -23,7 +23,7 @@ function Login() {
         }
 
         try {
-            const response = await api.post('/login', { username, password }); // Sử dụng instance API
+            const response = await loginApi(username, password); // Sử dụng instance API
             const accessToken = response.data.data.accessToken;
             const decodedUser = jwtDecode(accessToken);
             window.location.href = '/';
@@ -71,6 +71,9 @@ function Login() {
                         <div>
                             <span>Bạn chưa có tài khoản? </span>
                             <Link to="/register">Đăng Ký Ngay</Link>
+                        </div>
+                        <div>
+                            <GoogleLoginButton />
                         </div>
                     </div>
                 </div>

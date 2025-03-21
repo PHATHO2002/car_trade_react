@@ -6,11 +6,16 @@
     z-index: 9999;
     .chat-header {
         background-color: var(--primary);
-        color: aliceblue;
+
+        h3 {
+            color: aliceblue !important;
+        }
+
         border-radius: 0.5rem 0.5rem 0 0;
         padding: 1rem 1rem;
         .close-icon {
             cursor: pointer;
+            color: aliceblue !important;
         }
     }
     .chat-messages {

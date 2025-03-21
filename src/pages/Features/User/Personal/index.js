@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import api from '~/api/api';
-import axios from 'axios';
+import { getUserApi, updateUserApi } from '~/api/user';
+import { getProvincesApi, getProvinceDetailApi } from '~/api/address';
 import { useSelector } from 'react-redux';
 import { faPenToSquare, faRectangleXmark } from '@fortawesome/free-solid-svg-icons';
 import { ToastContainer, toast } from 'react-toastify';
@@ -54,7 +54,8 @@ const Personal = () => {
 
     const getProvincesVn = async () => {
         try {
-            const provincesRsp = await axios.get('https://provinces.open-api.vn/api/p');
+            const provincesRsp = await getProvincesApi();
+
             setProvinceVns(provincesRsp.data);
         } catch (error) {
             console.error('Lỗi khi gọi API:', error);
@@ -64,9 +65,7 @@ const Personal = () => {
         // get all district of Province
         try {
             if (currentProvice.code) {
-                const provincesAndistricts = await axios.get(
-                    `https://provinces.open-api.vn/api/p/${currentProvice.code}?depth=3`,
-                );
+                const provincesAndistricts = await getProvinceDetailApi(currentProvice.code);
 
                 setDistrictOfProvince(provincesAndistricts.data.districts);
             }
@@ -81,7 +80,7 @@ const Personal = () => {
     ];
     const getUserData = async () => {
         try {
-            const response = await api.get(`/user?_id=${userData.userId}`);
+            const response = await getUserApi(`_id=${userData.userId}`);
 
             const { username, email, phone, address, createdAt } = response.data.data[0];
 
@@ -124,7 +123,7 @@ const Personal = () => {
 
             if (districtSelectRef.current && wardSelectRef.current) {
                 // cập nhập dữ liệu option hieent thị hiện tại
-                await api.patch('/user', {
+                await updateUserApi({
                     username,
                     email,
                     phone,
@@ -140,10 +139,11 @@ const Personal = () => {
                         },
                     },
                 });
+
                 getUserData();
                 toast.success('cập nhập thông tin thành công');
             } else {
-                await api.patch('/user', {
+                await updateUserApi({
                     username,
                     email,
                     phone,

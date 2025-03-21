@@ -1,6 +1,8 @@
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
-import api from '~/api/api';
+import { getCarApi } from '~/api/car';
+import { getUserApi } from '~/api/user';
+import { addToCartApi } from '~/api/cart';
 import styles from './detailCar.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -49,7 +51,7 @@ const DetailCar = () => {
     const handAddToCart = async (carId) => {
         if (isLoggedIn) {
             try {
-                await api.post('/cart', { carId: carId });
+                await addToCartApi(carId);
                 toast.success('thêm vào giỏ hàng thành công');
             } catch (error) {
                 console.log(error);
@@ -61,8 +63,8 @@ const DetailCar = () => {
     };
     const getDetailCar = async () => {
         try {
-            const rsp = await api.get(`/car?_id=${id}`);
-            const rsp2 = await api.get(`/user?_id=${rsp.data.data[0].sellerId}`);
+            const rsp = await getCarApi(`_id=${id}`);
+            const rsp2 = await getUserApi(`_id=${rsp.data.data[0].sellerId}`);
             setCarDetail(rsp.data.data[0]);
             setSeller(rsp2.data.data[0]);
         } catch (error) {

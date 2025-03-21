@@ -1,25 +1,24 @@
-import React, { useEffect, useState, useRef, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+
 import api from '~/api/api';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { searchCarApi } from '~/api/car';
 import classNames from 'classnames/bind';
 import styles from './search.scss.module.scss';
 
 const cx = classNames.bind(styles);
 const Search = () => {
-    const [query, setQuery] = useState('');
+    const [queryTitle, setQueryTitle] = useState('');
     const [result, setResult] = useState([]);
     const hanldeSearch = async () => {
         try {
-            const rp = await api.get(`car/search/${query}`);
+            const rp = await searchCarApi(queryTitle);
             setResult(rp.data.data);
         } catch (error) {
             console.log(error);
         }
     };
     useEffect(() => {
-        if (query) {
+        if (queryTitle) {
             const timer = setTimeout(() => {
                 hanldeSearch();
             }, 500);
@@ -27,14 +26,14 @@ const Search = () => {
         } else {
             setResult([]);
         }
-    }, [query]);
+    }, [queryTitle]);
     return (
         <div className={cx('wraper')}>
             <div className={cx('inner')}>
                 <div className={cx('search-input')}>
                     <input
                         onChange={(e) => {
-                            setQuery(e.target.value);
+                            setQueryTitle(e.target.value);
                         }}
                     ></input>
                 </div>
