@@ -33,7 +33,7 @@ function App() {
                 dispatch(setAccessToken(response.data.accessToken));
             } catch (error) {
                 console.log('Lỗi refresh token:', error);
-                dispatch(logout());
+                // dispatch(logout());
             } finally {
                 setLoading(false);
             }

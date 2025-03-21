@@ -29,7 +29,7 @@ const refreshAccessToken = async () => {
 };
 const connectSocket = () => {
     if (!socket) {
-        socket = io('http://localhost:5000', {
+        socket = io('https://car-trade-nodejs.onrender.com', {
             auth: {
                 token: store.getState().auth.accessToken, // Lấy token khi connect
             },

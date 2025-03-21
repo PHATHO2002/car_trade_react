@@ -5,7 +5,7 @@ import { logout } from '~/redux/slices/authSlice';
 
 // Tạo instance Axios
 const api = axios.create({
-    baseURL: 'http://localhost:5000',
+    baseURL: 'https://car-trade-nodejs.onrender.com',
     withCredentials: true, // Để gửi cookie (refreshToken)
 });
 

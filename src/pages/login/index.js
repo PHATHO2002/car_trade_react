@@ -23,13 +23,14 @@ function Login() {
         }
 
         try {
-            const response = await loginApi(username, password); // Sử dụng instance API
+            const response = await loginApi(username, password);
+
             const accessToken = response.data.data.accessToken;
             const decodedUser = jwtDecode(accessToken);
             window.location.href = '/';
             dispatch(login({ decodedUser, accessToken })); // Cập nhật Redux state
         } catch (error) {
-            console.log(error);
+            console.log('check-login', error);
             setErrorMessage(error.response?.data?.message || 'Đăng nhập thất bại.');
         }
     };
