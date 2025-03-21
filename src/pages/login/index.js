@@ -34,7 +34,7 @@ function Login() {
             setErrorMessage(error.response?.data?.message || 'Đăng nhập thất bại.');
         }
     };
-
+    console.log(process.env);
     return (
         <>
             <div className={cx('login-page')}>
