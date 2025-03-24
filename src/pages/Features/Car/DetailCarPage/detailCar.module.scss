@@ -39,6 +39,17 @@
     }
     .seller {
         font-size: 1.6rem;
+        .seller-img {
+            img {
+                width: 5rem;
+                height: 5rem;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
     }
 }
 

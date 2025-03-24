@@ -41,8 +41,7 @@ function Header() {
                     <div className={cx('personal')}>
                         <Link to="/user/Personal">
                             <div className={cx('profile')}>
-                                <FontAwesomeIcon icon={faUser} />
-                                <span>{userData.username}</span>
+                                <FontAwesomeIcon icon={faUser} /> <span>{userData.username}</span>
                             </div>
                         </Link>
                         {userData.role === 'admin' ? (

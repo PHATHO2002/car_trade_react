@@ -12,6 +12,7 @@ import {
     faCircleXmark,
     faFilter,
     faArrowRight,
+    faLocationDot,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useSelector } from 'react-redux';
@@ -291,16 +292,22 @@ const UserHomePage = () => {
                                                         <p>đã thêm vào giỏ hàng</p>
                                                     ) : (
                                                         <p>
-                                                            <div className={cx('cart')}>
+                                                            <div className={cx('cart-icon')}>
                                                                 <FontAwesomeIcon icon={faCartShopping} />
                                                             </div>
                                                         </p>
                                                     )}
 
-                                                    <div className={cx('chat')}>
+                                                    <div className={cx('chat-icon')}>
                                                         <p>
                                                             {' '}
                                                             <FontAwesomeIcon icon={faMessage} />
+                                                        </p>
+                                                    </div>
+                                                    <div className={cx('location-icon')}>
+                                                        <p>
+                                                            {' '}
+                                                            <FontAwesomeIcon icon={faLocationDot} />
                                                         </p>
                                                     </div>
                                                 </div>

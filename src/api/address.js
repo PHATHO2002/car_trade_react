@@ -25,3 +25,19 @@ export const getProvinceWithDistrictsApi = async (provinceCode) => {
         throw error;
     }
 };
+export const getCoordinatesApi = async (city) => {
+    try {
+        const apiKey = process.env.REACT_APP_TOMTOM_API_KEY;
+        const response = await axios.get(
+            `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(city)}.json?key=${apiKey}`,
+        );
+
+        if (response.data.results && response.data.results.length > 0) {
+            return response.data.results[0].position; // { lat, lon }
+        } else {
+            throw new Error('Không tìm thấy tọa độ.');
+        }
+    } catch (error) {
+        throw error;
+    }
+};

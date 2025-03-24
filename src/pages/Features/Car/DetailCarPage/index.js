@@ -20,6 +20,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import Slide from '~/components/Slider/slide';
 import ChatBox from '~/components/ChatBox/ChatBox';
 import { useNavigate } from 'react-router-dom';
+import TomTomMap from '~/components/Map';
 const cx = classNames.bind(styles);
 const DetailCar = () => {
     const navigate = useNavigate();
@@ -177,19 +178,18 @@ const DetailCar = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="col-3">
+                    <div className="col-4">
                         <div className={cx('seller', 'boder_custom')}>
                             <div className={cx('resume', 'flex-column')}>
-                                <div className="col">
-                                    <img src="https://muaban.net/images/account/avatar-default.png"></img>
-                                </div>
-
-                                <div className="col">
+                                <div className={cx('col', 'seller-img')}>
+                                    <img src="\images\unknows_person.jpg"></img>
                                     <h3>
                                         {carDetail.sellerName}
                                         &nbsp;
-                                        {'(Người bán)'}
                                     </h3>
+                                </div>
+
+                                <div className="col">
                                     <div className={cx('seller-infor')}>
                                         <p>
                                             <FontAwesomeIcon icon={faPhone} /> &nbsp;{seller.phone}
@@ -207,6 +207,12 @@ const DetailCar = () => {
                                 </div>
                             </div>
                         </div>
+                        <TomTomMap
+                            // map
+                            address={`${carDetail.address?.province?.name || ''} ${
+                                carDetail.address?.district?.name || ''
+                            } ${carDetail.address?.ward?.name || ''}`}
+                        />
                     </div>
                 </div>
                 {displaySlide ? <Slide images={images} closeSlide={handleCloseImages} /> : ''}
