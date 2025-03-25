@@ -1,0 +1,19 @@
+.wraper {
+    padding: 2rem;
+    .footer-content {
+        justify-content: space-around;
+        .footer-content__left {
+            .logo {
+                img {
+                    height: 10rem;
+                    width: auto;
+                }
+            }
+        }
+    }
+}
+@media (max-width: 768px) {
+    .wraper {
+        margin-bottom: var(--default-layout-header-height);
+    }
+}

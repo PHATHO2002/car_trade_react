@@ -26,7 +26,7 @@ function Header() {
         <div className={cx('wrapper')}>
             <div className={cx('inner')}>
                 <div className={cx('logo')}>
-                    <img src="https://muaban.net/logo/muaban.svg" alt="Mua bán bất động sản" />
+                    <img src="\images\logo-removebg.svg" alt="Mua bán xe ô tô" />
                 </div>
 
                 <div className={cx('actions')}>
@@ -106,19 +106,14 @@ function Header() {
                                 <FontAwesomeIcon icon={faHouse} />
                             </Link>
                         </li>
+
                         <li>
-                            <ChatPartnerList />
-                        </li>
-                        <li>
-                            <FontAwesomeIcon icon={faMagnifyingGlass} />
-                        </li>
-                        <li>
-                            <Link to="/user/post">
+                            <Link to="/login">
                                 <FontAwesomeIcon icon={faArrowUpFromBracket} />
                             </Link>
                         </li>
                         <li>
-                            <Link to="/user/Personal">
+                            <Link to="/login">
                                 <FontAwesomeIcon icon={faUser} />
                             </Link>
                         </li>

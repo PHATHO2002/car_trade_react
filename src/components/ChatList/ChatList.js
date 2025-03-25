@@ -63,47 +63,45 @@ const ChatPartnerList = () => {
         }
     }, [accessToken]);
     return (
-        <div className={cx('wraper')}>
+        <div className={cx('wraper')} ref={contentRef}>
             <div onClick={toggleMenu} className={cx('chatPartIcon')}>
                 <FontAwesomeIcon icon={faComment} />
                 <span className={cx('quantity-unread')}>{countUnread}</span>
             </div>
-            {isOpen ? (
-                <div className={cx('inner')} ref={contentRef}>
-                    <h3 className={cx('title')}>Đoạn chat</h3>
-                    <ul className={cx('list-partner')}>
-                        {listPartner.map((partner) => (
-                            <li
-                                className="flex-column"
-                                key={partner.id}
-                                onClick={() => {
-                                    handleOpenChatBox(partner.id, partner.name);
-                                }}
-                            >
-                                <span className={cx('partner-name')}>{partner.name}</span>
-                                {partner.senderId == user.userId ? (
-                                    <div className={cx('newMess-group', 'row')}>
-                                        <span className={cx('partner-newMess')}>Bạn:{partner.mess}</span>
-                                    </div>
-                                ) : partner.isRead ? (
-                                    <div className={cx('newMess-group', 'row')}>
-                                        <span className={cx('partner-newMess')}>{partner.mess}</span>
-                                    </div>
-                                ) : (
-                                    <div className={cx('newMess-group', 'row')}>
-                                        <span className={cx('partner-newMess', 'unread')}>{partner.mess} </span>
-                                        <span className={cx('quantity-unRead-partner')}>
-                                            {unReadMess.filter((item) => item.senderId === partner.id).length}
-                                        </span>
-                                    </div>
-                                )}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            ) : (
-                ''
-            )}
+
+            <div className={cx('inner', isOpen ? 'open' : 'close')}>
+                <h3 className={cx('title')}>Đoạn chat</h3>
+                <ul className={cx('list-partner')}>
+                    {listPartner.map((partner) => (
+                        <li
+                            className="flex-column"
+                            key={partner.id}
+                            onClick={() => {
+                                handleOpenChatBox(partner.id, partner.name);
+                            }}
+                        >
+                            <span className={cx('partner-name')}>{partner.name}</span>
+                            {partner.senderId == user.userId ? (
+                                <div className={cx('newMess-group', 'row')}>
+                                    <span className={cx('partner-newMess')}>Bạn:{partner.mess}</span>
+                                </div>
+                            ) : partner.isRead ? (
+                                <div className={cx('newMess-group', 'row')}>
+                                    <span className={cx('partner-newMess')}>{partner.mess}</span>
+                                </div>
+                            ) : (
+                                <div className={cx('newMess-group', 'row')}>
+                                    <span className={cx('partner-newMess', 'unread')}>{partner.mess} </span>
+                                    <span className={cx('quantity-unRead-partner')}>
+                                        {unReadMess.filter((item) => item.senderId === partner.id).length}
+                                    </span>
+                                </div>
+                            )}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
             <div className={cx('listChatBox', 'row-nowrap')}>
                 {receiverIdList.slice(-2).map((item) => (
                     <ChatBox

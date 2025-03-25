@@ -17,6 +17,7 @@ const ChatBox = ({ receiverId, closeChatBox, username }) => {
     const accessToken = useSelector((state) => state.auth.accessToken);
     const user = useSelector((state) => state.auth.user);
     const messagesContainerRef = useRef(null);
+
     let socket = connectSocket();
     const handleSendMess = async () => {
         try {
@@ -77,6 +78,7 @@ const ChatBox = ({ receiverId, closeChatBox, username }) => {
             messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
         }
     }, [messages]);
+
     return (
         <div className={cx('chat-box')}>
             <div className={cx('chat-header', 'row-space-between')}>

@@ -12,9 +12,21 @@
     .inner {
         height: 100%;
         width: var(--default-layout-width);
+        padding: 1rem 0;
         display: flex;
         align-items: center;
         justify-content: space-between;
+        .logo {
+            img {
+                height: var(--default-layout-header-height);
+                width: auto;
+                text {
+                    font-size: 30px;
+                    fill: red;
+                    font-weight: bold;
+                }
+            }
+        }
         .actions {
             display: flex;
             align-items: center;

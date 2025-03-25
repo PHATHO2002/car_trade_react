@@ -10,6 +10,7 @@ import Cart from '~/pages/Features/User/Cart/Cart';
 import Personal from '~/pages/Features/User/Personal';
 import OwnPost from '~/pages/Features/User/OwnPost/OwnPost';
 import DetailCar from '~/pages/Features/Car/DetailCarPage';
+
 // Public routes
 const publicRoutes = [
     { path: '/', component: Home },
