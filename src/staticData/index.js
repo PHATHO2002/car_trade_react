@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping, faNewspaper, faSignOut, faAddressBook } from '@fortawesome/free-solid-svg-icons';
-import api from '~/api/api';
 import { connectSocket } from '~/utils/socket';
 import { logoutApi } from '~/api/auth';
 import { useDispatch } from 'react-redux';

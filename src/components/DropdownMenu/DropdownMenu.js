@@ -30,9 +30,9 @@ const DropdownMenu = ({ title = '', items = [] }) => {
 
     return (
         <div className={cx('dropdown')} ref={menuRef}>
-            <button className={cx('dropdown-button')} onClick={toggleMenu}>
+            <div className={cx('dropdown-button')} onClick={toggleMenu}>
                 {isOpen ? <FontAwesomeIcon icon={faCaretDown} /> : <FontAwesomeIcon icon={faCaretLeft} />}
-            </button>
+            </div>
             {isOpen && (
                 <ul className={cx('dropdown-menu')}>
                     {items.map((item, index) => (

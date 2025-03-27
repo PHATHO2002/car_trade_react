@@ -46,6 +46,14 @@ export const getCarBrandsApi = async () => {
         throw error;
     }
 };
+export const updateSaleStatusApi = async (id, data) => {
+    try {
+        const response = await api.patch(`/car/update-sale-status/${id}`, data);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
 // //api dành cho admin
 export const getCarPendingApi = async () => {
     try {

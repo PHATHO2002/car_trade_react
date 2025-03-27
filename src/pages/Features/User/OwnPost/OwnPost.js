@@ -1,8 +1,7 @@
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
-import api from '~/api/api';
-import { getCarApi, deleteCarApi } from '~/api/car';
+import { getCarApi, deleteCarApi, updateSaleStatusApi } from '~/api/car';
 import styles from './OwnPost.module.scss';
 import { faImages, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -41,12 +40,40 @@ const OwnPost = () => {
         setImages([]);
         setDisplaySlide(false);
     };
-    const confirmIsSold = (id) => {
+    const confirmIsSold = async (id) => {
         let result = window.confirm('Bạn đã bán nó');
         if (result) {
-            console.log(id);
+            try {
+                await updateSaleStatusApi(id, { saleStatus: 'sold' });
+                await fetchPosts();
+            } catch (error) {
+                console.log(error);
+            }
         }
     };
+    const confirmIsReserved = async (id) => {
+        let result = window.confirm('Đã có người cọc nó');
+        if (result) {
+            try {
+                await updateSaleStatusApi(id, { saleStatus: 'reserved' });
+                await fetchPosts();
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    };
+    const confirmRemoveReserved = async (id) => {
+        let result = window.confirm('Tin này đã bị hủy cọc');
+        if (result) {
+            try {
+                await updateSaleStatusApi(id, { saleStatus: 'available' });
+                await fetchPosts();
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    };
+
     const deletePost = async (id) => {
         let result = window.confirm('Bạn muốn xóa tin này');
         if (result) {
@@ -105,13 +132,16 @@ const OwnPost = () => {
                                             <strong>Mô tả:</strong> {car.description}
                                         </p>
                                         <p>
+                                            <strong>Trạng thái bán:</strong> {car.saleStatus}
+                                        </p>
+                                        <p>
                                             <strong>Trạng thái:</strong> {car.status}
                                         </p>
                                         <p>
                                             <strong>Ngày đăng:</strong> {new Date(car.createdAt).toLocaleString()}
                                         </p>
 
-                                        <div className={cx('actions', 'row')}>
+                                        <div className={cx('actions', 'row-nowrap')}>
                                             <div
                                                 onClick={() => {
                                                     deletePost(car._id);
@@ -120,16 +150,55 @@ const OwnPost = () => {
                                             >
                                                 <FontAwesomeIcon icon={faTrash} />
                                             </div>
-                                            <div className={cx('sold')}>
-                                                <Button
-                                                    onClick={() => {
-                                                        confirmIsSold(car._id);
-                                                    }}
-                                                    small
-                                                    primary
-                                                    children={'đã bán ?'}
-                                                />{' '}
-                                            </div>
+                                            {car.saleStatus === 'reserved' ? (
+                                                <>
+                                                    <div className={cx('reserved')}>
+                                                        <Button
+                                                            onClick={() => {
+                                                                confirmRemoveReserved(car._id);
+                                                            }}
+                                                            small
+                                                            primary
+                                                            children={'cọc đã bị hủy ?'}
+                                                        />{' '}
+                                                    </div>
+                                                    <div className={cx('sold')}>
+                                                        <Button
+                                                            onClick={() => {
+                                                                confirmIsSold(car._id);
+                                                            }}
+                                                            small
+                                                            primary
+                                                            children={'đã bán ?'}
+                                                        />{' '}
+                                                    </div>
+                                                </>
+                                            ) : car.saleStatus === 'sold' ? (
+                                                ''
+                                            ) : (
+                                                <>
+                                                    <div className={cx('reserved')}>
+                                                        <Button
+                                                            onClick={() => {
+                                                                confirmIsReserved(car._id);
+                                                            }}
+                                                            small
+                                                            primary
+                                                            children={'đã cọc ?'}
+                                                        />{' '}
+                                                    </div>
+                                                    <div className={cx('sold')}>
+                                                        <Button
+                                                            onClick={() => {
+                                                                confirmIsSold(car._id);
+                                                            }}
+                                                            small
+                                                            primary
+                                                            children={'đã bán ?'}
+                                                        />{' '}
+                                                    </div>
+                                                </>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

@@ -3,13 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
 import DropdownMenu from '~/components/DropdownMenu/DropdownMenu';
 import ChatPartnerList from '~/components/ChatList/ChatList';
-import {
-    faRightToBracket,
-    faArrowUpFromBracket,
-    faUser,
-    faHouse,
-    faMagnifyingGlass,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
+import { faRightToBracket, faArrowUpFromBracket, faHouse } from '@fortawesome/free-solid-svg-icons';
 
 import { useSelector } from 'react-redux';
 import Button from '~/components/Button';
@@ -41,7 +36,7 @@ function Header() {
                     <div className={cx('personal')}>
                         <Link to="/user/Personal">
                             <div className={cx('profile')}>
-                                <FontAwesomeIcon icon={faUser} /> <span>{userData.username}</span>
+                                <FontAwesomeIcon icon={faCircleUser} /> <span>{userData.username}</span>
                             </div>
                         </Link>
                         {userData.role === 'admin' ? (
@@ -78,7 +73,7 @@ function Header() {
                         </li>
                         <li>
                             <Link to="/user/Personal">
-                                <FontAwesomeIcon icon={faUser} />
+                                <FontAwesomeIcon icon={faCircleUser} />
                             </Link>
                         </li>
                     </ul>
@@ -114,7 +109,7 @@ function Header() {
                         </li>
                         <li>
                             <Link to="/login">
-                                <FontAwesomeIcon icon={faUser} />
+                                <FontAwesomeIcon icon={faCircleUser} />
                             </Link>
                         </li>
                     </ul>

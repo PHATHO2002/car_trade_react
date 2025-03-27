@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import api from '~/api/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faComment } from '@fortawesome/free-solid-svg-icons';
+import { faComment } from '@fortawesome/free-regular-svg-icons';
 import classNames from 'classnames/bind';
 import styles from './ChatList.scss.module.scss';
 import ChatBox from '../ChatBox/ChatBox';
