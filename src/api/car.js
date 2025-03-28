@@ -63,6 +63,14 @@ export const getCarPendingApi = async () => {
         throw error;
     }
 };
+export const getBrandCountByMonthApi = async (month, year) => {
+    try {
+        const response = await api.get(`/admin/car/data-brand-count-month?month=${month}&year=${year}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
 export const updateCarStatusApi = async (id, status) => {
     try {
         const response = await api.post('/admin/car/decision', { id, status });
