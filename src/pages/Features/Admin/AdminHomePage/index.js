@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './AdminHomePage.module.scss';
 import MyChart from '~/components/Chart';
-import { getCarBrandsApi, getBrandCountByMonthApi } from '~/api/car';
+import { getBrandCountByMonthApi } from '~/api/car';
 import { useEffect, useState } from 'react';
 const cx = classNames.bind(styles);
 

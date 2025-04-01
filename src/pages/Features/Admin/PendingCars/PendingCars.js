@@ -5,6 +5,7 @@ import styles from './PendingCars.module.scss';
 import Button from '~/components/Button';
 import { connectSocket } from '~/utils/socket';
 import { getCarPendingApi, updateCarStatusApi } from '~/api/car';
+import { Link } from 'react-router-dom';
 const cx = classNames.bind(styles);
 
 const PendingProducts = () => {
@@ -76,45 +77,47 @@ const PendingProducts = () => {
                 <>
                     <ul className={cx('product-list')}>
                         {currentItems.map((car, index) => (
-                            <li key={index}>
-                                <div className={cx('title')}>
-                                    <h3>{car.title}</h3>
-                                </div>
-                                <div className={cx('information')}>
-                                    <p>{/* <strong>Địa chỉ người bán:</strong> {car.address} */}</p>
-                                    <p>
-                                        <strong>Giá:</strong> {car.price} VND
-                                    </p>
-                                    <p>
-                                        <strong>Mô tả:</strong> {car.description}
-                                    </p>
-                                    <p>
-                                        <strong>người bán:</strong> {car.sellerName}
-                                    </p>
-                                    <p>
-                                        <strong>Ngày đăng:</strong> {new Date(car.createdAt).toLocaleString()}
-                                    </p>
-                                </div>
+                            <Link to={`/car/${car._id}`} key={index}>
+                                <li>
+                                    <div className={cx('title')}>
+                                        <h3>{car.title}</h3>
+                                    </div>
+                                    <div className={cx('information')}>
+                                        <p>{/* <strong>Địa chỉ người bán:</strong> {car.address} */}</p>
+                                        <p>
+                                            <strong>Giá:</strong> {car.price} VND
+                                        </p>
+                                        <p>
+                                            <strong>Mô tả:</strong> {car.description}
+                                        </p>
+                                        <p>
+                                            <strong>người bán:</strong> {car.sellerName}
+                                        </p>
+                                        <p>
+                                            <strong>Ngày đăng:</strong> {new Date(car.createdAt).toLocaleString()}
+                                        </p>
+                                    </div>
 
-                                <div className={cx('images')}>
-                                    <img src={car.images[0]} alt={car.title} width="200" />
-                                </div>
-                                {loading ? (
-                                    <div className={cx('btn-accept-reject')}>
-                                        <Button primary>loading</Button>
-                                        <Button outline>loading</Button>
+                                    <div className={cx('images')}>
+                                        <img src={car.images[0]} alt={car.title} width="200" />
                                     </div>
-                                ) : (
-                                    <div className={cx('btn-accept-reject')}>
-                                        <Button primary onClick={() => approvalCar(car._id)}>
-                                            Duyệt
-                                        </Button>
-                                        <Button outline onClick={() => rejectedCar(car._id)}>
-                                            Từ chối
-                                        </Button>
-                                    </div>
-                                )}
-                            </li>
+                                    {loading ? (
+                                        <div className={cx('btn-accept-reject')}>
+                                            <Button primary>loading</Button>
+                                            <Button outline>loading</Button>
+                                        </div>
+                                    ) : (
+                                        <div className={cx('btn-accept-reject')}>
+                                            <Button primary onClick={() => approvalCar(car._id)}>
+                                                Duyệt
+                                            </Button>
+                                            <Button outline onClick={() => rejectedCar(car._id)}>
+                                                Từ chối
+                                            </Button>
+                                        </div>
+                                    )}
+                                </li>
+                            </Link>
                         ))}
                     </ul>
 

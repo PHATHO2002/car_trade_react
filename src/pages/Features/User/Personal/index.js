@@ -111,12 +111,12 @@ const Personal = () => {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             const phoneRegex = /^(0|\+84)[3-9][0-9]{8}$/; // Hỗ trợ số điện thoại Việt Nam
 
-            if (!emailRegex.test(email)) {
+            if (email && !emailRegex.test(email)) {
                 toast.error('Email không hợp lệ.');
                 return;
             }
 
-            if (!phoneRegex.test(phone)) {
+            if (phone && !phoneRegex.test(phone)) {
                 toast.error('Số điện thoại không hợp lệ.');
                 return;
             }

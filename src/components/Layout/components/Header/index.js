@@ -84,7 +84,7 @@ function Header() {
         <div className={cx('wrapper')}>
             <div className={cx('inner')}>
                 <div className={cx('logo')}>
-                    <img src="https://muaban.net/logo/muaban.svg" alt="Mua bán bất động sản" />
+                    <img src="\images\logo-removebg.svg" alt="Mua bán xe ô tô" />
                 </div>
 
                 <div className={cx('actions')}>

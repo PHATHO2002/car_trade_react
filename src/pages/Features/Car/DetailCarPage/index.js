@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
-import { getCarApi } from '~/api/car';
+import { getCarApi, getCarDetailForAdminApi } from '~/api/car';
 import { getUserApi } from '~/api/user';
 import { addToCartApi } from '~/api/cart';
 import styles from './detailCar.module.scss';
@@ -31,6 +31,7 @@ const DetailCar = () => {
     const [seller, setSeller] = useState({});
     const [loading, setLoading] = useState(true);
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+    const role = useSelector((state) => state.auth.user.role);
     let socket;
     const [receiverIdList, setReceiverIdList] = useState([]); //it was made to render list chatbox
     const handleOpenChatBox = (receiId, username) => {
@@ -64,7 +65,15 @@ const DetailCar = () => {
     };
     const getDetailCar = async () => {
         try {
-            const rsp = await getCarApi(`_id=${id}`);
+            let rsp;
+
+            if (role === 'admin') {
+                rsp = await getCarDetailForAdminApi(`_id=${id}`);
+                console.log('check ll', rsp);
+            } else {
+                rsp = await getCarApi(`_id=${id}`);
+            }
+
             const rsp2 = await getUserApi(`_id=${rsp.data.data[0].sellerId}`);
             setCarDetail(rsp.data.data[0]);
             setSeller(rsp2.data.data[0]);
@@ -114,32 +123,36 @@ const DetailCar = () => {
                                 {' '}
                                 <FontAwesomeIcon icon={faImages} />
                             </span>
-
+                            {console.log(carDetail.images)}
                             <img src={carDetail.images[0]} alt={carDetail.title} />
                         </div>
                         <div className={cx('title_price', 'boder_custom')}>
                             <h3 className={cx('title')}>{carDetail.title}</h3>
 
                             <p className={cx('price')}>{handlePrice(carDetail.price)} Đ</p>
-                            <div className={cx('action', 'row-nowrap')}>
-                                <p
-                                    onClick={() => {
-                                        handAddToCart(carDetail._id);
-                                    }}
-                                    title="Thêm vào giỏ hàng"
-                                >
-                                    <FontAwesomeIcon icon={faCartShopping} />
-                                </p>
-                                <p>
-                                    <FontAwesomeIcon
+                            {role === 'admin' ? (
+                                ''
+                            ) : (
+                                <div className={cx('action', 'row-nowrap')}>
+                                    <p
                                         onClick={() => {
-                                            handleOpenChatBox(carDetail.sellerId, carDetail.sellerName);
+                                            handAddToCart(carDetail._id);
                                         }}
-                                        title="chat với người bán"
-                                        icon={faMessage}
-                                    />
-                                </p>
-                            </div>
+                                        title="Thêm vào giỏ hàng"
+                                    >
+                                        <FontAwesomeIcon icon={faCartShopping} />
+                                    </p>
+                                    <p>
+                                        <FontAwesomeIcon
+                                            onClick={() => {
+                                                handleOpenChatBox(carDetail.sellerId, carDetail.sellerName);
+                                            }}
+                                            title="chat với người bán"
+                                            icon={faMessage}
+                                        />
+                                    </p>
+                                </div>
+                            )}
 
                             <p className={cx('date')}>
                                 <strong>Ngày đăng</strong>{' '}

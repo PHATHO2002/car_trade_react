@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCartShopping, faNewspaper, faSignOut, faAddressBook } from '@fortawesome/free-solid-svg-icons';
+import { faCartShopping, faNewspaper, faSignOut, faAddressBook, faKey } from '@fortawesome/free-solid-svg-icons';
 import { connectSocket } from '~/utils/socket';
 import { logoutApi } from '~/api/auth';
 import { useDispatch } from 'react-redux';
@@ -40,6 +40,11 @@ export const useUserMenuItems = () => {
             label: 'Tin của bạn',
             to: '/user/own-post',
             icon: <FontAwesomeIcon icon={faNewspaper} />,
+        },
+        {
+            label: 'Đổi mật khẩu',
+            to: '/user/change-pass',
+            icon: <FontAwesomeIcon icon={faKey} />,
         },
         {
             label: 'Đăng xuất',

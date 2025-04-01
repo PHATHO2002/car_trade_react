@@ -127,6 +127,18 @@ label {
     text-transform: uppercase;
     letter-spacing: 1px;
 }
+.error-message {
+    color: red;
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-top: 5px;
+}
+.success-message {
+    color: green;
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-top: 5px;
+}
 @media (max-width: 768px) {
     html {
         font-size: 50%;

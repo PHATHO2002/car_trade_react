@@ -160,6 +160,17 @@ function Post() {
             }
         }
     };
+    const handleCancelImageUpload = (index, typeImages) => {
+        if (typeImages === 'doc') {
+            const newDocumentImages = [...documentImages];
+            newDocumentImages.splice(index, 1); // Xóa phần tử tại chỉ số index
+            setDocumentImages(newDocumentImages); // Cập nhật lại state
+        } else {
+            const newCarImages = [...carImages];
+            newCarImages.splice(index, 1); // Xóa phần tử tại chỉ số index
+            setCarImages(newCarImages);
+        } // Cập nhật lại state
+    };
     const getBrands = async () => {
         try {
             const rsp = await getCarBrandsApi();
@@ -187,7 +198,7 @@ function Post() {
                                 onChange={(e) => setTitle(e.target.value)}
                             />
                             {errors.title && (
-                                <p className={cx('error')}>
+                                <p className={cx('error-message')}>
                                     {errors.title}
                                     <FontAwesomeIcon icon={faTriangleExclamation} />
                                 </p>
@@ -205,7 +216,7 @@ function Post() {
                                 })}
                             </select>
                             {errors.brand && (
-                                <p className={cx('error')}>
+                                <p className={cx('error-message')}>
                                     {errors.brand}
                                     <FontAwesomeIcon icon={faTriangleExclamation} />
                                 </p>
@@ -222,7 +233,7 @@ function Post() {
                                 ))}
                             </select>
                             {errors.year && (
-                                <p className={cx('error')}>
+                                <p className={cx('error-message')}>
                                     {errors.year}
                                     <FontAwesomeIcon icon={faTriangleExclamation} />
                                 </p>
@@ -238,7 +249,7 @@ function Post() {
                                 onChange={(e) => setMileage(e.target.value)}
                             />
                             {errors.mileage && (
-                                <p className={cx('error')}>
+                                <p className={cx('error-message')}>
                                     {errors.mileage}
                                     <FontAwesomeIcon icon={faTriangleExclamation} />
                                 </p>
@@ -254,7 +265,7 @@ function Post() {
                                 onChange={(e) => setCondition(e.target.value)}
                             />
                             {errors.condition && (
-                                <p className={cx('error')}>
+                                <p className={cx('error-message')}>
                                     {errors.condition}
                                     <FontAwesomeIcon icon={faTriangleExclamation} />
                                 </p>
@@ -270,7 +281,7 @@ function Post() {
                                 onChange={(e) => setPrice(e.target.value)}
                             />
                             {errors.price && (
-                                <p className={cx('error')}>
+                                <p className={cx('error-message')}>
                                     {errors.price}
                                     <FontAwesomeIcon icon={faTriangleExclamation} />
                                 </p>
@@ -293,10 +304,9 @@ function Post() {
                             )}
                         </div>
                     </div>
-                    <div className="col">
+                    <div className="col-4">
                         <div className={cx('form-group')}>
-                            <h4>Tải lên hình ảnh về xe</h4>
-
+                            <h3>Tải lên hình ảnh về xe</h3>
                             <div className={cx('box-image', 'row')}>
                                 <label htmlFor="carImages" className={cx('upload-label')}>
                                     {' '}
@@ -312,19 +322,27 @@ function Post() {
                                     ref={carImagesInputRef}
                                 />
                                 {carImages.map((file, index) => (
-                                    <img key={index} src={URL.createObjectURL(file)} alt={`Car ${index + 1}`} />
+                                    <div key={index} className={cx('image-item')}>
+                                        <img src={URL.createObjectURL(file)} alt={`Car ${index + 1}`} />
+                                        <p
+                                            className={cx('remove-image')}
+                                            onClick={() => handleCancelImageUpload(index, 'car')}
+                                        >
+                                            X
+                                        </p>
+                                    </div>
                                 ))}
                             </div>
 
                             {errors.carimages && (
-                                <p className={cx('error')}>
+                                <p className={cx('error-message')}>
                                     {errors.carimages}
                                     <FontAwesomeIcon icon={faTriangleExclamation} />
                                 </p>
                             )}
                         </div>
                         <div className={cx('form-group')}>
-                            <h4> Tải lên hình ảnh về giấy tờ xe</h4>
+                            <h3> Tải lên hình ảnh về giấy tờ xe</h3>
 
                             <div className={cx('box-image', 'row')}>
                                 <label htmlFor="documentImages" className={cx('upload-label')}>
@@ -340,12 +358,20 @@ function Post() {
                                     ref={documentImagesInputRef}
                                 />
                                 {documentImages.map((file, index) => (
-                                    <img key={index} src={URL.createObjectURL(file)} alt={`Car ${index + 1}`} />
+                                    <div key={index} className={cx('image-item')}>
+                                        <img src={URL.createObjectURL(file)} alt={`doc ${index + 1}`} />
+                                        <p
+                                            className={cx('remove-image')}
+                                            onClick={() => handleCancelImageUpload(index, 'doc')}
+                                        >
+                                            X
+                                        </p>
+                                    </div>
                                 ))}
                             </div>
 
                             {errors.images && (
-                                <p className={cx('error')}>
+                                <p className={cx('error-message')}>
                                     {errors.images}
                                     <FontAwesomeIcon icon={faTriangleExclamation} />
                                 </p>
