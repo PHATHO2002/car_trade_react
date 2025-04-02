@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping, faNewspaper, faSignOut, faAddressBook, faKey } from '@fortawesome/free-solid-svg-icons';
+import { faRectangleList, faSquareFull } from '@fortawesome/free-regular-svg-icons';
 import { connectSocket } from '~/utils/socket';
 import { logoutApi } from '~/api/auth';
 import { useDispatch } from 'react-redux';
@@ -49,7 +50,7 @@ export const useUserMenuItems = () => {
         {
             label: 'Đăng xuất',
             onClick: handleLogout, // ✅ No need for extra function wrapper
-            icon: <FontAwesomeIcon icon={faSignOut} />,
+            icon: <FontAwesomeIcon icon={faSquareFull} />,
         },
     ];
 };
@@ -61,12 +62,12 @@ export const useAdminMenuItems = () => {
         {
             label: 'Xe chờ duyệt',
             to: '/admin/get-pendingCars',
-            icon: <FontAwesomeIcon icon={faAddressBook} />,
+            icon: <FontAwesomeIcon icon={faRectangleList} />,
         },
         {
             label: 'Đăng xuất',
             onClick: handleLogout, // ✅ No need for extra function wrapper
-            icon: <FontAwesomeIcon icon={faSignOut} />,
+            icon: <FontAwesomeIcon icon={faSquareFull} />,
         },
     ];
 };

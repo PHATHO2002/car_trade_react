@@ -11,15 +11,12 @@
         top: 50px;
         z-index: 101;
         list-style: none;
+        background-color: var(--white);
+        font-size: medium;
         li {
             color: black;
             padding: 0.5rem 2rem;
             .link {
-                display: block; // Đảm bảo chiếm toàn bộ `li`
-                width: 100%; // Tránh bị lệch
-                height: 100%;
-                color: inherit; // Kế thừa màu từ `li`
-
                 &:hover {
                     background-color: inherit; // Giữ hover từ `li`
                     color: inherit;

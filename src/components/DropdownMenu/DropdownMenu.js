@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretLeft, faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { faSquareCaretLeft, faSquareCaretDown } from '@fortawesome/free-regular-svg-icons';
 import classNames from 'classnames/bind';
 import styles from './DropdownMenu.scss.module.scss';
 
@@ -31,22 +31,26 @@ const DropdownMenu = ({ title = '', items = [] }) => {
     return (
         <div className={cx('dropdown')} ref={menuRef}>
             <div className={cx('dropdown-button')} onClick={toggleMenu}>
-                {isOpen ? <FontAwesomeIcon icon={faCaretDown} /> : <FontAwesomeIcon icon={faCaretLeft} />}
+                {isOpen ? <FontAwesomeIcon icon={faSquareCaretDown} /> : <FontAwesomeIcon icon={faSquareCaretLeft} />}
             </div>
             {isOpen && (
                 <ul className={cx('dropdown-menu')}>
                     {items.map((item, index) => (
                         <li key={index} onClick={item.onClick ? item.onClick : undefined}>
                             {item.to ? (
-                                <Link className={cx('link')} to={item.to} onClick={() => setIsOpen(false)}>
+                                <Link
+                                    className={cx('link', 'row-nowrap')}
+                                    to={item.to}
+                                    onClick={() => setIsOpen(false)}
+                                >
                                     {item.icon && <span className={cx('icon')}>{item.icon}</span>}
-                                    {item.label}
+                                    {item.label && <span className={cx('text')}>{item.label}</span>}
                                 </Link>
                             ) : (
-                                <span>
+                                <span className={cx('row-nowrap')}>
                                     {' '}
                                     {item.icon && <span className={cx('icon')}>{item.icon}</span>}
-                                    {item.label}
+                                    {item.label && <span className={cx('text')}>{item.label}</span>}
                                 </span>
                             )}
                         </li>

@@ -18,6 +18,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import { connectSocket } from '~/utils/socket';
+import Button from '~/components/Button';
 import NotFound from '~/components/notFound';
 import { Link } from 'react-router-dom';
 import Search from '~/components/Search/search';
@@ -27,7 +28,7 @@ const UserHomePage = () => {
     const [carList, setCarList] = useState([]); // use for display
     const [carListStatic, setCarListStatic] = useState([]); // dung để filter
     const [cartIdList, setcartsId] = useState([]);
-    const [usersOnline, setUserOnline] = useState([]);
+    const [usersOnline, setUserOnline] = useState({});
     const [currentPage, setCurrentPage] = useState(0);
 
     const user = useSelector((state) => state.auth.user);
@@ -75,10 +76,12 @@ const UserHomePage = () => {
         setCurrentPage(event.selected);
     };
     const handleUserOnline = (usersOnline, sellerId) => {
-        const userOn = usersOnline.find((user) => user.userId === sellerId);
-        return userOn;
-    };
+        if (!usersOnline) return null;
 
+        const userOn = usersOnline[sellerId];
+
+        return userOn || null; // Trả về user nếu có, hoặc null nếu không có
+    };
     // fun get getProvincesVn
     const getProvincesVn = async () => {
         try {
@@ -164,6 +167,7 @@ const UserHomePage = () => {
         getCarBrands();
         socket = connectSocket();
         socket.on('users_online', (data) => {
+            console.log(data);
             setUserOnline(data);
         });
 
@@ -348,9 +352,9 @@ const UserHomePage = () => {
                             ))}
                         </ul>
                         {currentListAdress.length > 5 && (
-                            <button onClick={() => setShowAllAdress(!showAllAdress)}>
+                            <Button onClick={() => setShowAllAdress(!showAllAdress)} primary>
                                 {showAllAdress ? 'Thu gọn' : 'Xem thêm'}
-                            </button>
+                            </Button>
                         )}
                         <ul className={cx('brand-filter')}>
                             <h3>Hãng</h3>
@@ -373,9 +377,9 @@ const UserHomePage = () => {
                             ))}
                         </ul>
                         {brands.length > 5 && (
-                            <button onClick={() => setShowAllBrands(!showAllBrands)}>
+                            <Button onClick={() => setShowAllBrands(!showAllBrands)} primary>
                                 {showAllBrands ? 'Thu gọn' : 'Xem thêm'}
-                            </button>
+                            </Button>
                         )}
                         <div className={cx('search')}>
                             <h3>search</h3>

@@ -89,8 +89,10 @@ function Header() {
 
                 <div className={cx('actions')}>
                     <Link className={cx('login')} to="/login">
-                        <FontAwesomeIcon icon={faRightToBracket} />
-                        <span>Đăng nhập</span>
+                        <Button primary>
+                            <FontAwesomeIcon icon={faRightToBracket} />
+                            <span>Đăng nhập</span>
+                        </Button>
                     </Link>
                 </div>
                 <div className={cx('bottom-header')}>

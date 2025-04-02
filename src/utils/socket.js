@@ -29,15 +29,28 @@ const refreshAccessToken = async () => {
 };
 const connectSocket = () => {
     if (!socket) {
-        socket = io('https://car-trade-nodejs.onrender.com', {
-            auth: {
-                token: store.getState().auth.accessToken, // Lấy token khi connect
-            },
-            transports: ['websocket'],
-            reconnection: true,
-            reconnectionAttempts: 5,
-            reconnectionDelay: 2000,
-        });
+        if (process.env.NODE_ENV === 'development') {
+            socket = io('http://localhost:5000', {
+                auth: {
+                    token: store.getState().auth.accessToken, // Lấy token khi connect
+                },
+                transports: ['websocket'],
+                reconnection: true,
+                reconnectionAttempts: 5,
+                reconnectionDelay: 2000,
+            });
+        } else {
+            socket = io('https://car-trade-nodejs.onrender.com', {
+                auth: {
+                    token: store.getState().auth.accessToken, // Lấy token khi connect
+                },
+                transports: ['websocket'],
+                reconnection: true,
+                reconnectionAttempts: 5,
+                reconnectionDelay: 2000,
+            });
+        }
+
         // Log sự kiện kết nối
         socket.on('connect', () => {
             socket.emit('user_connected', { userId: user.userId, socketId: socket.id });
