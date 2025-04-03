@@ -14,10 +14,10 @@ const cx = classNames.bind(styles);
 const ChatBox = ({ receiverId, closeChatBox, username }) => {
     const [messages, setMessages] = useState([]); // Lưu trữ danh sách tin nhắn
     const [newMessage, setNewMessage] = useState(''); // Lưu trữ tin nhắn mới
-    const accessToken = useSelector((state) => state.auth.accessToken);
     const user = useSelector((state) => state.auth.user);
     const messagesContainerRef = useRef(null);
-
+    const [isTyping, setIsTyping] = useState(false);
+    const typingTimeoutRef = useRef(null);
     let socket = connectSocket();
     const handleSendMess = async () => {
         try {
@@ -54,15 +54,29 @@ const ChatBox = ({ receiverId, closeChatBox, username }) => {
             console.log(error);
         }
     };
-
+    const handleTypingInput = (e) => {
+        if (socket) {
+            socket.emit('typing', { senderId: user.userId, receiverId: receiverId });
+        }
+        setNewMessage(e.target.value);
+    };
     useEffect(() => {
-        if (accessToken) {
-            fetchMess();
-            if (socket) {
-                socket.on('receive_message', (data) => {
-                    setMessages((prev) => [...prev, data]);
-                });
-            }
+        fetchMess();
+        if (socket) {
+            socket.on('receive_message', (data) => {
+                setMessages((prev) => [...prev, data]);
+            });
+            socket.on('typing', (data) => {
+                setIsTyping(true);
+                if (typingTimeoutRef.current) {
+                    clearTimeout(typingTimeoutRef.current);
+                }
+
+                // Đặt timeout mới để ẩn hiệu ứng sau 2 giây
+                typingTimeoutRef.current = setTimeout(() => {
+                    setIsTyping(false);
+                }, 2000);
+            });
         }
 
         return () => {
@@ -70,9 +84,10 @@ const ChatBox = ({ receiverId, closeChatBox, username }) => {
                 socket.off('receive_messag');
                 socket.off('send_message');
                 socket.off('send_message_error');
+                socket.off('typing');
             }
         };
-    }, [accessToken]);
+    }, []);
     useEffect(() => {
         if (messagesContainerRef.current) {
             messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
@@ -105,17 +120,24 @@ const ChatBox = ({ receiverId, closeChatBox, username }) => {
                     ) : (
                         <div className={cx('message_left')} key={mess._id || index}>
                             {/* <strong> avatar2</strong> */}
+
                             <span>{mess.message}</span>
+
                             {mess.timestamp ? <small>{handleDate(new Date(mess.timestamp))}</small> : ''}
                         </div>
                     );
                 })}
+                {isTyping && (
+                    <div className={cx('message_left', 'typing')}>
+                        <span>Đang nhắn</span>
+                    </div>
+                )}
             </div>
             <div className={cx('chat-input', 'row')}>
                 <input
                     type="text"
                     value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
+                    onChange={(e) => handleTypingInput(e)}
                     placeholder="Type a message..."
                 />
                 <Button onClick={handleSendMess} primary>

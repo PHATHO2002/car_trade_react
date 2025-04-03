@@ -38,6 +38,18 @@
             background-color: rgb(231, 223, 223);
             color: rgb(93, 93, 95);
         }
+        .typing {
+            background-color: rgb(204, 184, 184);
+            font-size: 1.5rem;
+            opacity: 0.8;
+            padding: 0.5rem 1rem;
+            border-radius: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            animation: typingEffect 1.5s ease-in-out infinite;
+            box-shadow: 0 0.2rem 0.6rem rgba(0, 0, 0, 0.1);
+        }
     }
     .chat-input {
         padding: 1rem 2rem;
