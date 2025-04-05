@@ -10,7 +10,7 @@ import { useRef } from 'react';
 import Button from '../Button';
 import { sendMessApi, getMessWithPartnerApi, markReadedApi } from '~/api/chat';
 const cx = classNames.bind(styles);
-
+//test
 const ChatBox = ({ receiverId, closeChatBox, username }) => {
     const [messages, setMessages] = useState([]); // Lưu trữ danh sách tin nhắn
     const [newMessage, setNewMessage] = useState(''); // Lưu trữ tin nhắn mới
