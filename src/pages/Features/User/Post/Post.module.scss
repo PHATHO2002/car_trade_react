@@ -1,0 +1,102 @@
+.wraper {
+    width: 100%;
+
+    .form-group {
+        h3 {
+            text-align: left !important;
+        }
+        p {
+            font-size: 1rem;
+            font-weight: 700;
+            line-height: 2.1rem;
+            margin-bottom: 0.8rem;
+        }
+        input {
+            width: 100%;
+            height: 4rem;
+            box-sizing: border-box;
+            outline: none;
+            border-radius: 0.4rem;
+            margin: 0.5rem 0.5rem;
+            padding: 0 1rem;
+            border: 0.1rem solid var(--text-color);
+        }
+
+        .box-image {
+            input {
+                display: none;
+            }
+
+            .upload-label {
+                display: flex; /* Giữ label vừa với nội dung */
+                align-items: center;
+                justify-content: center;
+                min-width: 10rem;
+                min-height: 10rem;
+                background: #007bff; /* Màu xanh dương */
+                color: white;
+                font-weight: bold;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: background 0.3s, transform 0.2s;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                text-align: center;
+            }
+
+            .upload-label:hover {
+                background: #0056b3; /* Màu xanh đậm hơn khi hover */
+                transform: scale(1.05); /* Hiệu ứng phóng to nhẹ */
+            }
+            .image-item {
+                position: relative;
+                width: 10rem;
+                height: 10rem;
+                .remove-image {
+                    position: absolute;
+                    top: 0.5rem;
+                    right: 0.5rem;
+                    background: var(--primary);
+                    color: white;
+                    border: none;
+                    border-radius: 50%;
+                    width: 2rem;
+                    height: 2rem;
+                    font-size: 1rem;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    border-radius: 1rem;
+                    box-shadow: 0 0.2rem 5rem rgba(0, 0, 0, 0.2);
+                }
+            }
+        }
+
+        .error {
+            color: red;
+            font-size: 1.4rem;
+            margin-top: 0.4rem;
+            font-weight: lighter;
+        }
+    }
+}
+@media (max-width: 768px) {
+    .wraper {
+        max-width: 100% !important;
+        .post-form {
+            div {
+                display: flex;
+                flex-direction: column;
+                .box-image {
+                    display: flex;
+                    flex-direction: row-reverse;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,60 @@
+.chat-box {
+    width: 300px;
+    position: fixed;
+    bottom: var(--default-layout-header-height);
+    right: 3rem;
+    z-index: 9999;
+    .chat-header {
+        background-color: var(--primary);
+
+        h3 {
+            color: aliceblue !important;
+        }
+
+        border-radius: 0.5rem 0.5rem 0 0;
+        padding: 1rem 1rem;
+        .close-icon {
+            cursor: pointer;
+            color: aliceblue !important;
+        }
+    }
+    .chat-messages {
+        height: 200px;
+        overflow: auto;
+        border: 1px solid rgb(236, 231, 231);
+        background-color: rgb(232, 236, 239);
+        div {
+            border-radius: 3px;
+            max-width: 200px;
+            margin: 0 1rem;
+        }
+        .message_right {
+            background-color: var(--primary);
+            color: rgb(243, 237, 237);
+            align-self: flex-end;
+        }
+        .message_left {
+            align-self: flex-start;
+            background-color: rgb(231, 223, 223);
+            color: rgb(93, 93, 95);
+        }
+        .typing {
+            background-color: rgb(204, 184, 184);
+            font-size: 1.5rem;
+            opacity: 0.8;
+            padding: 0.5rem 1rem;
+            border-radius: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            animation: typingEffect 1.5s ease-in-out infinite;
+            box-shadow: 0 0.2rem 0.6rem rgba(0, 0, 0, 0.1);
+        }
+    }
+    .chat-input {
+        padding: 1rem 2rem;
+        flex-wrap: nowrap;
+        border: 1px solid rgb(236, 231, 231);
+        color: aliceblue;
+    }
+}

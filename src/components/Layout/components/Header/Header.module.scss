@@ -1,0 +1,81 @@
+.wrapper {
+    width: 100%;
+    min-height: var(--default-layout-header-height, 60px);
+    box-shadow: 0px 1px 1px rgb(0 0 0 / 12%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .inner {
+        height: 100%;
+        width: var(--default-layout-width);
+        padding: 1rem 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .logo {
+            img {
+                height: var(--default-layout-header-height);
+                width: auto;
+                text {
+                    font-size: 30px;
+                    fill: red;
+                    font-weight: bold;
+                }
+            }
+        }
+        .actions {
+            display: flex;
+            align-items: center;
+            .personal {
+                display: flex;
+                .profile {
+                    padding: 0 5px;
+                }
+            }
+        }
+        .actions > * {
+            cursor: pointer;
+            padding: 0 1rem 0 1rem;
+            font-size: 2rem;
+        }
+        .bottom-header {
+            display: none;
+            width: 100%;
+            height: var(--default-layout-header-height);
+            background-color: rgb(192, 196, 199);
+            .bottom-menu {
+                list-style-type: none;
+                font-size: 2rem;
+                width: var(--default-layout-width);
+                padding: 2rem;
+                margin: auto;
+                display: flex;
+                justify-content: space-between;
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .wrapper {
+        .inner {
+            .logo {
+                margin: auto;
+            }
+            .search {
+                display: none;
+            }
+            .actions {
+                display: none;
+            }
+            .bottom-header {
+                display: block;
+                position: fixed;
+                bottom: 0;
+                left: 50%;
+                transform: translate(-50%);
+                z-index: 999;
+            }
+        }
+    }
+}

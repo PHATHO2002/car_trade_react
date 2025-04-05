@@ -1,0 +1,34 @@
+.dropdown {
+    position: relative;
+    .dropdown-button {
+        cursor: pointer;
+        padding-top: 10%;
+    }
+    .dropdown-menu {
+        position: absolute;
+        width: 20rem;
+        right: 0;
+        top: 50px;
+        z-index: 101;
+        list-style: none;
+        background-color: var(--white);
+        font-size: medium;
+        li {
+            color: black;
+            padding: 0.5rem 2rem;
+            .link {
+                &:hover {
+                    background-color: inherit; // Giữ hover từ `li`
+                    color: inherit;
+                }
+            }
+            &:hover {
+                background-color: var(--primary);
+                color: var(--white);
+            }
+            .icon {
+                padding: 0 5px;
+            }
+        }
+    }
+}

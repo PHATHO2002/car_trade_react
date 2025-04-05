@@ -1,0 +1,83 @@
+import { io } from 'socket.io-client';
+import store from '~/redux/store';
+import api from '~/api/api';
+import { setAccessToken } from '~/redux/slices/authSlice';
+import { logout } from '~/redux/slices/authSlice';
+const user = store.getState().auth.user;
+let socket;
+// Hàm gọi API refresh token
+let refreshTokenRequest = null;
+const refreshAccessToken = async () => {
+    if (!refreshTokenRequest) {
+        refreshTokenRequest = api
+            .post('/refreshToken')
+            .then((response) => {
+                store.dispatch(setAccessToken(response.data.accessToken)); // Lưu vào Redux
+                return response.data.accessToken;
+            })
+            .catch((error) => {
+                console.log(error);
+                store.dispatch(logout()); // Xóa Redux state nếu lỗi
+                window.location.href = '/login'; // Chuyển hướng về trang login
+                return Promise.reject(error);
+            })
+            .finally(() => {
+                refreshTokenRequest = null; // Reset biến khi hoàn thành
+            });
+    }
+    return refreshTokenRequest;
+};
+const connectSocket = () => {
+    if (!socket) {
+        if (process.env.NODE_ENV === 'development') {
+            socket = io('http://localhost:5000', {
+                auth: {
+                    token: store.getState().auth.accessToken, // Lấy token khi connect
+                },
+                transports: ['websocket'],
+                reconnection: true,
+                reconnectionAttempts: 5,
+                reconnectionDelay: 2000,
+            });
+        } else {
+            socket = io('https://car-trade-nodejs.onrender.com', {
+                auth: {
+                    token: store.getState().auth.accessToken, // Lấy token khi connect
+                },
+                transports: ['websocket'],
+                reconnection: true,
+                reconnectionAttempts: 5,
+                reconnectionDelay: 2000,
+            });
+        }
+
+        // Log sự kiện kết nối
+        socket.on('connect', () => {
+            socket.emit('user_connected', { userId: user.userId, socketId: socket.id });
+            console.log('✅ Socket connected:', socket.id);
+        });
+        socket.on('disconnect', (reason) => {
+            console.warn('⚠️ Socket disconnected:', reason);
+        });
+        socket.on('connect_error', async (err) => {
+            if (err.message.includes('TokenExpiredError')) {
+                try {
+                    // Gọi API refresh token
+                    const newAccessToken = await refreshAccessToken();
+                    // Cập nhật token vào Redux
+                    store.dispatch(setAccessToken(newAccessToken));
+
+                    // Gán lại token mới cho socket và kết nối lại
+                    socket.auth.token = newAccessToken;
+                    socket.connect();
+                } catch (refreshError) {
+                    console.log('🔴 Refresh token to connect socket failed');
+                }
+            }
+            console.error('❌ Socket connection error:', err.message);
+        });
+    }
+    return socket;
+};
+
+export { connectSocket };

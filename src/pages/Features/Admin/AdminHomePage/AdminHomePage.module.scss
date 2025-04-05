@@ -1,0 +1,19 @@
+.wraper {
+    .dashboard-container {
+        .chart {
+            .chart-head {
+                justify-content: center;
+                align-items: center;
+                .icon {
+                    font-size: 3rem;
+                    cursor: pointer;
+                    color: var(--priamry);
+                }
+                h3 {
+                    padding: 0;
+                    margin: 0;
+                }
+            }
+        }
+    }
+}

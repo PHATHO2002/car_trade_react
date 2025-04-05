@@ -1,0 +1,92 @@
+.wraper {
+    position: relative;
+    .chatPartIcon {
+        position: relative;
+        .quantity-unread {
+            position: absolute;
+            width: 1.4rem;
+            height: 1.4rem;
+            top: 5%;
+            left: 50%;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 600;
+            background-color: rgb(220, 41, 41);
+            color: rgb(248, 237, 237);
+        }
+    }
+    .open {
+        position: absolute;
+        transform: translateX(0);
+        transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+        width: 300px;
+        background-color: rgb(221, 227, 229);
+        z-index: 999;
+        max-height: 20rem;
+        overflow-y: auto;
+        top: 50px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        .list-partner {
+            list-style: none;
+            li {
+                font-size: 1rem;
+
+                padding: 0.5rem 2rem;
+                .partner-name {
+                    font-size: 2.5rem;
+                }
+
+                .newMess-group {
+                    .partner-newMess {
+                        font-size: 1.5rem;
+                        opacity: 0.5;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        flex: 2;
+                        &.unread {
+                            font-weight: bold;
+                            font-size: 1.5rem; // Tuỳ chỉnh màu sắc hoặc thêm hiệu ứng khác
+                            opacity: 1;
+                        }
+                    }
+
+                    .quantity-unRead-partner {
+                        width: 1.4rem;
+                        height: 1.4rem;
+                        border-radius: 50%;
+                        text-align: center;
+                        font-size: 1rem;
+                        font-weight: 600;
+                        background-color: rgb(220, 41, 41);
+                        color: rgb(248, 237, 237);
+                    }
+                }
+
+                &:hover {
+                    background-color: var(--primary);
+                    color: rgb(253, 254, 255);
+                }
+            }
+        }
+    }
+    .close {
+        position: fixed;
+        right: 0;
+        transform: translateX(100%);
+        transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+@media (max-width: 768px) {
+    .wraper {
+        .inner {
+            position: fixed; /* Để nằm trên toàn màn hình */
+            right: 5vh;
+            top: -20vh;
+        }
+    }
+}

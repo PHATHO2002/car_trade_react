@@ -1,0 +1,32 @@
+.wraper {
+    padding: 2rem;
+    width: var(--default-layout-width);
+    .footer-content {
+        justify-content: space-around;
+        .footer-content__left {
+            .logo {
+                img {
+                    height: 10rem;
+                    width: auto;
+                }
+            }
+        }
+        .footer-content__right {
+            ul {
+                li {
+                    margin-bottom: 1rem;
+                    a {
+                        color: var(--primary) !important;
+                        text-decoration: none;
+                        font-size: xx-large;
+                    }
+                }
+            }
+        }
+    }
+}
+@media (max-width: 768px) {
+    .wraper {
+        margin-bottom: var(--default-layout-header-height);
+    }
+}
