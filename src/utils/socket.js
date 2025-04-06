@@ -39,6 +39,16 @@ const connectSocket = () => {
                 reconnectionAttempts: 5,
                 reconnectionDelay: 2000,
             });
+        }else if(process.env.NODE_ENV == 'docker'){
+            socket = io(process.env.REACT_APP_API_URL || 'http://backend:5000', {
+                auth: {
+                    token: store.getState().auth.accessToken, // Lấy token khi connect
+                },
+                transports: ['websocket'],
+                reconnection: true,
+                reconnectionAttempts: 5,
+                reconnectionDelay: 2000,
+            });
         } else {
             socket = io('https://car-trade-nodejs.onrender.com', {
                 auth: {

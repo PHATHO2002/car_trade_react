@@ -6,12 +6,17 @@ import { logout } from '~/redux/slices/authSlice';
 // Tạo instance Axios
 
 let api;
-if (process.env.NODE_ENV == 'production') {
+if (process.env.NODE_ENV == 'docker') {
+    api = axios.create({
+        baseURL: process.env.REACT_APP_API_URL || 'http://backend:5000',
+        withCredentials: true, // Để gửi cookie (refreshToken)
+    });
+}else if(process.env.NODE_ENV == 'production') {
     api = axios.create({
         baseURL: 'https://car-trade-nodejs.onrender.com',
         withCredentials: true, // Để gửi cookie (refreshToken)
     });
-} else {
+}  else {
     api = axios.create({
         baseURL: 'http://localhost:5000',
         withCredentials: true, // Để gửi cookie (refreshToken)
