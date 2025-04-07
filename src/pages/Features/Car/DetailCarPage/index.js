@@ -66,14 +66,13 @@ const DetailCar = () => {
     const getDetailCar = async () => {
         try {
             let rsp;
-
-            if (role && role === 'admin') {
-                rsp = await getCarDetailForAdminApi(`_id=${id}`);
-            } else {
-                rsp = await getCarApi(`_id=${id}`);
-            }
-            
-
+            if(role){
+                if (role === 'admin') {
+                    rsp = await getCarDetailForAdminApi(`_id=${id}`);
+                } 
+            }else {
+                    rsp = await getCarApi(`_id=${id}`);
+                }
             const rsp2 = await getUserApi(`_id=${rsp.data.data[0].sellerId}`);
             setCarDetail(rsp.data.data[0]);
             setSeller(rsp2.data.data[0]);
