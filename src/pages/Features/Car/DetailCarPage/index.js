@@ -31,7 +31,7 @@ const DetailCar = () => {
     const [seller, setSeller] = useState({});
     const [loading, setLoading] = useState(true);
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-    const role = useSelector((state) => state.auth.user.role) || null;
+    const role = useSelector((state) => state.auth.user?.role) ;
     let socket;
     const [receiverIdList, setReceiverIdList] = useState([]); //it was made to render list chatbox
     const handleOpenChatBox = (receiId, username) => {
