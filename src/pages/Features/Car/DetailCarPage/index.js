@@ -73,6 +73,7 @@ const DetailCar = () => {
             }else {
                     rsp = await getCarApi(`_id=${id}`);
                 }
+                console.log('check',rsp.data.data[0]);
             const rsp2 = await getUserApi(`_id=${rsp.data.data[0].sellerId}`);
             setCarDetail(rsp.data.data[0]);
             setSeller(rsp2.data.data[0]);
@@ -122,7 +123,7 @@ const DetailCar = () => {
                                 {' '}
                                 <FontAwesomeIcon icon={faImages} />
                             </span>
-                            {console.log(carDetail.images)}
+                           
                             <img src={carDetail.images[0]} alt={carDetail.title} />
                         </div>
                         <div className={cx('title_price', 'boder_custom')}>

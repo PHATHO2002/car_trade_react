@@ -167,7 +167,6 @@ const UserHomePage = () => {
         getCarBrands();
         socket = connectSocket();
         socket.on('users_online', (data) => {
-            console.log(data);
             setUserOnline(data);
         });
 
