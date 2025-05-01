@@ -73,7 +73,7 @@ const DetailCar = () => {
             }else {
                     rsp = await getCarApi(`_id=${id}`);
                 }
-                console.log('check',rsp);
+                console.log('check',rsp,id);
             const rsp2 = await getUserApi(`_id=${rsp.data.data[0].sellerId}`);
             setCarDetail(rsp.data.data[0]);
             setSeller(rsp2.data.data[0]);
