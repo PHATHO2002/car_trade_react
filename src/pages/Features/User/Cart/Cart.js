@@ -1,4 +1,4 @@
-import classNames from 'classnames/bind';
+ import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import { getCartApi, removeFromCartApi } from '~/api/cart';
 import styles from './Cart.module.scss';
@@ -13,6 +13,7 @@ const Cart = () => {
     const fetchPendingCars = async () => {
         try {
             const response = await getCartApi();
+            console.log(response)
             setCarList(response.data.data.carIds);
         } catch (error) {
             console.log(error);
